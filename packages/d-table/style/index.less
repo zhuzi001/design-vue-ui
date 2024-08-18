@@ -1,0 +1,38 @@
+@import "~ant-design-vue/lib/style/themes/index.less";
+.xm_global_table {
+  background-color: #fff;
+  .title_main {
+    border-left: 4px solid @primary-color;
+    padding-left: 8px;
+    color: #000;
+    font-size: 16px;
+    height: 16px;
+    line-height: 16px;
+  }
+  
+  .table-wrap {
+    .header-wrap {
+      margin: 0 0 16px;
+      display: flex;
+      justify-content: space-between;
+      .header-left {
+        margin-top: 16px;
+      }
+      .setting-icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        .icon {
+          font-size: 20px;
+          cursor: pointer;
+          &:hover {
+            color: @primary-color;
+          }
+        }
+      }
+    }
+  }
+  .xm_table_pagination {
+    padding-top: 24px;
+  }
+}

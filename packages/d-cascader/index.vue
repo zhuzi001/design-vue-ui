@@ -6,6 +6,8 @@
     :value="selectValue"
     mode="multiple"
     :open="isOpen"
+    labelInValue
+    :max-tag-count="4"
     :getPopupContainer="(el) => el.parentNode"
     dropdownClassName="xm_dropdown_main"
     @focus="onFocus"
@@ -13,7 +15,8 @@
     <template slot="dropdownRender">
       <!-- <v-nodes :vnodes="menu" /> -->
       <div class="xm_cascader_main" @click.stop="(e) => e.stopPropagation()">
-        <ul v-for="(item, pIndex) in listArr" :key="pIndex">
+        <a-empty :image="simpleImage" class="xm_empty_data" />
+        <ul  v-for="(item, pIndex) in listArr" :key="pIndex">
           <li
             v-for="subItem in item"
             :key="subItem.value"
@@ -43,6 +46,7 @@
 </template>
 <script>
 import { deepClone } from '../_utils/index'
+import { Empty } from 'ant-design-vue'
 export default {
   name: 'DCascader',
   props: {
@@ -63,19 +67,29 @@ export default {
       isOpen: false, // 控制面板是否打开，select组件选择后会自动关闭，需要手动控制
       selectValue: [],
       listArr: [],
-      treeDataCopy: []
+      treeDataCopy: [],
+      simpleImage: Empty.PRESENTED_IMAGE_SIMPLE
     }
   },
   watch: {
     options: {
       handler (val) {
         this.treeDataCopy = deepClone(val)
-        this.listArr = val ? [this.treeDataCopy] : []
+        this.listArr = val && val.length ? [this.treeDataCopy] : []
       },
       immediate: true
     }
   },
+  created () {
+    document.addEventListener('click', this.closePanel)
+  },
+  beforeDestroy () {
+    document.removeEventListener('click', this.closePanel)
+  },
   methods: {
+    closePanel () {
+      this.isOpen = false
+    },
     itemChange (item, pIndex) {
       // 处理面板的显示列表数据 以及 显示效果
       this.handleListData(item, pIndex)
@@ -105,7 +119,6 @@ export default {
       // 选中或未选中状态，则处理长辈们的选中或未选中或indeterminate状态    ----- 向上
       this.handlePrevChecked()
       // 渲染 select 的值显示
-      // this.listArr = deepClone(this.listArr)
       this.selectValue = this.setSelectValue(this.treeDataCopy)
       // 渲染
     },
@@ -133,7 +146,7 @@ export default {
         const _isAllChecked = _listArr[index].every((v) => v.$checked)
         // 是否存在 选中 状态  _isExistChecked = true 父级为状态 选中 或 indeterminate 状态
         // 是否存在 未选中 状态  _isExistChecked = false 父级为状态  未选中 状态
-        const _isExistChecked = _listArr[index].some((v) => v.$checked)
+        const _isExistChecked = _listArr[index].some((v) => v.$checked || v.$indeterminate)
         // 获取当前的父亲item
         const _item = _listArr[index - 1].filter((v) => v.$active)
         _item.forEach((v) => {
@@ -145,8 +158,12 @@ export default {
     setSelectValue (arr) {
       const _selectValue = []
       arr.forEach((v) => {
-        if (v.$checked) _selectValue.push(v.value)
-        else if (v.$indeterminate) {
+        if (v.$checked) {
+          _selectValue.push({
+            key: v.value,
+            label: v.label
+          })
+        } else if (v.$indeterminate) {
           _selectValue.push(...this.setSelectValue(v.children))
         }
       })

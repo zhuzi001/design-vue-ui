@@ -3,7 +3,7 @@
 }
 .xm_cascader_main {
   display: flex;
-  ul {
+  ul, .xm_empty_data {
     padding: 0;
     margin: 0;
     padding-top: 8px;
@@ -14,6 +14,10 @@
     max-width: 160px;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  .xm_empty_data{
+    padding-top: 60px;
   }
   li {
     position: relative;

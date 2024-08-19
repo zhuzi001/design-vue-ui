@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import jsonData from '../json/region.json'
+// import jsonData from '../json/region.json'
 export default {
   data () {
     return {
@@ -21,7 +21,7 @@ export default {
       console.log(value)
     },
     initData () {
-      this.options.push(this.buildTree(jsonData.data))
+      // this.options.push(this.buildTree(jsonData.data))
     },
     buildTree (data) {
       // 创建一个字典来存储所有节点

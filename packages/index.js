@@ -1,6 +1,7 @@
 // 暴露组件
 import DTooltip from './d-tooltip'
 import DTable from './d-table'
+import DCascader from './d-cascader'
 import PageLoading from './page-loading'
 import Loading from './page-loading/loading.js'
 
@@ -16,7 +17,11 @@ DTable.install = (vue) => {
   vue.component(DTable.name, DTable)
 }
 
-const components = [PageLoading, DTooltip, DTable]
+DCascader.install = (vue) => {
+  vue.component(DCascader.name, DCascader)
+}
+
+const components = [PageLoading, DTooltip, DTable, DCascader]
 
 const install = function (Vue) {
   components.forEach((component) => {
@@ -36,7 +41,7 @@ const config = {
   $apiFc: function () {}
 }
 
-export { DTooltip, PageLoading, DTable }
+export { DTooltip, PageLoading, DTable, DCascader }
 
 export default {
   install,

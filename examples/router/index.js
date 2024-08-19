@@ -9,12 +9,12 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/cascader',
+    name: 'cascader',
+    component: () => import('../views/cascader')
   }
-  // {
-  //   path: '/table',
-  //   name: 'table',
-  //   component: () => import('../views/table')
-  // },
 ]
 
 const router = new VueRouter({

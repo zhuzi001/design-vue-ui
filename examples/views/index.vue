@@ -5,7 +5,7 @@
       <button @click="init">点击显示加载中、、、1秒自动关闭</button>
     </div>
 
-    <d-table
+    <!-- <d-table
       :columns="columns"
       :data-source="data"
       :pag="pag"
@@ -17,7 +17,8 @@
       <span slot="action" >
        添加
         </span>
-    </d-table>
+    </d-table> -->
+
   </div>
 </template>
 <script>

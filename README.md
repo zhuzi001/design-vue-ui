@@ -108,3 +108,7 @@ yarn commit
 1. 每一个组件应该取名 class 要具有唯一性，因为我们打包后会脚本处理合并成一个 less 文件，重名影响也不好
 2. `npm install` 后 一定要 `npm run patch` 下，这个是修改了 `node_modules` 中的代码，进行覆盖处理
 3. 一定记得别用`cnpm`，兼容处理三方插件的话，不会被编译
+
+
+
+Cascader 级联选择  一次性选择多个选项。

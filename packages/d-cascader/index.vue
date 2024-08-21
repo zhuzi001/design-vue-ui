@@ -1,5 +1,5 @@
 <template>
-  <div ref="dropdown">
+  <div ref="dropdown" class="xm_cascader_main">
     <a-select
       :placeholder="placeholder"
       style="width:100%"
@@ -23,7 +23,7 @@
         @click="clearAllClick"
       />
       <template slot="dropdownRender">
-        <div class="xm_cascader_main" @click.stop="(e) => e.stopPropagation()">
+        <div class="xm_cascader_panel" @click.stop="(e) => e.stopPropagation()">
           <a-empty
             :image="simpleImage"
             class="xm_empty_data"

@@ -44,7 +44,6 @@
           :options="options"
           placeholder="Please select"
           @change="onChange"
-          style="width: 240px"
           :allowClear="false"
           labelInValue
           showSelectAll

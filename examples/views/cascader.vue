@@ -49,7 +49,11 @@
           showSelectAll
           v-model="form.selectValue2"
           :getPopupContainer="() => document.body"
-        ></d-cascader>
+        >
+        <template #optionRender="{option}">
+          {{option.label}}
+        </template>
+        </d-cascader>
       </a-form-model-item>
     </a-form-model>
   </div>

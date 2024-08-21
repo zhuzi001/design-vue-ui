@@ -55,7 +55,9 @@
                 >
                 </a-checkbox>
                 <span class="text_ellpisis label_title" :title="subItem.label">
-                  {{ subItem.label }}
+                  <slot name="optionRender" :option="subItem">
+                    {{ subItem.label }}
+                  </slot>
                 </span>
               </div>
               <a-icon

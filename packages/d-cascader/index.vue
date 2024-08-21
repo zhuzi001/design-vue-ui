@@ -3,7 +3,7 @@
     <a-select
       :placeholder="placeholder"
       style="width:100%"
-      :value="selectValue"
+      :value="showCheckedChild ? selectChildValue : selectValue"
       mode="multiple"
       :open="isOpen"
       labelInValue
@@ -12,6 +12,7 @@
       dropdownClassName="xm_dropdown_main"
       allowClear
       v-bind="$attrs"
+      showArrow
       @focus="onFocus"
       @deselect="deselect"
     >
@@ -29,6 +30,17 @@
             v-if="!listArr.length"
           />
           <ul v-for="(item, pIndex) in listArr" :key="pIndex">
+            <li v-if="pIndex === 0 && showSelectAll">
+              <div class="title_content">
+                <a-checkbox
+                  v-model="allChecked"
+                  :indeterminate="!allChecked && !!selectValue.length"
+                  @change="allCheckedChange"
+                >
+                全选
+                </a-checkbox>
+              </div>
+            </li>
             <li
               v-for="subItem in item"
               :key="subItem.value"
@@ -75,13 +87,15 @@ export default {
       listArr: [],
       treeDataCopy: [],
       simpleImage: Empty.PRESENTED_IMAGE_SIMPLE,
-      selectValue: []
+      selectValue: [],
+      allChecked: false, // 全选状态
+      selectChildValue: [] // 显示子节点的
     }
   },
   watch: {
     options: {
       handler (val) {
-        this.treeDataCopy = deepClone(val)
+        this.treeDataCopy = deepClone(val, this.fieldNames)
         this.listArr = val && val.length ? [this.treeDataCopy] : []
       },
       immediate: true
@@ -91,11 +105,11 @@ export default {
         const _labelInValue = this.labelInValue
         const _val = _labelInValue ? val.map(v => v.key) : val
         // 与 selectValue 做比较，不一致，进行更新处理
-        const isEqual = this.arraysEqual(_val, this.selectValue)
-        console.log('neddval========', isEqual, this.selectValue)
+        const isEqual = this.showCheckedChild ? this.arraysEqual(_val, this.selectChildValue) : this.arraysEqual(_val, this.selectValue)
         if (isEqual) return
         // 当 选择框 获取焦点时，执行下 根据 selectValue 选中 等处理
         this.updateCheckedStatus(this.treeDataCopy, _val)
+        this.setSelectValue()
       }
     }
   },
@@ -103,6 +117,10 @@ export default {
     this.closePanel()
   },
   methods: {
+    // 全选 全取消 点击
+    allCheckedChange (e) {
+      this.clearOrAddAll(e.target.checked)
+    },
     arraysEqual (arr1, arr2) {
       if (arr1.length !== arr2.length) {
         return false
@@ -120,14 +138,16 @@ export default {
     startEvent () {
       document.addEventListener('click', this.closePanel)
     },
+    clearOrAddAll (checked) {
+      this.treeDataCopy.forEach((item) => {
+        if (!checked) {
+          (item.$checked || item.$indeterminate) && this.handleChecked(item, checked)
+        } else this.handleChecked(item, checked)
+      })
+    },
     clearAllClick () {
       // 删除所有，只需要把第一列数组全部修改成未选中状态
-      this.listArr[0] &&
-        this.listArr[0].forEach((item) => {
-          if (item.$checked || item.$indeterminate) {
-            this.handleChecked(item, false)
-          }
-        })
+      this.clearOrAddAll(false)
     },
     // val : label   key   这个是点击选择器里面的那个美格选项的删除
     deselect (val) {
@@ -183,9 +203,14 @@ export default {
       // 选中或未选中状态，则处理长辈们的选中或未选中或indeterminate状态    ----- 向上
       this.handlePrevChecked()
       // 渲染 select 的值显示
-      const _selectValue = [...this.selectValue] = this.setSelectValue(this.treeDataCopy)
-      const _needValue = this.labelInValue ? _selectValue : _selectValue.map(v => v.key)
-      this.$emit('change', _needValue)
+      this.setSelectValue()
+      const _selectValue = this.showCheckedChild ? [...this.selectChildValue] : [...this.selectValue]
+      const _needValue = this.labelInValue ? _selectValue.map(v => {
+        return {
+          label: v.label, key: v.key
+        }
+      }) : _selectValue.map(v => v.key)
+      this.$emit('change', _needValue, [...this.selectChildValue], [...this.selectValue])
       // 渲染
     },
     /**
@@ -195,6 +220,7 @@ export default {
       if (!childArr?.length) return
       childArr.forEach((v) => {
         v.$checked = checked
+        v.$indeterminate = false
         this.handleNextChecked(v.children, checked)
       })
     },
@@ -223,16 +249,39 @@ export default {
         })
       }
     },
-    setSelectValue (arr) {
+    setSelectValue () {
+      this.selectValue = this.setSelectParentValue(this.treeDataCopy)
+      this.selectChildValue = this.setSelectChildValue(this.treeDataCopy)
+      this.allChecked = this.treeDataCopy.every(v => v.$checked)
+    },
+    setSelectParentValue (arr) {
       const _selectValue = []
       arr.forEach((v) => {
         if (v.$checked) {
+          const { children, ...r } = v
           _selectValue.push({
-            key: v.value,
-            label: v.label
+            ...r,
+            key: r.value
           })
         } else if (v.$indeterminate) {
-          _selectValue.push(...this.setSelectValue(v.children))
+          _selectValue.push(...this.setSelectParentValue(v.children))
+        }
+      })
+      return _selectValue
+    },
+    setSelectChildValue (arr) {
+      const _selectValue = []
+      arr.forEach((v) => {
+        if (v.children?.length) {
+          (v.$indeterminate || v.$checked) && _selectValue.push(...this.setSelectChildValue(v.children))
+        } else {
+          if (v.$checked) {
+            const { children, ...r } = v
+            _selectValue.push({
+              ...r,
+              key: r.value
+            })
+          }
         }
       })
       return _selectValue
@@ -244,9 +293,7 @@ export default {
       this.handleChecked(subItem)
     },
     onFocus () {
-      if (this.isOpen) {
-        return
-      }
+      if (this.isOpen) return
       this.isOpen = true
       // 开始监听
       this.startEvent()
@@ -267,25 +314,32 @@ export default {
     },
     // 去当前选中的选项并进行选中处理
     updateCheckedStatus (arr, valueArr) {
-      let _valueArr = [...valueArr]
-      arr && arr.some(v => {
+      const _valueArr = [...valueArr]
+      const _obj = {
+        checkedNum: 0,
+        indeterminateNum: 0
+      }
+      // 先全部定义的选中，再遍历
+      arr.forEach(v => {
+        v.$indeterminate = false
+        v.$checked = false // 全部置为 false
         if (_valueArr.indexOf(v.value) !== -1) {
-          // // this.handleChecked(v, true, true)
-          // this.handleNextChecked(item.children, item.$checked)
           v.$checked = true
           this.handleNextChecked(v.children, v.$checked) // 向下全部选中
-          let node = this.findParent(this.treeDataCopy, v.value)
-          // 向上选中
-          while (node) {
-            node.$indeterminate = true
-            node = this.findParent(this.treeDataCopy, node.value)
+          _obj.checkedNum++
+        } else if (v.children?.length) {
+          const _chidObj = this.updateCheckedStatus(v.children, valueArr)
+          if (!_chidObj.checkedNum && !_chidObj.indeterminateNum) return
+          if (_chidObj.indeterminateNum || _chidObj.checkedNum !== v.children.length) {
+            v.$indeterminate = true
+            _obj.indeterminateNum++
+          } else {
+            v.$checked = true
+            _obj.checkedNum++
           }
-          _valueArr = _valueArr.filter(j => j !== v.value)
-          return !_valueArr.length
         }
-        v.children && this.updateCheckedStatus(v.children, _valueArr)
       })
-      this.selectValue = this.setSelectValue(this.treeDataCopy)
+      return _obj
     },
     clearActive (childArr) {
       childArr &&

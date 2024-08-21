@@ -11,7 +11,8 @@
       placeholder="Please select"
       @change="onChange"
       :allowClear="false"
-      v-model="form.selectValue"
+      v-model="form.selectChildValue"
+      showCheckedChild
       :getPopupContainer="() => document.body"
     ></d-cascader>
     <d-cascader
@@ -20,8 +21,20 @@
       @change="onChange"
       :allowClear="false"
       v-model="form.selectValue"
+      optionLabelProp="value"
       :getPopupContainer="() => document.body"
     ></d-cascader>
+    <d-cascader
+          :options="allRegion"
+          :fieldNames="{label: 'name', value: 'code', children: 'areaList'}"
+          placeholder="Please select"
+          @change="onChange"
+          style="width: 240px"
+          :allowClear="false"
+          v-model="form.selectValue123"
+          showSelectAll
+          :getPopupContainer="() => document.body"
+        ></d-cascader>
     <a-form-model layout="inline">
       <a-form-model-item label="Activity name">
         <a-input v-model="form.name" />
@@ -31,8 +44,11 @@
           :options="options"
           placeholder="Please select"
           @change="onChange"
+          style="width: 240px"
           :allowClear="false"
-          v-model="form.selectValue"
+          labelInValue
+          showSelectAll
+          v-model="form.selectValue2"
           :getPopupContainer="() => document.body"
         ></d-cascader>
       </a-form-model-item>
@@ -41,10 +57,12 @@
 </template>
 <script>
 import jsonData from '../json/region.json'
+import allRegion from '../json/allRegion.json'
 export default {
   data () {
     return {
       options: [],
+      allRegion,
       form: {
         selectValue: []
       }
@@ -54,11 +72,11 @@ export default {
     this.initData()
   },
   methods: {
-    onChange (value) {
-      console.log(value)
-    },
     initData () {
       this.options.push(this.buildTree(jsonData.data))
+    },
+    onChange (value, childArr, parentArr) {
+      // console.log(value, childArr, parentArr)
     },
     buildTree (data) {
       // 创建一个字典来存储所有节点

@@ -23,7 +23,6 @@ module.exports = {
     config.module
       .rule('js')
       .include.add(resolve('packages'))
-      .add(resolve('node_modules/relation-graph'))
       .end()
       .use('babel')
       .loader('babel-loader')

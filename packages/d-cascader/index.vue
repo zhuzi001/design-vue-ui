@@ -29,7 +29,7 @@
             class="xm_empty_data"
             v-if="!listArr.length"
           />
-          <ul v-for="(item, pIndex) in listArr" :key="pIndex">
+          <ul v-for="(item, pIndex) in listArr" :key="pIndex" class="xm_cascader_list">
             <li v-if="pIndex === 0 && showSelectAll">
               <div class="title_content">
                 <a-checkbox

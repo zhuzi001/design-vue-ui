@@ -1,61 +1,72 @@
 <template>
-  <div style="padding: 48px">
-    <a-cascader
-      :options="options"
-      placeholder="Please select"
-      @change="onChange"
-    />
-
+  <div class="cascader-main" style="padding: 48px">
+    <h2>基本使用</h2>
     <d-cascader
       :options="options"
-      placeholder="Please select"
-      @change="onChange"
-      :allowClear="false"
+      placeholder="请选择"
       v-model="form.selectChildValue"
-      showCheckedChild
-      :getPopupContainer="() => document.body"
     ></d-cascader>
+    <h2>只显示选中的子节点</h2>
+    <d-cascader
+      :options="options"
+      placeholder="请选择省市区"
+      v-model="form.selectValue"
+      showCheckedChild
+    ></d-cascader>
+    <h2>自定义字段名</h2>
+    <d-cascader
+      :options="allRegion"
+      :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+      v-model="form.selectValue123"
+    ></d-cascader>
+    <h2>显示全选按钮进行全选处理</h2>
+    <d-cascader
+      :options="options"
+      @change="onChange"
+      v-model="form.selectValue12343"
+      showSelectAll
+    ></d-cascader>
+    <h2>label 包装到 value 中 {key: string, label: string}</h2>
     <d-cascader
       :options="options"
       placeholder="Please select"
-      @change="onChange"
-      :allowClear="false"
-      v-model="form.selectValue"
-      optionLabelProp="value"
-      :getPopupContainer="() => document.body"
-    ></d-cascader>
+      labelInValue
+      v-model="form.selectValue3332"
+    >
+    </d-cascader>
+    <h2>自定义 option 显示数据</h2>
     <d-cascader
-          :options="allRegion"
-          :fieldNames="{label: 'name', value: 'code', children: 'areaList'}"
-          placeholder="Please select"
-          @change="onChange"
-          style="width: 240px"
-          :allowClear="false"
-          v-model="form.selectValue123"
-          showSelectAll
-          :getPopupContainer="() => document.body"
-        ></d-cascader>
-    <a-form-model layout="inline">
-      <a-form-model-item label="Activity name">
-        <a-input v-model="form.name" />
-      </a-form-model-item>
-      <a-form-model-item label="Activity zone">
-        <d-cascader
-          :options="options"
-          placeholder="Please select"
-          @change="onChange"
-          :allowClear="false"
-          labelInValue
-          showSelectAll
-          v-model="form.selectValue2"
-          :getPopupContainer="() => document.body"
-        >
-        <template #optionRender="{option}">
-          {{option.label}}
+      :options="options"
+      placeholder="Please select"
+      showSelectAll
+      v-model="form.selectValue2434"
+    >
+      <template #optionRender="{ option }">
+        {{ option.label }} （{{ option.value }}）
+      </template>
+    </d-cascader>
+    <h2>获取当前选择的 item 数据</h2>
+    <a-space direction="vertical" style="width: 100%" :size="24">
+      <d-cascader
+        :options="options"
+        v-model="form.selectValue5462"
+        @change="cascaderChange"
+      >
+        <template #optionRender="{ option }">
+          {{ option.label }} （{{ option.value }}）
         </template>
-        </d-cascader>
-      </a-form-model-item>
-    </a-form-model>
+      </d-cascader>
+      <a-alert message="选中的子节点 Item" type="info">
+        <p slot="description">
+          {{ JSON.stringify(childValue) }}
+        </p>
+      </a-alert>
+      <a-alert message="选中的节点 Item" type="info">
+        <p slot="description">
+          {{ JSON.stringify(parentValue) }}
+        </p>
+      </a-alert>
+    </a-space>
   </div>
 </template>
 <script>
@@ -68,13 +79,20 @@ export default {
       allRegion,
       form: {
         selectValue: []
-      }
+      },
+      childValue: [],
+      parentValue: []
     }
   },
   created () {
     this.initData()
   },
   methods: {
+    cascaderChange (v, childValue, parentValue) {
+      console.log(v, childValue, parentValue)
+      this.childValue = childValue
+      this.parentValue = parentValue
+    },
     initData () {
       this.options.push(this.buildTree(jsonData.data))
     },
@@ -115,3 +133,11 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.cascader-main {
+  padding: 48px;
+  h2 {
+    margin: 24px 0;
+  }
+}
+</style>

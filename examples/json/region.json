@@ -1,0 +1,703 @@
+{
+  "code": 200,
+  "msg": "成功",
+  "data": [
+    {
+      "region_name": "江苏省",
+      "region_code": "320000",
+      "region_lev": 1,
+      "parent_region_code": null
+    },
+    {
+      "region_name": "南京市",
+      "region_code": "320100",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "玄武区",
+      "region_code": "320102",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "秦淮区",
+      "region_code": "320104",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "建邺区",
+      "region_code": "320105",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "鼓楼区",
+      "region_code": "320106",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "浦口区",
+      "region_code": "320111",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "栖霞区",
+      "region_code": "320113",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "雨花台区",
+      "region_code": "320114",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "江宁区",
+      "region_code": "320115",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "六合区",
+      "region_code": "320116",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "溧水区",
+      "region_code": "320117",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "高淳区",
+      "region_code": "320118",
+      "region_lev": 3,
+      "parent_region_code": "320100"
+    },
+    {
+      "region_name": "无锡市",
+      "region_code": "320200",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "锡山区",
+      "region_code": "320205",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "惠山区",
+      "region_code": "320206",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "滨湖区",
+      "region_code": "320211",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "梁溪区",
+      "region_code": "320213",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "新吴区",
+      "region_code": "320214",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "江阴市",
+      "region_code": "320281",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "宜兴市",
+      "region_code": "320282",
+      "region_lev": 3,
+      "parent_region_code": "320200"
+    },
+    {
+      "region_name": "徐州市",
+      "region_code": "320300",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "鼓楼区",
+      "region_code": "320302",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "云龙区",
+      "region_code": "320303",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "贾汪区",
+      "region_code": "320305",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "泉山区",
+      "region_code": "320311",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "铜山区",
+      "region_code": "320312",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "丰县",
+      "region_code": "320321",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "沛县",
+      "region_code": "320322",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "睢宁县",
+      "region_code": "320324",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "新沂市",
+      "region_code": "320381",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "邳州市",
+      "region_code": "320382",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "经济技术开发区",
+      "region_code": "320390",
+      "region_lev": 3,
+      "parent_region_code": "320300"
+    },
+    {
+      "region_name": "常州市",
+      "region_code": "320400",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "天宁区",
+      "region_code": "320402",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "钟楼区",
+      "region_code": "320404",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "新北区",
+      "region_code": "320411",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "武进区",
+      "region_code": "320412",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "金坛区",
+      "region_code": "320413",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "溧阳市",
+      "region_code": "320481",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "经济开发区",
+      "region_code": "320490",
+      "region_lev": 3,
+      "parent_region_code": "320400"
+    },
+    {
+      "region_name": "苏州市",
+      "region_code": "320500",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "虎丘区",
+      "region_code": "320505",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "吴中区",
+      "region_code": "320506",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "相城区",
+      "region_code": "320507",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "姑苏区",
+      "region_code": "320508",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "吴江区",
+      "region_code": "320509",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "常熟市",
+      "region_code": "320581",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "张家港市",
+      "region_code": "320582",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "昆山市",
+      "region_code": "320583",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "太仓市",
+      "region_code": "320585",
+      "region_lev": 3,
+      "parent_region_code": "320500"
+    },
+    {
+      "region_name": "南通市",
+      "region_code": "320600",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "通州区",
+      "region_code": "320612",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "崇川区",
+      "region_code": "320613",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "海门区",
+      "region_code": "320614",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "如东县",
+      "region_code": "320623",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "启东市",
+      "region_code": "320681",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "如皋市",
+      "region_code": "320682",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "海安市",
+      "region_code": "320685",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "通州湾江海联动开发示范区",
+      "region_code": "320690",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "苏锡通科技产业园区",
+      "region_code": "320691",
+      "region_lev": 3,
+      "parent_region_code": "320600"
+    },
+    {
+      "region_name": "连云港市",
+      "region_code": "320700",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "连云区",
+      "region_code": "320703",
+      "region_lev": 3,
+      "parent_region_code": "320700"
+    },
+    {
+      "region_name": "海州区",
+      "region_code": "320706",
+      "region_lev": 3,
+      "parent_region_code": "320700"
+    },
+    {
+      "region_name": "赣榆区",
+      "region_code": "320707",
+      "region_lev": 3,
+      "parent_region_code": "320700"
+    },
+    {
+      "region_name": "东海县",
+      "region_code": "320722",
+      "region_lev": 3,
+      "parent_region_code": "320700"
+    },
+    {
+      "region_name": "灌云县",
+      "region_code": "320723",
+      "region_lev": 3,
+      "parent_region_code": "320700"
+    },
+    {
+      "region_name": "灌南县",
+      "region_code": "320724",
+      "region_lev": 3,
+      "parent_region_code": "320700"
+    },
+    {
+      "region_name": "淮安市",
+      "region_code": "320800",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "淮安区",
+      "region_code": "320803",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "淮阴区",
+      "region_code": "320804",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "清江浦区",
+      "region_code": "320812",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "洪泽区",
+      "region_code": "320813",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "涟水县",
+      "region_code": "320826",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "盱眙县",
+      "region_code": "320830",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "金湖县",
+      "region_code": "320831",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "经济技术开发区",
+      "region_code": "320890",
+      "region_lev": 3,
+      "parent_region_code": "320800"
+    },
+    {
+      "region_name": "盐城市",
+      "region_code": "320900",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "亭湖区",
+      "region_code": "320902",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "盐都区",
+      "region_code": "320903",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "大丰区",
+      "region_code": "320904",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "响水县",
+      "region_code": "320921",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "滨海县",
+      "region_code": "320922",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "阜宁县",
+      "region_code": "320923",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "射阳县",
+      "region_code": "320924",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "建湖县",
+      "region_code": "320925",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "东台市",
+      "region_code": "320981",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "经济技术开发区",
+      "region_code": "320990",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "高新区",
+      "region_code": "320991",
+      "region_lev": 3,
+      "parent_region_code": "320900"
+    },
+    {
+      "region_name": "扬州市",
+      "region_code": "321000",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "广陵区",
+      "region_code": "321002",
+      "region_lev": 3,
+      "parent_region_code": "321000"
+    },
+    {
+      "region_name": "邗江区",
+      "region_code": "321003",
+      "region_lev": 3,
+      "parent_region_code": "321000"
+    },
+    {
+      "region_name": "江都区",
+      "region_code": "321012",
+      "region_lev": 3,
+      "parent_region_code": "321000"
+    },
+    {
+      "region_name": "宝应县",
+      "region_code": "321023",
+      "region_lev": 3,
+      "parent_region_code": "321000"
+    },
+    {
+      "region_name": "仪征市",
+      "region_code": "321081",
+      "region_lev": 3,
+      "parent_region_code": "321000"
+    },
+    {
+      "region_name": "高邮市",
+      "region_code": "321084",
+      "region_lev": 3,
+      "parent_region_code": "321000"
+    },
+    {
+      "region_name": "镇江市",
+      "region_code": "321100",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "京口区",
+      "region_code": "321102",
+      "region_lev": 3,
+      "parent_region_code": "321100"
+    },
+    {
+      "region_name": "润州区",
+      "region_code": "321111",
+      "region_lev": 3,
+      "parent_region_code": "321100"
+    },
+    {
+      "region_name": "丹徒区",
+      "region_code": "321112",
+      "region_lev": 3,
+      "parent_region_code": "321100"
+    },
+    {
+      "region_name": "丹阳市",
+      "region_code": "321181",
+      "region_lev": 3,
+      "parent_region_code": "321100"
+    },
+    {
+      "region_name": "扬中市",
+      "region_code": "321182",
+      "region_lev": 3,
+      "parent_region_code": "321100"
+    },
+    {
+      "region_name": "句容市",
+      "region_code": "321183",
+      "region_lev": 3,
+      "parent_region_code": "321100"
+    },
+    {
+      "region_name": "泰州市",
+      "region_code": "321200",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "海陵区",
+      "region_code": "321202",
+      "region_lev": 3,
+      "parent_region_code": "321200"
+    },
+    {
+      "region_name": "高港区",
+      "region_code": "321203",
+      "region_lev": 3,
+      "parent_region_code": "321200"
+    },
+    {
+      "region_name": "姜堰区",
+      "region_code": "321204",
+      "region_lev": 3,
+      "parent_region_code": "321200"
+    },
+    {
+      "region_name": "兴化市",
+      "region_code": "321281",
+      "region_lev": 3,
+      "parent_region_code": "321200"
+    },
+    {
+      "region_name": "靖江市",
+      "region_code": "321282",
+      "region_lev": 3,
+      "parent_region_code": "321200"
+    },
+    {
+      "region_name": "泰兴市",
+      "region_code": "321283",
+      "region_lev": 3,
+      "parent_region_code": "321200"
+    },
+    {
+      "region_name": "宿迁市",
+      "region_code": "321300",
+      "region_lev": 2,
+      "parent_region_code": "320000"
+    },
+    {
+      "region_name": "宿城区",
+      "region_code": "321302",
+      "region_lev": 3,
+      "parent_region_code": "321300"
+    },
+    {
+      "region_name": "宿豫区",
+      "region_code": "321311",
+      "region_lev": 3,
+      "parent_region_code": "321300"
+    },
+    {
+      "region_name": "沭阳县",
+      "region_code": "321322",
+      "region_lev": 3,
+      "parent_region_code": "321300"
+    },
+    {
+      "region_name": "泗阳县",
+      "region_code": "321323",
+      "region_lev": 3,
+      "parent_region_code": "321300"
+    },
+    {
+      "region_name": "泗洪县",
+      "region_code": "321324",
+      "region_lev": 3,
+      "parent_region_code": "321300"
+    }
+  ],
+  "success": true
+}

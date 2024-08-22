@@ -1,0 +1,81 @@
+.xm_cascader_main {
+  min-width: 120px;
+}
+
+.xm_cascader_panel {
+  display: flex;
+
+  ul,
+  .xm_empty_data {
+    padding: 0;
+    margin: 0;
+    padding-top: 8px;
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid #e8e8e8;
+    height: 200px;
+    min-width: 140px;
+    max-width: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .xm_empty_data {
+    padding-top: 40px;
+  }
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: 5px 12px;
+    line-height: 22px;
+    padding-right: 24px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s;
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+
+    .text_ellpisis {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .title_content {
+      width: 100%;
+      display: flex;
+      align-items: center;
+
+      .label_title {
+        display: block;
+        margin-left: 8px;
+        flex: 1;
+      }
+    }
+
+    .anticon {
+      font-size: 12px;
+      position: absolute;
+      right: 12px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    &:active,
+    &:hover,
+    &.cascader_item_active {
+      font-weight: 600;
+      background-color: #fafafa;
+    }
+
+    &:hover,
+    &.cascader_item_active {
+      background-color: #e6f7ff;
+    }
+  }
+}
+
+.xm_dropdown_main {
+  width: auto !important;
+}

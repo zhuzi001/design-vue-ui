@@ -129,7 +129,7 @@ export default {
       // this.$scopedSlots.displayRender ||
       const displayRender = this.displayRender || defaultDisplayRender
       const arr = displayRender(this.showCheckedChild ? this.selectChildValue : this.selectValue)
-      if (arr.length && this.labelInValue && typeof arr[0] === 'string') {
+      if (arr.length && typeof arr[0] === 'string') {
         return arr.map(v => {
           return {
             key: v,
@@ -177,6 +177,7 @@ export default {
       const _item = this.getCurrentDelItem(this.treeDataCopy, val.key)
       // 选中 或 取消
       _item && this.handleChecked(_item)
+      this.$emit('deselect', val)
     },
     getCurrentDelItem (arr, value) {
       let _item = null

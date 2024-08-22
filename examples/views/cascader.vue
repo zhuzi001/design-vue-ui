@@ -68,6 +68,7 @@
         v-model="form.selectValue"
         @change="cascaderChange"
         :displayRender="displayRender"
+        @deselect="deselect"
       >
         <template #optionRender="{ option }">
           {{ option.label }} （{{ option.value }}）
@@ -164,6 +165,10 @@ export default {
         }
       }
       return arr
+    },
+    deselect (val) {
+      // 自己删除的处理逻辑
+      console.log(val)
     },
     cascaderChange (v, childValue, parentValue) {
       console.log(v, childValue, parentValue)

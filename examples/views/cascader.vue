@@ -48,20 +48,16 @@
       <h2>自定义已选项</h2>
       <a-alert
         message="注意"
-        description="labelInValue 为 true 时，给的返回值格式为 [{ label: **,key: ** }] false 返回值格式 ['string']"
+        description="返回值格式为 [{ label: **,key: ** }] ， 因为处理后的数据逻辑 key 值 会变化， 采用这种方式，要么 key 使用 fieldNames中的 value 值， 要么通过 deselect 自己进行删除处理逻辑"
         type="warning"
         show-icon
       />
       <d-cascader
         :options="options"
-        v-model="form.selectLabelInValue"
+        v-model="form.selectValue"
         @change="cascaderChange"
-        labelInValue
-        :displayRender="displayRender"
+        :displayRender="displayRender1"
       >
-        <template #optionRender="{ option }">
-          {{ option.label }} （{{ option.value }}）
-        </template>
       </d-cascader>
        <d-cascader
         :options="options"
@@ -136,7 +132,15 @@ export default {
     this.initData()
   },
   methods: {
-    displayRender (item) {
+    displayRender1 (itemArr) {
+      return itemArr.map(v => {
+        return {
+          key: v.key,
+          label: `${v.label}（${v.id}）`
+        }
+      })
+    },
+    displayRender (itemArr) {
       const _levObj = {
         1: {
           num: 0,
@@ -154,9 +158,9 @@ export default {
           next: '个'
         }
       }
-      if (!item.length) return []
+      if (!itemArr.length) return []
       const arr = []
-      item.forEach((v) => {
+      itemArr.forEach((v) => {
         _levObj[v.level].num++
       })
       for (const key in _levObj) {

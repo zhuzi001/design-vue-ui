@@ -172,10 +172,10 @@ export default {
     },
     deselect (val) {
       // 自己删除的处理逻辑
-      console.log(val)
+      // console.log(val)
     },
     cascaderChange (v, childValue, parentValue) {
-      console.log(v, childValue, parentValue)
+      // console.log(v, childValue, parentValue)
       this.childValue = childValue
       this.parentValue = parentValue
       this.form.selectChildValue = childValue.map((v) => v.key)

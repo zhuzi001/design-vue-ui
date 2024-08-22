@@ -51,9 +51,13 @@
   </a-tooltip>
 </template>
 <script>
+import { Tooltip, Popover, Icon, Checkbox } from 'ant-design-vue'
 import Vuedraggable from 'vuedraggable'
 export default {
   name: 'DTableSet',
+  components: {
+    ATooltip: Tooltip, APopover: Popover, AIcon: Icon, ACheckbox: Checkbox, Vuedraggable
+  },
   data () {
     return {
       checkedList: [],
@@ -88,9 +92,6 @@ export default {
     }
   },
   watch: {},
-  components: {
-    Vuedraggable
-  },
   methods: {
     onEnd () {},
     dragChange (value) {

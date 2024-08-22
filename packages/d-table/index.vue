@@ -91,7 +91,7 @@
 import DTooltip from '../d-tooltip/index.vue'
 import TableSet from './set.vue'
 import props from './config/prop'
-import { Table } from 'ant-design-vue'
+import { Table, Pagination, Badge } from 'ant-design-vue'
 const BadgeStatus = {
   1: 'success',
   0: 'error',
@@ -110,7 +110,9 @@ export default {
   components: {
     TableSet,
     DTooltip,
-    ATable: Table
+    ATable: Table,
+    APagination: Pagination,
+    ABadge: Badge
   },
   data () {
     return {
@@ -129,7 +131,7 @@ export default {
   },
   filters: {
     valueFilter (val, emptyTxt) {
-      console.log(val, !val && val !== 0, emptyTxt)
+      // console.log(val, !val && val !== 0, emptyTxt)
       if (!val && val !== 0) return emptyTxt
       return val
     },

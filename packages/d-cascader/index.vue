@@ -78,12 +78,17 @@
  * 还需要实现功能 远程搜索
  */
 import { deepClone } from '../_utils/index'
-import { Empty } from 'ant-design-vue'
+import { Empty, Select, Icon, Checkbox } from 'ant-design-vue'
 import props from './props'
 export default {
   name: 'DCascader',
   props: props,
-  components: {},
+  components: {
+    ASelect: Select,
+    AIcon: Icon,
+    ACheckbox: Checkbox,
+    AEmpty: Empty
+  },
   model: {
     prop: 'needValue',
     event: 'change'
@@ -374,5 +379,5 @@ export default {
 }
 </script>
 <style lang="less">
-@import url(./index.less);
+@import url("./index.less");
 </style>

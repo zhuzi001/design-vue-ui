@@ -73,7 +73,7 @@ export default {
     initSearchConfig() {
       this.searchConfig &&
         (this.searchConfig.form.selectValue.onChange = (value) => {
-          console.log(value);
+          // console.log(value);
           if (value == 1)
             this.searchConfig.form.selectValue2.attrs.options = [
               { value: "", label: "拉布拉多" },

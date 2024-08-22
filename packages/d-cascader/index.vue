@@ -3,7 +3,7 @@
     <a-select
       :placeholder="placeholder"
       style="width:100%"
-      :value="showCheckedChild ? selectChildValue : selectValue"
+      :value="getLabel()"
       mode="multiple"
       :open="isOpen"
       labelInValue
@@ -24,11 +24,13 @@
       />
       <template slot="dropdownRender">
         <div class="xm_cascader_panel" @click.stop="(e) => e.stopPropagation()">
-          <a-empty
-            :image="simpleImage"
-            class="xm_empty_data"
-            v-if="!listArr.length"
-          />
+          <div v-if="!listArr.length" class="xm_empty_data">
+            <slot name="notFoundContent">
+              <a-empty
+                :image="simpleImage"
+              />
+            </slot>
+          </div>
           <ul v-for="(item, pIndex) in listArr" :key="pIndex" class="xm_cascader_list">
             <li v-if="pIndex === 0 && showSelectAll">
               <div class="title_content">
@@ -72,6 +74,9 @@
   </div>
 </template>
 <script>
+/**
+ * 还需要实现功能 远程搜索
+ */
 import { deepClone } from '../_utils/index'
 import { Empty } from 'ant-design-vue'
 import props from './props'
@@ -119,6 +124,21 @@ export default {
     this.closePanel()
   },
   methods: {
+    getLabel () {
+      const defaultDisplayRender = (itemArr) => itemArr
+      // this.$scopedSlots.displayRender ||
+      const displayRender = this.displayRender || defaultDisplayRender
+      const arr = displayRender(this.showCheckedChild ? this.selectChildValue : this.selectValue)
+      if (arr.length && this.labelInValue && typeof arr[0] === 'string') {
+        return arr.map(v => {
+          return {
+            key: v,
+            label: v
+          }
+        })
+      }
+      return arr
+    },
     // 全选 全取消 点击
     allCheckedChange (e) {
       this.clearOrAddAll(e.target.checked)

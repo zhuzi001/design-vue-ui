@@ -1,67 +1,111 @@
 <template>
   <div class="cascader-main" style="padding: 48px">
-    <h2>基本使用</h2>
-    <d-cascader
-      :options="options"
-      placeholder="请选择"
-      v-model="form.selectChildValue"
-    ></d-cascader>
-    <h2>只显示选中的子节点</h2>
-    <d-cascader
-      :options="options"
-      placeholder="请选择省市区"
-      v-model="form.selectValue"
-      showCheckedChild
-    ></d-cascader>
-    <h2>自定义字段名</h2>
-    <d-cascader
-      :options="allRegion"
-      :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
-      v-model="form.selectValue123"
-    ></d-cascader>
-    <h2>显示全选按钮进行全选处理</h2>
-    <d-cascader
-      :options="options"
-      @change="onChange"
-      v-model="form.selectValue12343"
-      showSelectAll
-    ></d-cascader>
-    <h2>label 包装到 value 中 {key: string, label: string}</h2>
-    <d-cascader
-      :options="options"
-      placeholder="Please select"
-      labelInValue
-      v-model="form.selectValue3332"
-    >
-    </d-cascader>
-    <h2>自定义 option 显示数据</h2>
-    <d-cascader
-      :options="options"
-      placeholder="Please select"
-      showSelectAll
-      v-model="form.selectValue2434"
-    >
-      <template #optionRender="{ option }">
-        {{ option.label }} （{{ option.value }}）
-      </template>
-    </d-cascader>
-    <h2>获取当前选择的 item 数据</h2>
     <a-space direction="vertical" style="width: 100%" :size="24">
+      <h2>基本使用</h2>
       <d-cascader
         :options="options"
-        v-model="form.selectValue5462"
+        placeholder="请选择"
+        v-model="form.selectValue"
         @change="cascaderChange"
+      ></d-cascader>
+      <h2>只显示选中的子节点</h2>
+      <d-cascader
+        :options="options"
+        placeholder="请选择省市区"
+        v-model="form.selectChildValue"
+        showCheckedChild
+        @change="cascaderChange"
+      ></d-cascader>
+      <h2>显示全选按钮进行全选处理</h2>
+      <d-cascader
+        :options="options"
+        @change="cascaderChange"
+        v-model="form.selectValue"
+        showSelectAll
+      ></d-cascader>
+      <h2>label 包装到 value 中 {key: string, label: string}</h2>
+      <d-cascader
+        :options="options"
+        placeholder="Please select"
+        labelInValue
+        showCheckedChild
+        @change="cascaderChange"
+        v-model="form.selectChildLabelInValue"
+      >
+      </d-cascader>
+      <h2>自定义 option 显示数据</h2>
+      <d-cascader
+        :options="options"
+        placeholder="Please select"
+        @change="cascaderChange"
+        showSelectAll
+        v-model="form.selectValue"
       >
         <template #optionRender="{ option }">
           {{ option.label }} （{{ option.value }}）
         </template>
       </d-cascader>
-      <a-alert message="选中的子节点 Item" type="info">
+      <h2>自定义已选项</h2>
+      <a-alert
+        message="注意"
+        description="labelInValue 为 true 时，给的返回值格式为 [{ label: **,key: ** }] false 返回值格式 ['string']"
+        type="warning"
+        show-icon
+      />
+      <d-cascader
+        :options="options"
+        v-model="form.selectLabelInValue"
+        @change="cascaderChange"
+        labelInValue
+        :displayRender="displayRender"
+      >
+        <template #optionRender="{ option }">
+          {{ option.label }} （{{ option.value }}）
+        </template>
+      </d-cascader>
+       <d-cascader
+        :options="options"
+        v-model="form.selectValue"
+        @change="cascaderChange"
+        :displayRender="displayRender"
+      >
+        <template #optionRender="{ option }">
+          {{ option.label }} （{{ option.value }}）
+        </template>
+      </d-cascader>
+      <h2>自定义字段名</h2>
+      <d-cascader
+        :options="allRegion"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        v-model="form.allRegionValue"
+      ></d-cascader>
+      <h2>自定义 没有数据的 option面板 显示效果</h2>
+      <d-cascader
+        :options="[]"
+        placeholder="Please select"
+        @change="cascaderChange"
+        showSelectAll
+        v-model="form.selectValue"
+      >
+      </d-cascader>
+      <d-cascader
+        :options="[]"
+        placeholder="Please select"
+        @change="cascaderChange"
+        showSelectAll
+        v-model="form.selectValue"
+      >
+        <template #notFoundContent>
+          <a-empty />
+        </template>
+      </d-cascader>
+      <h2>获取当前选择的 item 数据</h2>
+      <a-alert message="选中的子节点 Item 返回数据" type="info">
         <p slot="description">
           {{ JSON.stringify(childValue) }}
         </p>
       </a-alert>
-      <a-alert message="选中的节点 Item" type="info">
+      <a-alert message="选中的节点 Item 返回数据" type="info">
         <p slot="description">
           {{ JSON.stringify(parentValue) }}
         </p>
@@ -78,7 +122,10 @@ export default {
       options: [],
       allRegion,
       form: {
-        selectValue: []
+        selectChildValue: [],
+        selectValue: [],
+        selectLabelInValue: [],
+        selectChildLabelInValue: []
       },
       childValue: [],
       parentValue: []
@@ -88,16 +135,47 @@ export default {
     this.initData()
   },
   methods: {
+    displayRender (item) {
+      const _levObj = {
+        1: {
+          num: 0,
+          prev: '省',
+          next: '个'
+        },
+        2: {
+          num: 0,
+          prev: '市',
+          next: '个'
+        },
+        3: {
+          num: 0,
+          prev: '区',
+          next: '个'
+        }
+      }
+      if (!item.length) return []
+      const arr = []
+      item.forEach((v) => {
+        _levObj[v.level].num++
+      })
+      for (const key in _levObj) {
+        if (Object.prototype.hasOwnProperty.call(_levObj, key)) {
+          arr.push(`${_levObj[key].prev}${_levObj[key].num}${_levObj[key].next}`)
+        }
+      }
+      return arr
+    },
     cascaderChange (v, childValue, parentValue) {
       console.log(v, childValue, parentValue)
       this.childValue = childValue
       this.parentValue = parentValue
+      this.form.selectChildValue = childValue.map((v) => v.key)
+      this.form.selectValue = parentValue.map((v) => v.key)
+      this.form.selectLabelInValue = parentValue.map((v) => v)
+      this.form.selectChildLabelInValue = childValue.map((v) => v)
     },
     initData () {
       this.options.push(this.buildTree(jsonData.data))
-    },
-    onChange (value, childArr, parentArr) {
-      // console.log(value, childArr, parentArr)
     },
     buildTree (data) {
       // 创建一个字典来存储所有节点
@@ -112,6 +190,7 @@ export default {
           id: item.region_code,
           value: item.region_code,
           label: item.region_name,
+          level: item.region_lev,
           children: []
         }
       })

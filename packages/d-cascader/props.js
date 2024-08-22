@@ -5,6 +5,7 @@ function dFunc (type, value) {
   }
 }
 export default {
+  displayRender: dFunc(Function | null, null), // 默认是 {label:**,key: ***}
   showSelectAll: dFunc(Boolean, false), // 显示全选
   options: dFunc(Array, () => []),
   needValue: dFunc(Array, () => []),

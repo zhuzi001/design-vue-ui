@@ -8,7 +8,6 @@
       :open="isOpen"
       labelInValue
       :max-tag-count="maxTagCount"
-      :getPopupContainer="(el) => el.parentNode"
       dropdownClassName="xm_dropdown_main"
       allowClear
       v-bind="$attrs"
@@ -122,7 +121,8 @@ export default {
         // 当 选择框 获取焦点时，执行下 根据 selectValue 选中 等处理
         this.updateCheckedStatus(this.treeDataCopy, _val)
         this.setSelectValue()
-      }
+      },
+      immediate: true
     }
   },
   beforeDestroy () {

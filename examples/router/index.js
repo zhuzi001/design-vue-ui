@@ -19,6 +19,11 @@ const routes = [
     path: '/textarea',
     name: 'textarea',
     component: () => import('../views/textarea')
+  },
+  {
+    path: '/input',
+    name: 'input',
+    component: () => import('../views/input')
   }
 ]
 

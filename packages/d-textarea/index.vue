@@ -8,6 +8,7 @@
       :maxLength="len"
       :auto-size="autoSize"
       v-bind="$attrs"
+      :style="{'resize': resizeNone ? 'none' : 'vertical'}"
     />
     <span class="xm_text_len" :class="{ xm_text_outside_len: outside }">
       {{ txtValue.length }} / {{ len }}
@@ -26,6 +27,10 @@ export default {
     ATextarea: Input.TextArea
   },
   props: {
+    resizeNone: {
+      type: Boolean,
+      default: false
+    },
     len: {
       type: Number,
       default: 255

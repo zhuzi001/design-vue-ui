@@ -3,6 +3,7 @@
     <a-space direction="vertical" style="width: 100%" :size="24">
       <h2>常规文本域</h2>
       <d-textarea v-model="form.textValue" placeholder="请输入"> </d-textarea>
+      <d-textarea v-model="form.textValue" placeholder="请输入" resizeNone> </d-textarea>
       <d-textarea
         v-model="form.textValue"
         :len="1000"

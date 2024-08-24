@@ -89,7 +89,7 @@ export default {
     AEmpty: Empty
   },
   model: {
-    prop: 'needValue',
+    prop: 'value',
     event: 'change'
   },
   data: () => {
@@ -111,7 +111,7 @@ export default {
       },
       immediate: true
     },
-    needValue: {
+    value: {
       handler (val = []) {
         const _labelInValue = this.labelInValue
         const _val = _labelInValue ? val.map(v => v.key) : val

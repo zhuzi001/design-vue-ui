@@ -8,7 +8,7 @@ export default {
   displayRender: dFunc(Function | null, null), // 默认是 {label:**,key: ***}
   showSelectAll: dFunc(Boolean, false), // 显示全选
   options: dFunc(Array, () => []),
-  needValue: dFunc(Array, () => []),
+  value: dFunc(Array, () => []),
   placeholder: dFunc(String, '请选择'),
   labelInValue: dFunc(Boolean, false),
   maxTagCount: dFunc(Number, 4),

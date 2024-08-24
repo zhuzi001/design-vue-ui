@@ -2,6 +2,7 @@
 import DTooltip from './d-tooltip'
 import DTable from './d-table'
 import DCascader from './d-cascader'
+import DTextarea from './d-textarea'
 import PageLoading from './page-loading'
 import Loading from './page-loading/loading.js'
 
@@ -21,7 +22,11 @@ DCascader.install = (vue) => {
   vue.component(DCascader.name, DCascader)
 }
 
-const components = [PageLoading, DTooltip, DTable, DCascader]
+DTextarea.install = (vue) => {
+  vue.component(DTextarea.name, DTextarea)
+}
+
+const components = [PageLoading, DTooltip, DTable, DCascader, DTextarea]
 
 const install = function (Vue) {
   components.forEach((component) => {
@@ -41,7 +46,7 @@ const config = {
   $apiFc: function () {}
 }
 
-export { DTooltip, PageLoading, DTable, DCascader }
+export { DTooltip, PageLoading, DTable, DCascader, DTextarea }
 
 export default {
   install,

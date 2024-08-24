@@ -1,5 +1,5 @@
 <template>
-  <div class="cascader-main" style="padding: 48px">
+  <div class="xm-main">
     <a-space direction="vertical" style="width: 100%" :size="24">
       <h2>基本使用</h2>
       <d-cascader
@@ -221,11 +221,3 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
-.cascader-main {
-  padding: 48px;
-  h2 {
-    margin: 24px 0;
-  }
-}
-</style>

@@ -2,7 +2,7 @@
   <div ref="dropdown" class="xm_cascader_main">
     <a-select
       :placeholder="placeholder"
-      style="width:100%"
+      style="width: 100%"
       :value="getLabel()"
       mode="multiple"
       :open="isOpen"
@@ -25,12 +25,14 @@
         <div class="xm_cascader_panel" @click.stop="(e) => e.stopPropagation()">
           <div v-if="!listArr.length" class="xm_empty_data">
             <slot name="notFoundContent">
-              <a-empty
-                :image="simpleImage"
-              />
+              <a-empty :image="simpleImage" />
             </slot>
           </div>
-          <ul v-for="(item, pIndex) in listArr" :key="pIndex" class="xm_cascader_list">
+          <ul
+            v-for="(item, pIndex) in listArr"
+            :key="pIndex"
+            class="xm_cascader_list"
+          >
             <li v-if="pIndex === 0 && showSelectAll">
               <div class="title_content">
                 <a-checkbox
@@ -38,7 +40,7 @@
                   :indeterminate="!allChecked && !!selectValue.length"
                   @change="allCheckedChange"
                 >
-                全选
+                  全选
                 </a-checkbox>
               </div>
             </li>
@@ -94,6 +96,7 @@ export default {
   },
   data: () => {
     return {
+      timer: null,
       isOpen: false, // 控制面板是否打开，select组件选择后会自动关闭，需要手动控制
       listArr: [],
       treeDataCopy: [],
@@ -114,9 +117,11 @@ export default {
     value: {
       handler (val = []) {
         const _labelInValue = this.labelInValue
-        const _val = _labelInValue ? val.map(v => v.key) : val
+        const _val = _labelInValue ? val.map((v) => v.key) : val
         // 与 selectValue 做比较，不一致，进行更新处理
-        const isEqual = this.showCheckedChild ? this.arraysEqual(_val, this.selectChildValue) : this.arraysEqual(_val, this.selectValue)
+        const isEqual = this.showCheckedChild
+          ? this.arraysEqual(_val, this.selectChildValue)
+          : this.arraysEqual(_val, this.selectValue)
         if (isEqual) return
         // 当 选择框 获取焦点时，执行下 根据 selectValue 选中 等处理
         this.updateCheckedStatus(this.treeDataCopy, _val)
@@ -127,15 +132,20 @@ export default {
   },
   beforeDestroy () {
     this.closePanel()
+    this.timer && clearTimeout(this.timer)
+    document.removeEventListener('click', this.closePanel)
+    window.removeEventListener('resize', this.checkElementBounds)
   },
   methods: {
     getLabel () {
       const defaultDisplayRender = (itemArr) => itemArr
       // this.$scopedSlots.displayRender ||
       const displayRender = this.displayRender || defaultDisplayRender
-      const arr = displayRender(this.showCheckedChild ? this.selectChildValue : this.selectValue)
+      const arr = displayRender(
+        this.showCheckedChild ? this.selectChildValue : this.selectValue
+      )
       if (arr.length && typeof arr[0] === 'string') {
-        return arr.map(v => {
+        return arr.map((v) => {
           return {
             key: v,
             label: v
@@ -154,21 +164,44 @@ export default {
       }
       const set1 = new Set(arr1)
       const set2 = new Set(arr2)
-      return set1.size === set2.size && [...set1].every(item => set2.has(item))
+      return (
+        set1.size === set2.size && [...set1].every((item) => set2.has(item))
+      )
     },
     closePanel (e) {
       if (e && this.$refs.dropdown && !this.$refs.dropdown.contains(e.target)) {
         this.isOpen = false
         document.removeEventListener('click', this.closePanel)
+        window.removeEventListener('resize', this.checkElementBounds)
       }
     },
     startEvent () {
       document.addEventListener('click', this.closePanel)
+      window.addEventListener('resize', this.checkElementBounds)
+    },
+    checkElementBounds () {
+      this.$nextTick(() => {
+        this.timer && clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          const element = document.querySelector('.xm_dropdown_main')
+          const rect = element.getBoundingClientRect()
+
+          if (rect.left < 0 || rect.right > window.innerWidth) {
+            console.log('元素在视口内  ----- 右边', rect.left, rect.right, (rect.left - (rect.right - window.innerWidth)) + 'px')
+            setTimeout(() => {
+              element.style.left = (rect.left - (rect.right - window.innerWidth)) + 'px'
+            }, 300)
+          } else {
+            console.log('元素在视口内')
+          }
+        }, 300)
+      })
     },
     clearOrAddAll (checked) {
       this.treeDataCopy.forEach((item) => {
         if (!checked) {
-          (item.$checked || item.$indeterminate) && this.handleChecked(item, checked)
+          (item.$checked || item.$indeterminate) &&
+            this.handleChecked(item, checked)
         } else this.handleChecked(item, checked)
       })
     },
@@ -202,24 +235,18 @@ export default {
       return _item
     },
     itemChange (item, pIndex) {
-      // 处理面板的显示列表数据 以及 显示效果
-      this.handleListData(item, pIndex)
-      // 处理 选中状态  没有孩子的列表item点击进行选中处理
-      if (!item.children?.length) {
-        this.handleChecked(item)
-      }
-    },
-    /**
-     * 处理面板的显示列表数据 以及 显示效果
-     */
-    handleListData (item, pIndex) {
       this.listArr.splice(pIndex + 1) // 删除数组当前下标为index后面的元素
       this.clearActive(this.listArr.at(-1)) // 删除当前列表的选中 active
       item.$active = true
+      // 处理面板的显示列表数据 以及 显示效果
       if (item.children?.length) {
         this.clearActive(item.children)
         this.listArr.push(item.children)
+      } else {
+        // 处理 选中状态  没有孩子的列表item点击进行选中处理
+        this.handleChecked(item)
       }
+      this.checkElementBounds()
     },
     // item 需要修改的item   customChecked： 自定义需要修改成的的状态 默认 -1 就是不需要自定义
     handleChecked (item, customChecked = -1) {
@@ -232,13 +259,23 @@ export default {
       this.handlePrevChecked()
       // 渲染 select 的值显示
       this.setSelectValue()
-      const _selectValue = this.showCheckedChild ? [...this.selectChildValue] : [...this.selectValue]
-      const _needValue = this.labelInValue ? _selectValue.map(v => {
-        return {
-          label: v.label, key: v.key
-        }
-      }) : _selectValue.map(v => v.key)
-      this.$emit('change', _needValue, [...this.selectChildValue], [...this.selectValue])
+      const _selectValue = this.showCheckedChild
+        ? [...this.selectChildValue]
+        : [...this.selectValue]
+      const _needValue = this.labelInValue
+        ? _selectValue.map((v) => {
+          return {
+            label: v.label,
+            key: v.key
+          }
+        })
+        : _selectValue.map((v) => v.key)
+      this.$emit(
+        'change',
+        _needValue,
+        [...this.selectChildValue],
+        [...this.selectValue]
+      )
       // 渲染
     },
     /**
@@ -280,7 +317,7 @@ export default {
     setSelectValue () {
       this.selectValue = this.setSelectParentValue(this.treeDataCopy)
       this.selectChildValue = this.setSelectChildValue(this.treeDataCopy)
-      this.allChecked = this.treeDataCopy.every(v => v.$checked)
+      this.allChecked = this.treeDataCopy.every((v) => v.$checked)
     },
     setSelectParentValue (arr) {
       const _selectValue = []
@@ -301,7 +338,8 @@ export default {
       const _selectValue = []
       arr.forEach((v) => {
         if (v.children?.length) {
-          (v.$indeterminate || v.$checked) && _selectValue.push(...this.setSelectChildValue(v.children))
+          (v.$indeterminate || v.$checked) &&
+            _selectValue.push(...this.setSelectChildValue(v.children))
         } else {
           if (v.$checked) {
             const { children, ...r } = v
@@ -348,7 +386,7 @@ export default {
         indeterminateNum: 0
       }
       // 先全部定义的选中，再遍历
-      arr.forEach(v => {
+      arr.forEach((v) => {
         v.$indeterminate = false
         v.$checked = false // 全部置为 false
         if (_valueArr.indexOf(v.value) !== -1) {
@@ -358,7 +396,10 @@ export default {
         } else if (v.children?.length) {
           const _chidObj = this.updateCheckedStatus(v.children, valueArr)
           if (!_chidObj.checkedNum && !_chidObj.indeterminateNum) return
-          if (_chidObj.indeterminateNum || _chidObj.checkedNum !== v.children.length) {
+          if (
+            _chidObj.indeterminateNum ||
+            _chidObj.checkedNum !== v.children.length
+          ) {
             v.$indeterminate = true
             _obj.indeterminateNum++
           } else {

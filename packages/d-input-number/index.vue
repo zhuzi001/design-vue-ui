@@ -1,12 +1,14 @@
 <template>
-  <div class="xm_input_number">
+  <div
+    class="xm_input_number"
+    :class="{ xm_no_controls_input_number: !controls }"
+  >
     <a-input
-      v-model.trim="txtValue"
-      @input="inputBlur"
+      :value="formattedValue"
+      @input="inputChange"
       @blur="inputBlur"
       :placeholder="placeholder"
       v-bind="$attrs"
-      type="number"
     >
       <!-- 使用 v-for 循环渲染插槽内容 -->
       <template v-for="(item, key) in $slots" #[key]>
@@ -14,11 +16,25 @@
         <slot :name="key"></slot>
       </template>
       <template #addonAfter>
-        <span class="xm_hander_wrap">
-          <span class="up" @click="add">
+        <span class="xm_hander_wrap" v-if="controls">
+          <span
+            class="up"
+            @click="add"
+            :class="{
+              xm_input_number_handle_disabled:
+                max && !(max > unformatValue(formattedValue)),
+            }"
+          >
             <a-icon type="up" />
           </span>
-          <span class="down" @click="subtract">
+          <span
+            class="down"
+            @click="subtract"
+            :class="{
+              xm_input_number_handle_disabled:
+                min && !(min < unformatValue(formattedValue)),
+            }"
+          >
             <a-icon type="down" />
           </span>
         </span>
@@ -33,161 +49,102 @@
 </template>
 <script>
 import { Input } from 'ant-design-vue'
+import Props from './props'
 export default {
   name: 'DInputNumber',
   model: {
     prop: 'value',
-    event: 'blur'
+    event: 'change'
   },
   components: {
     AInput: Input
   },
-  props: {
-    placeholder: {
-      type: String,
-      default: ''
-    },
-    value: {
-      type: Number,
-      default: undefined
-    },
-    addonAfter: {
-      type: String,
-      default: ''
-    }
-  },
+  props: Props,
   data () {
     return {
-      txtValue: undefined
-    }
-  },
-  watch: {
-    value (val) {
-      this.txtValue = val
+      formattedValue: null
     }
   },
   created () {
-    this.txtValue = this.value
-    console.log(this.$slots)
-    console.log(this.$$scopedSlots)
+    const propsDataKeys = Object.keys(this.$options.propsData || {})
+    if (propsDataKeys.indexOf('value') !== -1) {
+      this.emitValueByMaxOrMin(this.value)
+    } else this.emitValueByMaxOrMin(this.defaultValue)
+  },
+  watch: {
+    value: {
+      handler (val) {
+        this.formattedValue = this.formatValue(this.unformatValue(val))
+      }
+    }
+  },
+  computed: {
+    isPassMin () {
+      return this.min !== null && !(this.min < this.unformatValue(this.formattedValue))
+    },
+    isPassMax () {
+      return this.max !== null && !(this.max > this.unformatValue(this.formattedValue))
+    }
   },
   methods: {
+    isConvertibleToNumber: (str) => !isNaN(Number(str)) && str.trim() !== '',
+    formatValue (value) {
+      if (!value && value !== 0) return ''
+      return this.formatter
+        ? this.formatter(!!value || value === 0 ? value : '')
+        : value
+    },
+    unformatValue (value) {
+      if (!value && value !== 0) return null
+      // 移除任何非数字字符（只保留小数点）
+      // eslint-disable-next-line no-useless-escape
+      const _value = value.toString().replace(/[^\w\.-]+/g, '')
+      if (!_value) return null
+      return _value
+    },
+    formatNumber (value) {
+      if (!value && value !== 0) return null
+      // eslint-disable-next-line no-useless-escape
+      const _value = value.toString().replace(/[^\d\.-]+/g, '')
+      if (!_value || _value === '-') return null
+      if (!this.precision && this.precision !== 0) return Number(_value)
+      return Number(_value).toFixed(this.precision)
+    },
     inputBlur (e) {
-      this.$emit('blur', e.target.value)
+      this.emitValueByMaxOrMin(e.target.value)
+    },
+    inputChange (e) {
+      this.emitValue(this.unformatValue(e.target.value))
+      this.$nextTick(() => {
+        e.target.value = this.formattedValue
+      })
     },
     add () {
-      this.$emit('blur', this.value++)
+      const _value = this.unformatValue(this.formattedValue || 0)
+      if (_value === this.max) return
+      this.emitValueByMaxOrMin(_value + this.step)
     },
     subtract () {
-      this.$emit('blur', this.value--)
+      const _value = this.unformatValue(this.formattedValue || 0)
+      if (_value === this.min) return
+      this.emitValueByMaxOrMin(_value - this.step)
+    },
+    emitValueByMaxOrMin (value) {
+      const min = this.min
+      const max = this.max
+      let _value = this.formatNumber(value)
+      if (min !== null && _value < min) _value = min
+      else if (max !== null && max < _value) _value = max
+      this.formattedValue = this.formatValue(_value)
+      this.$emit('change', _value)
+    },
+    emitValue (value) {
+      this.formattedValue = this.formatValue(value)
+      this.$emit('change', value)
     }
   }
 }
 </script>
-<style lang="less" scoped>
-@import "~ant-design-vue/lib/style/themes/index.less";
-.xm_input_number {
-    width: 90px;
-  position: relative;
-  .xm_hander_wrap {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    left: -24px;
-    top: 0;
-    width: 22px;
-    height: 2em;
-    color: rgba(0, 0, 0, 0.25);
-    z-index: 99;
-    .up,
-    .down {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      font-size: 9px;
-      line-height: 1em;
-      width: 100%;
-      border-top-right-radius: 4px;
-      flex: 3;
-      cursor: pointer;
-      transition: all 0.1s linear;
-      border-left: 1px solid #d9d9d9;
-      opacity: 0;
-      user-select: none;
-      &:hover {
-        flex: 5;
-        color: @primary-color;
-      }
-
-      &:active{
-        background: #f4f4f4;
-      }
-    }
-    .up {
-      border-bottom: 1px solid #d9d9d9;
-    }
-    .down {
-      border-bottom-right-radius: 4px;
-    }
-    &:hover {
-      .up,
-      .down {
-        opacity: 1;
-      }
-    }
-  }
-
-  .xm_addon {
-    padding: 0 11px;
-    border-right: 01px solid #d9d9d9;
-  }
-  /deep/ .ant-input-wrapper {
-    .ant-input-affix-wrapper{
-        .ant-input[type="number"] {
-    // padding-right: 58px !important;
-  }
-    }
-    .ant-input-affix-wrapper:hover ~ .ant-input-group-addon, .ant-input:hover ~ .ant-input-group-addon{
-      .xm_hander_wrap {
-        .up,
-        .down {
-          opacity: 1;
-        }
-      }
-    }
-    .ant-input-group-addon:last-child {
-      padding: 0;
-      border-right: 0;
-    }
-  }
-  /deep/ .ant-input[type="number"] {
-    padding-right: 30px;
-  }
-
-  /deep/ .ant-input-suffix {
-    right: 40px;
-    .xm_suffix {
-      display: block;
-      border: 1px solid #d9d9d9;
-      padding: 0 8px;
-      margin-left: 8px;
-      color: rgba(0, 0, 0, 0.65);
-      background-color: #fafafa;
-    }
-  }
-
-  /deep/ input[type="number"]::-webkit-inner-spin-button,
-  /deep/ input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* 对于 Firefox */
-  /deep/ input[type="number"] {
-    -moz-appearance: textfield;
-  }
-}
+<style lang="less">
+@import url("./index.less");
 </style>

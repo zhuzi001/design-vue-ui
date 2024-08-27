@@ -2,12 +2,16 @@
   <div class="xm-main">
     <a-space direction="vertical" style="width: 100%" :size="24">
       <h2>基本使用</h2>
+     <div style="display:flex">
+       <span style="flex: 1">213234</span>
       <d-cascader
         :options="options"
         placeholder="请选择"
         v-model="form.selectValue"
         @change="cascaderChange"
+        :getPopupContainer="el => el.parentNode || document.body"
       ></d-cascader>
+     </div>
       <h2>只显示选中的子节点</h2>
       <d-cascader
         :options="options"

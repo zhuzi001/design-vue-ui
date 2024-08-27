@@ -22,7 +22,11 @@
         @click="clearAllClick"
       />
       <template slot="dropdownRender">
-        <div class="xm_cascader_panel" @click.stop="(e) => e.stopPropagation()">
+        <div
+          ref="panelRef"
+          class="xm_cascader_panel"
+          @click.stop="(e) => e.stopPropagation()"
+        >
           <div v-if="!listArr.length" class="xm_empty_data">
             <slot name="notFoundContent">
               <a-empty :image="simpleImage" />
@@ -180,21 +184,25 @@ export default {
       window.addEventListener('resize', this.checkElementBounds)
     },
     checkElementBounds () {
+      this.timer && clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.hanldleGBLeft()
+      }, 0)
+    },
+    hanldleGBLeft () {
       this.$nextTick(() => {
-        this.timer && clearTimeout(this.timer)
-        this.timer = setTimeout(() => {
-          const element = document.querySelector('.xm_dropdown_main')
-          const rect = element.getBoundingClientRect()
-
-          if (rect.left < 0 || rect.right > window.innerWidth) {
-            console.log('元素在视口内  ----- 右边', rect.left, rect.right, (rect.left - (rect.right - window.innerWidth)) + 'px')
-            setTimeout(() => {
-              element.style.left = (rect.left - (rect.right - window.innerWidth)) + 'px'
-            }, 300)
-          } else {
-            console.log('元素在视口内')
-          }
-        }, 300)
+        const childElement = this.$refs.panelRef
+        if (!childElement) return
+        const element = childElement?.parentNode
+        const rect = element.getBoundingClientRect()
+        const pRect = this.$refs.dropdown.getBoundingClientRect()
+        const _w = rect.right + (pRect.left - rect.left)
+        if (_w > window.innerWidth) {
+          element.style.marginLeft =
+            pRect.left - (_w - window.innerWidth) + 'px'
+        } else {
+          element.style.marginLeft = pRect.left + 'px'
+        }
       })
     },
     clearOrAddAll (checked) {
@@ -361,6 +369,7 @@ export default {
     onFocus () {
       if (this.isOpen) return
       this.isOpen = true
+      this.hanldleGBLeft()
       // 开始监听
       this.startEvent()
     },

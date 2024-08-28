@@ -7,9 +7,9 @@
       <d-cascader
         :options="options"
         placeholder="请选择"
+        style="width: 200px"
         v-model="form.selectValue"
         @change="cascaderChange"
-        :getPopupContainer="el => el.parentNode || document.body"
       ></d-cascader>
      </div>
       <h2>只显示选中的子节点</h2>

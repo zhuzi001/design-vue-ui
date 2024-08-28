@@ -85,9 +85,11 @@
 import { deepClone } from '../_utils/index'
 import { Empty, Select, Icon, Checkbox } from 'ant-design-vue'
 import props from './props'
+import eventMixin from './eventMixin'
 export default {
   name: 'DCascader',
   props: props,
+  mixins: [eventMixin],
   components: {
     ASelect: Select,
     AIcon: Icon,
@@ -100,8 +102,6 @@ export default {
   },
   data: () => {
     return {
-      timer: null,
-      isOpen: false, // 控制面板是否打开，select组件选择后会自动关闭，需要手动控制
       listArr: [],
       treeDataCopy: [],
       simpleImage: Empty.PRESENTED_IMAGE_SIMPLE,
@@ -134,12 +134,6 @@ export default {
       immediate: true
     }
   },
-  beforeDestroy () {
-    this.closePanel()
-    this.timer && clearTimeout(this.timer)
-    document.removeEventListener('click', this.closePanel)
-    window.removeEventListener('resize', this.checkElementBounds)
-  },
   methods: {
     getLabel () {
       const defaultDisplayRender = (itemArr) => itemArr
@@ -171,39 +165,6 @@ export default {
       return (
         set1.size === set2.size && [...set1].every((item) => set2.has(item))
       )
-    },
-    closePanel (e) {
-      if (e && this.$refs.dropdown && !this.$refs.dropdown.contains(e.target)) {
-        this.isOpen = false
-        document.removeEventListener('click', this.closePanel)
-        window.removeEventListener('resize', this.checkElementBounds)
-      }
-    },
-    startEvent () {
-      document.addEventListener('click', this.closePanel)
-      window.addEventListener('resize', this.checkElementBounds)
-    },
-    checkElementBounds () {
-      this.timer && clearTimeout(this.timer)
-      this.timer = setTimeout(() => {
-        this.hanldleGBLeft()
-      }, 0)
-    },
-    hanldleGBLeft () {
-      this.$nextTick(() => {
-        const childElement = this.$refs.panelRef
-        if (!childElement) return
-        const element = childElement?.parentNode
-        const rect = element.getBoundingClientRect()
-        const pRect = this.$refs.dropdown.getBoundingClientRect()
-        const _w = rect.right + (pRect.left - rect.left)
-        if (_w > window.innerWidth) {
-          element.style.marginLeft =
-            pRect.left - (_w - window.innerWidth) + 'px'
-        } else {
-          element.style.marginLeft = pRect.left + 'px'
-        }
-      })
     },
     clearOrAddAll (checked) {
       this.treeDataCopy.forEach((item) => {
@@ -365,13 +326,6 @@ export default {
      */
     handleCheckClick (e, subItem, pIndex) {
       this.handleChecked(subItem)
-    },
-    onFocus () {
-      if (this.isOpen) return
-      this.isOpen = true
-      this.hanldleGBLeft()
-      // 开始监听
-      this.startEvent()
     },
     findParent (tree, value) {
       for (const node of tree) {

@@ -1,5 +1,5 @@
 <template>
-  <a-tooltip placement="top" :overlayClassName="overlayClassName">
+  <a-tooltip placement="top" :overlayClassName="overlayClassName" v-bind="$attrs">
     <template
       slot="title"
       v-if="contentValue.length && (contentValue.length > len || len === 0)"

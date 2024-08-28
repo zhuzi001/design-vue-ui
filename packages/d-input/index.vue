@@ -4,7 +4,6 @@
       v-model.trim="txtValue"
       @input="inputBlur"
       @blur="inputBlur"
-      :placeholder="placeholder"
       v-bind="$attrs"
       :maxLength="len || null"
     />
@@ -19,7 +18,7 @@ export default {
   name: 'DInput',
   model: {
     prop: 'value',
-    event: 'blur'
+    event: 'change'
   },
   components: {
     AInput: Input
@@ -27,11 +26,7 @@ export default {
   props: {
     len: {
       type: Number,
-      default: 10
-    },
-    placeholder: {
-      type: String,
-      default: ''
+      default: 0
     },
     value: {
       type: String,
@@ -53,7 +48,7 @@ export default {
   },
   methods: {
     inputBlur (e) {
-      this.$emit('blur', e.target.value)
+      this.$emit('change', e.target.value)
     }
   }
 }

@@ -5,7 +5,7 @@ function dFunc (type, value) {
   }
 }
 export default {
-  noResize: dFunc(Boolean, true), // 是否禁止监听resize变化  默认不监听
+  allowResize: dFunc(Boolean, false), // 是否允许监听resize变化  默认不监听
   displayRender: dFunc(Function | null, null), // 默认是 {label:**,key: ***}
   showSelectAll: dFunc(Boolean, false), // 显示全选
   options: dFunc(Array, () => []),

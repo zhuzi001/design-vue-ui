@@ -8,7 +8,9 @@
       :open="isOpen"
       labelInValue
       :max-tag-count="maxTagCount"
-      dropdownClassName="xm_dropdown_main"
+      :dropdownClassName="`xm_dropdown_main ${
+        allowResize ? 'xm_dropdown_main_resize' : ''
+      }`"
       allowClear
       v-bind="$attrs"
       showArrow

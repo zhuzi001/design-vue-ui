@@ -10,6 +10,7 @@
         style="width: 200px"
         v-model="form.selectValue"
         @change="cascaderChange"
+        allow-resize
       ></d-cascader>
      </div>
       <h2>只显示选中的子节点</h2>

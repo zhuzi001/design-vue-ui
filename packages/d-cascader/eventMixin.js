@@ -29,14 +29,14 @@ export default {
       this.isOpen = false
       this.timer && clearTimeout(this.timer)
       document.removeEventListener('click', this.closePanel)
-      !this.noResize && window.removeEventListener('resize', this.checkElementBounds)
+      this.allowResize && window.removeEventListener('resize', this.checkElementBounds)
     },
     startEvent () {
       document.addEventListener('click', this.closePanel)
-      !this.noResize && window.addEventListener('resize', this.checkElementBounds)
+      this.allowResize && window.addEventListener('resize', this.checkElementBounds)
     },
     checkElementBounds () {
-      if (this.noResize) return
+      if (!this.allowResize) return
       setTimeout(() => {
         this.timer && clearTimeout(this.timer)
         this.timer = this.hanldleGBLeft()

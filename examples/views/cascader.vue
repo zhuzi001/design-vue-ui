@@ -3,7 +3,7 @@
     <a-space direction="vertical" style="width: 100%" :size="24">
       <h2>基本使用</h2>
      <div style="display:flex">
-       <span style="flex: 1">213234</span>
+      <span style="flex: 1">占位符，为了测试超出边界</span>
       <d-cascader
         :options="options"
         placeholder="请选择"

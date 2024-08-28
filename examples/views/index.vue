@@ -10,9 +10,8 @@
       v-for="(item, index) in items"
       :key="index"
     >
-      <component :is="item.component" :data="item.data" />
       <a-card-meta :title="item.title">
-        <template slot="description"> {{ item.description }} </template>
+        <template slot="description"> <component :is="item.component" :data="item.data" /> </template>
       </a-card-meta>
     </a-card>
   </div>
@@ -20,20 +19,33 @@
 <script>
 import cascader from './cascader.vue'
 import input from './input.vue'
+import textarea from './textarea.vue'
+import inputNumber from './input-number.vue'
 export default {
   data () {
     return {
       items: [
         {
+          component: input,
+          title: 'input 组件',
+          description: 'input 组件'
+        },
+        {
+          component: textarea,
+          title: 'textarea 组件',
+          description: 'textarea 组件'
+        },
+        {
+          component: inputNumber,
+          title: 'inputNumber',
+          description: 'inputNumber'
+        },
+        {
           component: cascader,
           title: 'cascader 级联',
           description: 'cascader 级联'
-        },
-        {
-          component: input,
-          title: 'cascader 级联',
-          description: 'cascader 级联'
         }
+
       ]
     }
   },

@@ -7,7 +7,6 @@
       :value="formattedValue"
       @input="inputChange"
       @blur="inputBlur"
-      :placeholder="placeholder"
       v-bind="$attrs"
     >
       <!-- 使用 v-for 循环渲染插槽内容 -->

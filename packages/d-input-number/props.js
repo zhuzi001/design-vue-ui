@@ -6,7 +6,6 @@ function dFunc (type, value) {
 }
 export default {
   controls: dFunc(Boolean, true), // 是否显示增减按钮
-  placeholder: dFunc(String, ''),
   value: dFunc(Number | String, null),
   addonAfter: dFunc(String, ''),
   min: dFunc(Number, null),

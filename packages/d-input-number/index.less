@@ -1,0 +1,112 @@
+@import "~ant-design-vue/lib/style/themes/index.less";
+.xm_input_number {
+  width: 90px;
+  position: relative;
+  .xm_hander_wrap {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    left: -24px;
+    top: 0;
+    width: 22px;
+    height: 2em;
+    color: rgba(0, 0, 0, 0.25);
+    background-color: #fff;
+    z-index: 99;
+    .up,
+    .down {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      font-size: 9px;
+      line-height: 1em;
+      width: 100%;
+      border-top-right-radius: 4px;
+      flex: 3;
+      cursor: pointer;
+      transition: all 0.1s linear;
+      border-left: 1px solid #d9d9d9;
+      opacity: 0;
+      user-select: none;
+      &.xm_input_number_handle_disabled{
+        cursor: not-allowed;
+      }
+      &:hover {
+        flex: 5;
+        color: @primary-color;
+      }
+
+      &:active {
+        background: #f4f4f4;
+      }
+    }
+    .up {
+      border-bottom: 1px solid #d9d9d9;
+    }
+    .down {
+      border-bottom-right-radius: 4px;
+    }
+    &:hover {
+      .up,
+      .down {
+        opacity: 1;
+      }
+    }
+  }
+
+  .xm_addon {
+    padding: 0 11px;
+    border-right: 01px solid #d9d9d9;
+  }
+  .ant-input-wrapper {
+    .ant-input-affix-wrapper {
+      .ant-input[type="number"] {
+        // padding-right: 58px !important;
+      }
+    }
+    .ant-input-affix-wrapper:hover ~ .ant-input-group-addon,
+    .ant-input:hover ~ .ant-input-group-addon {
+      .xm_hander_wrap {
+        .up,
+        .down {
+          opacity: 1;
+        }
+      }
+    }
+    .ant-input-group-addon:last-child {
+      padding: 0;
+      border-right: 0;
+    }
+  }
+  .ant-input[type="number"] {
+    padding-right: 30px;
+  }
+  &.xm_no_controls_input_number .ant-input[type="number"] {
+    padding-right: 12px;
+  }
+  .ant-input-suffix {
+    right: 40px;
+    .xm_suffix {
+      display: block;
+      border: 1px solid #d9d9d9;
+      padding: 0 8px;
+      margin-left: 8px;
+      color: rgba(0, 0, 0, 0.65);
+      background-color: #fafafa;
+    }
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* 对于 Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}

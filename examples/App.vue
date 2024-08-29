@@ -4,5 +4,11 @@
   </div>
 </template>
 
-<style>
+<style lang="less">
+.xm-main {
+  padding: 48px;
+  h2 {
+    margin: 24px 0;
+  }
+}
 </style>

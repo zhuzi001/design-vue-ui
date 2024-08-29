@@ -1,8 +1,8 @@
 {
   "name": "design-vue-ui",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "private": false,
-  "main": "lib/design-vue-ui.umd.js",
+  "main": "lib/design-vue-ui.umd.min.js",
   "license": "MIT",
   "files": [
     "/lib"

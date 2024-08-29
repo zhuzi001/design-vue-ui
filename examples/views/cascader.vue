@@ -1,13 +1,18 @@
 <template>
-  <div class="cascader-main" style="padding: 48px">
+  <div class="xm-main">
     <a-space direction="vertical" style="width: 100%" :size="24">
       <h2>基本使用</h2>
+     <div style="display:flex">
+      <span style="flex: 1">占位符，为了测试超出边界</span>
       <d-cascader
         :options="options"
         placeholder="请选择"
+        style="width: 200px"
         v-model="form.selectValue"
         @change="cascaderChange"
+        allow-resize
       ></d-cascader>
+     </div>
       <h2>只显示选中的子节点</h2>
       <d-cascader
         :options="options"
@@ -221,11 +226,3 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
-.cascader-main {
-  padding: 48px;
-  h2 {
-    margin: 24px 0;
-  }
-}
-</style>

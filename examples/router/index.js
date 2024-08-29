@@ -14,6 +14,21 @@ const routes = [
     path: '/cascader',
     name: 'cascader',
     component: () => import('../views/cascader')
+  },
+  {
+    path: '/textarea',
+    name: 'textarea',
+    component: () => import('../views/textarea')
+  },
+  {
+    path: '/input',
+    name: 'input',
+    component: () => import('../views/input')
+  },
+  {
+    path: '/input-number',
+    name: 'input-number',
+    component: () => import('../views/input-number')
   }
 ]
 

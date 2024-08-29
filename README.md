@@ -5,110 +5,111 @@
 ## 简介
 
 组件封装，全面拥抱 `Vue2` 生态，正在持续完善中...
+# 快速上手
 
-### 主要用到的一些技术栈
+`design-vue-ui` 是基于 `Ant Design Vue v1.7.8` 版本进行封装的 UI 组件库。为了提升用户体验和组件一致性，我们决定对库进行升级，整合 `Ant Design Vue` 的新版本功能及新增组件。
 
-- ui 库：ant-design-vue.
-- 提交规范：git cz commitizen
-- 版本更改历史：changelog
+## 封装目的
 
-### 安装使用，打包部署，提交代码
+- **提升组件一致性**：确保所有组件在样式和行为上与设计系统保持一致。
+- **扩展功能**：根据 Ant Design Vue 的 1.7.8 最新版本，封装新组件和功能，以满足更广泛的业务需求。
+- **优化性能**：利用新版的性能改进和最佳实践，提升组件的性能和响应速度
 
-- Installation dependencies
+## 引入 design-vue-ui
 
-```bash
-yarn install
-
-```
-
-- run
-
-```bash
-yarn serve
-```
-
-- build
-
-```bash
-yarn build
-```
-
-- commit
-
-```bash
-# git add
-git add .
-
-# yarn
-yarn commit
-```
-
-#### 代码基础架构说明
-
-```treeNode
-|-- 根目录
-  |-- docs 文档生成的根目录位置
-  |-- examples 本地调试
-  |-- lib 打包发布的资源
-  |-- packages 主要的组件目录
-    |-- business 业务组件
-    |-- layout 布局组件
-    |-- page 页面组件
-    |-- tools 小的工具组件
-    |-- index.js 入口文件
-  |-- public 项目静态资源
-  |-- src 项目的一些开发目录
-  |-- README.md 项目说明
-  |-- vue.config.js 脚手架配置文件
+1. 安装脚手架工具
 
 ```
+$ npm install -g @vue/cli
+# OR
+$ yarn global add @vue/cli
+```
 
-#### Git 提交规范
+2. 创建一个项目
 
-- 参考 [vue](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md)
+使用命令行进行初始化。
 
-- `feat` 增加新功能
-- `fix` 修复问题/BUG
-- `docs` 文档/注释
-- `style` 代码风格相关无影响运行结果的
-- `perf` 优化/性能提升
-- `refactor` 代码重构（不包括 bug 修复、功能新增）
-- `revert` 撤销修改
-- `test` 测试相关
-- `build` 构建流程、外部依赖变更（如升级 npm 包、修改 webpack 配置等）
-- `ci` 修改 CI 配置、脚本
-- `chore` 对构建过程或辅助工具和库的更改（不影响源文件、测试用例）
-- `revert` 回滚 commit
+```
+$ vue create design-ui-demo
+```
 
-#### 浏览器支持
+并配置项目。
 
-本地开发推荐使用`Chrome 80+` 浏览器
+若安装缓慢报错，可尝试用 `cnpm` 或别的镜像源自行安装：`rm -rf node_modules && cnpm install`。
 
-支持现代浏览器, 不支持 IE
+3. 使用组件
 
-#### License
+::: tip 前提条件
+需要引入 ant-design-vue 的 全局样式
+:::
 
-[MIT © cec-2022](./LICENSE)
+```
+$ npm i --save design-vue-ui
+```
 
-## 更新
+完整引入
 
-- table-set =========== table 列表控制 ，引入 vuedraggable 20220701
+```js
+import Vue from "vue";
+import Antd from "ant-design-vue";
+import DesignVueUI from "design-vue-ui";
+import App from "./App";
+import { apiFc } from "./http/api"; // 开放的  请求函数
+import "ant-design-vue/dist/antd.less";
+import "design-vue-ui/lib/design-vue-ui.css";
+// import 'design-vue-ui/lib/design-vue-ui.less';
+Vue.config.productionTip = false;
+Vue.use(DesignVueUI);
 
-## patch-package 给 npm 依赖打补丁
+/* eslint-disable no-new */
+new Vue({
+  el: "#app",
+  components: { App },
+  template: "<App/>",
+});
+```
 
-这里注意注意！！！
+局部导入组件
 
-大家可以看到我弄了一个 `patch-package` 包
+```js
+import Vue from "vue";
+import Antd from "ant-design-vue";
+import { DInput } from "design-vue-ui";
+import "ant-design-vue/dist/antd.less";
+import "design-vue-ui/lib/design-vue-ui.css";
+import App from "./App";
 
-下载来后，在命令行执行一下 `npm run patch`
+Vue.config.productionTip = false;
 
+Vue.component(DInput.name, DInput);
 
-## 注意
+// Vue.use(DInput);
+new Vue({
+  el: "#app",
+  components: { App },
+  template: "<App/>",
+});
+```
 
-1. 每一个组件应该取名 class 要具有唯一性，因为我们打包后会脚本处理合并成一个 less 文件，重名影响也不好
-2. `npm install` 后 一定要 `npm run patch` 下，这个是修改了 `node_modules` 中的代码，进行覆盖处理
-3. 一定记得别用`cnpm`，兼容处理三方插件的话，不会被编译
+## 配置请求
 
+::: tip apiFc
+封装好的 `axios`，使用到 apiFc 的组件有： 
+不使用可忽略
+:::
 
+```js
+import CDesign from "design-vue-ui";
+import { apiFc } from "./http/api"; // 封装 的axios 语法
+CDesign.config.$apiFc = apiFc;
+```
 
-Cascader 级联选择  一次性选择多个选项。
+## 全局变量
+
+### $xmLoading
+
+```js
+this.$xmLoading.show();
+this.$xmLoading.show({tip: '加载中', el: document.body});
+this.$xmLoading.hide();
+```

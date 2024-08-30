@@ -181,12 +181,12 @@ export default {
       this.clearOrAddAll(false)
     },
     // val : label   key   这个是点击选择器里面的那个美格选项的删除
-    deselect (val) {
+    deselect (val, option) {
       // 获取到 要删除 的那个 item
       const _item = this.getCurrentDelItem(this.treeDataCopy, val.key)
       // 选中 或 取消
       _item && this.handleChecked(_item)
-      this.$emit('deselect', val)
+      this.$emit('deselect', val, option)
     },
     getCurrentDelItem (arr, value) {
       let _item = null

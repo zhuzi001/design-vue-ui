@@ -1,0 +1,39 @@
+{
+  "code": 200,
+  "message": "",
+  "data": [
+    {
+      "app_id": "1594309172814417920",
+      "app_name": "xm测试应用001",
+      "company_name": "四川开了科技有限公司",
+      "app_realname": "潘叉叉",
+      "app_type": "1",
+      "app_description": "小梅是最可爱的，不接受反驳巴拉巴拉八零撒旦",
+      "create_time": "2022-11-20 20:38:22",
+      "app_phone": "18656646454",
+      "app_develop_realname": "黄客差",
+      "app_develop_phone": "18643645645",
+      "app_develop_email": "324234324@qq.com",
+      "check_state": "1",
+      "app_develop_company_name": "四川开了科技有限公司"
+    }
+  ],
+  "error": {
+    "error_code": 0
+  },
+  "meta": {
+    "trace": {
+      "trace_id": "",
+      "parent_id": "",
+      "span_id": "",
+      "request_id": ""
+    },
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 0,
+      "current_page": 0,
+      "total_pages": 0
+    }
+  }
+}

@@ -1,11 +1,11 @@
 <template>
   <a-select
     v-bind="$attrs"
-    v-on="$listeners"
-    v-model="selectValue"
+    :value="selectValue"
     :filterOption="()=>true"
     style="width: 100%"
     @change="selectChange"
+    labelInValue
     dropdownClassName="xm_select"
     @search="selectSearch"
     @focus="onFocus"
@@ -89,23 +89,31 @@ export default {
       default: () => []
     },
     value: {
-      type: [String, Number, Array],
-      default: ''
+      type: [String, Number, Array, Object]
     },
-    // filterOption: {
-    //   type: Function
-    // },
     fieldNames: {
       type: Object,
       default: () => {
         return { label: 'label', value: 'value', children: 'children' }
       }
+    },
+    labelInValue: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
     value: {
-      handler (v = undefined) {
-        this.selectValue = !v && v !== 0 ? undefined : v
+      handler (v = undefined, qw) {
+        if (!v && v !== 0) this.selectValue = undefined
+        // 判断是 label + value 不，不是的话需要去数组匹配好（因为我们是分页或滚动加载的，要不会value）
+        else if (!this.labelInValue) {
+          // 做哈判断
+          const isArr = Array.isArray(v)
+          if (!isArr) this.selectValue = this.getValue([v]) // 不是数组，直接改变成数组
+          else if (!this.selectValue || !this.arraysEqual(v, this.selectValue.map(j => j.key))) { this.selectValue = this.getValue(v) }
+        } else this.selectValue = v
+        // this.selectValue = !v && v !== 0 ? undefined : v
       },
       immediate: true
     }
@@ -143,13 +151,34 @@ export default {
           .filter(group => group !== null) // 去掉 null 值
       }
 
-      return (this.options || []).filter(filterBySearch)
+      return (this.options || []).filter(v => filterBySearch(v))
     }
 
   },
   methods: {
+    arraysEqual (arr1, arr2) {
+      if (arr1.length !== arr2.length) {
+        return false
+      }
+      const set1 = new Set(arr1)
+      const set2 = new Set(arr2)
+      return (
+        set1.size === set2.size && [...set1].every((item) => set2.has(item))
+      )
+    },
+    getValue (data) {
+      const _value = this.fieldNames?.value || 'value'
+      const _label = this.fieldNames?.label || 'label'
+      return this.resultOptions.filter(v => data.indexOf(v[_value]) !== -1).map(v => {
+        return {
+          label: v[_label],
+          key: v[_value]
+        }
+      })
+    },
     filterOptions () {
       if (this.pag) return this.pagFilterOptions()
+      return this.resultOptions
     },
     selectSearch (value) {
       this.searchValue = value
@@ -157,7 +186,12 @@ export default {
       this.$emit('search', value)
     },
     selectChange (v) {
-      this.$emit('change', v)
+      this.selectValue = v
+      const isArr = Array.isArray(v)
+      console.log(this.labelInValue, 'this.$attrs.labelInValue')
+      const _v = this.labelInValue ? v : !isArr ? v.key : v.map(j => j.key)
+
+      this.$emit('change', _v)
     },
     onFocus () {
       this.searchValue = undefined

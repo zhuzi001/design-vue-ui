@@ -2,7 +2,7 @@
   <a-select
     v-bind="$attrs"
     :value="selectValue"
-    :filterOption="()=>true"
+    :filterOption="() => true"
     style="width: 100%"
     @change="selectChange"
     labelInValue
@@ -11,9 +11,16 @@
     @focus="onFocus"
     @popupScroll="popupScroll"
   >
-    <template v-if="groups.length">
+    <template v-if="searchLoading">
+      <a-select-option key="a-spin">
+        <slot name="searchLoad">
+          <a-spin />
+        </slot>
+      </a-select-option>
+    </template>
+    <template v-else-if="groups.length">
       <a-select-opt-group
-        v-for="group in filterOptions()"
+        v-for="group in filterOptions"
         :key="group.key"
         :label="group.label"
       >
@@ -27,17 +34,33 @@
             {{ option[fieldNames.label] }}
           </slot>
         </a-select-option>
+        <a-select-option
+          key="a-spin"
+          v-if="!!loadData && resultOptions.length !== total"
+        >
+          <slot name="optionLoad">
+            <a-spin />
+          </slot>
+        </a-select-option>
       </a-select-opt-group>
     </template>
     <template v-else>
       <a-select-option
-        v-for="option in filterOptions()"
+        v-for="option in filterOptions"
         :key="option[fieldNames.value]"
-          :value="option[fieldNames.value]"
-          :label="option[fieldNames.label]"
+        :value="option[fieldNames.value]"
+        :label="option[fieldNames.label]"
       >
         <slot name="label" :option="option">
-           {{ option[fieldNames.label] }}
+          {{ option[fieldNames.label] }}
+        </slot>
+      </a-select-option>
+      <a-select-option
+        key="a-spin"
+        v-if="!!loadData && resultOptions.length !== total"
+      >
+        <slot name="optionLoad">
+          <a-spin />
         </slot>
       </a-select-option>
     </template>
@@ -56,6 +79,11 @@
         </div>
       </template>
     </div>
+    <!-- 使用 v-for 循环渲染插槽内容 -->
+    <template v-for="(item, key) in $slots" #[key]>
+      <!-- {{key}} -->
+      <slot :name="key"></slot>
+    </template>
   </a-select>
 </template>
 
@@ -81,6 +109,14 @@ export default {
     }
   },
   props: {
+    loadData: {
+      type: Function,
+      default: null
+    },
+    searchLoading: {
+      type: Boolean,
+      default: false
+    },
     options: {
       type: Array,
       default: () => []
@@ -105,14 +141,25 @@ export default {
   },
   watch: {
     value: {
-      handler (v = undefined, qw) {
-        if (!v && v !== 0) this.selectValue = undefined
+      handler (v = undefined) {
+        const _vIsArr = Array.isArray(v) && v.filter(value => value !== undefined)?.length
+        if ((!v && v !== 0)) this.selectValue = undefined
+        if (!_vIsArr) this.selectValue = []
         // 判断是 label + value 不，不是的话需要去数组匹配好（因为我们是分页或滚动加载的，要不会value）
         else if (!this.labelInValue) {
           // 做哈判断
           const isArr = Array.isArray(v)
-          if (!isArr) this.selectValue = this.getValue([v]) // 不是数组，直接改变成数组
-          else if (!this.selectValue || !this.arraysEqual(v, this.selectValue.map(j => j.key))) { this.selectValue = this.getValue(v) }
+          if (!isArr) {
+            this.selectValue = this.getValue([v]) // 不是数组，直接改变成数组
+          } else if (
+            !this.selectValue ||
+            !this.arraysEqual(
+              v,
+              this.selectValue.map((j) => j.key)
+            )
+          ) {
+            this.selectValue = this.getValue(v, true)
+          }
         } else this.selectValue = v
         // this.selectValue = !v && v !== 0 ? undefined : v
       },
@@ -129,14 +176,15 @@ export default {
         return this.groups.length ? this.groups : this.options || []
       }
 
-      const filterBySearch = (item, key) => item[key || filterProp].toString().includes(searchValue)
+      const filterBySearch = (item, key) =>
+        item[key || filterProp].toString().includes(searchValue)
 
       if (this.groups.length) {
         return this.groups
-          .map(group => {
+          .map((group) => {
             // 过滤 group 的 options
             const filteredOptions = group.options
-              ? group.options.filter(option => filterBySearch(option))
+              ? group.options.filter((option) => filterBySearch(option))
               : []
 
             // 仅返回有匹配 options 的 group
@@ -149,12 +197,15 @@ export default {
 
             return null
           })
-          .filter(group => group !== null) // 去掉 null 值
+          .filter((group) => group !== null) // 去掉 null 值
       }
 
-      return (this.options || []).filter(v => filterBySearch(v))
+      return (this.options || []).filter((v) => filterBySearch(v))
+    },
+    filterOptions () {
+      if (this.pageType) return this.pagFilterOptions()
+      return this.resultOptions
     }
-
   },
   methods: {
     arraysEqual (arr1, arr2) {
@@ -167,31 +218,32 @@ export default {
         set1.size === set2.size && [...set1].every((item) => set2.has(item))
       )
     },
-    getValue (data) {
-      const _value = this.fieldNames?.value || 'value'
-      const _label = this.fieldNames?.label || 'label'
-      return this.resultOptions.filter(v => data.indexOf(v[_value]) !== -1).map(v => {
-        return {
-          label: v[_label],
-          key: v[_value]
-        }
-      })
-    },
-    filterOptions () {
-      if (this.pag || this.pageType === 'scroll') return this.pagFilterOptions()
-      return this.resultOptions
+    getValue (data, isArr) {
+      const { value: _value = 'value', label: _label = 'label' } = this.fieldNames || {}
+      const filterData = (options) =>
+        options
+          .filter(item => data.includes(item[_value]))
+          .map(item => ({ label: item[_label], key: item[_value] }))
+
+      let result = []
+
+      if (this.groups.length) {
+        result = this.groups.flatMap(group => filterData(group.options || []))
+      } else {
+        result = filterData(this.options)
+      }
+      return isArr ? result : result[0]
     },
     selectSearch (value) {
-      this.searchValue = value
-      this.pag && this.pagSearch(value)
+      if (!this.loadData) this.searchValue = value
       this.$emit('search', value)
     },
     selectChange (v) {
       this.selectValue = v
       const isArr = Array.isArray(v)
       console.log(this.labelInValue, 'this.$attrs.labelInValue')
-      const _v = this.labelInValue ? v : !isArr ? v.key : v.map(j => j.key)
-
+      const _v = this.labelInValue ? v : !isArr ? v.key : v.map((j) => j.key)
+      console.log(_v)
       this.$emit('change', _v)
     },
     onFocus () {

@@ -3,35 +3,40 @@ export default {
   props: {
     /** current, pageSize 等 */
     pag: {
-      type: Object
+      type: Object,
+      default: () => ({ current: 1, pageSize: 10 })
     },
     total: {
-      type: Number
+      type: Number,
+      default: 0
     },
     pageType: {
       type: String,
-      default: 'pagination'
+      default: '' // pagination scroll
+    },
+    loadData: {
+      type: Function,
+      default: null
     }
   },
   data () {
     return {
-      filterTotal: 0,
-      pagBind: {
-        current: 1,
-        pageSize: 10
-      }
+      pagBind: null
     }
   },
   computed: {
     pagTotal () {
     //   if (this.groups.length) return this.groups.reduce((sum, item) => sum + (item.options ? item.options.length : 0), 0)
-      return this.resultOptions.length
+      return this.total || this.resultOptions.length
     }
   },
   watch: {
     pag: {
       handler (v) {
-        this.pagBind = v || {}
+        this.pagBind = v || {
+          current: 1,
+          pageSize: 10
+        }
       },
       immediate: true
     }
@@ -42,12 +47,12 @@ export default {
     pagFilterOptions () {
       const { current, pageSize } = this.pagBind
       let start = (current - 1) * pageSize
-      const end = current * pageSize
-      if (this.pageType === 'scroll')start = 0
+      let end = current * pageSize
+      if (this.pageType === 'scroll') {
+        start = 0
+        if (this.loadData) end = this.total
+      }
       return this.resultOptions.slice(start, end)
-    },
-    pagSearch (value) {
-      this.filterTotal = 0
     },
     pagChange (page, pageSize) {
       // 开发人员不想自己修改
@@ -56,7 +61,7 @@ export default {
       this.$emit('update:pag',
         {
           ...this.pag,
-          pageSize: pageSize,
+          pageSize,
           current: page
         }
       )
@@ -69,13 +74,9 @@ export default {
       const clHeight = target.clientHeight
       const { current, pageSize } = this.pagBind
       // 当下拉框失焦的时候，也就是不下拉的时候
-      if (rmHeight === 0 && clHeight === 0) {
-        this.pagBind.current = 1
-      } else {
-        if (rmHeight - 5 < clHeight) {
-          if (this.resultOptions.length < current * pageSize) return
-          this.pagBind.current++
-        }
+      if (!(rmHeight === 0 && clHeight === 0) && rmHeight - 5 < clHeight) {
+        if (this.options.length > current * pageSize) this.pagBind.current++
+        this.loadData && this.loadData()
       }
     }
   }

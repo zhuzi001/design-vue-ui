@@ -144,7 +144,7 @@ export default {
       handler (v = undefined) {
         const _vIsArr = Array.isArray(v) && v.filter(value => value !== undefined)?.length
         if ((!v && v !== 0)) this.selectValue = undefined
-        if (!_vIsArr) this.selectValue = []
+        else if (Array.isArray(v) && !_vIsArr) this.selectValue = []
         // 判断是 label + value 不，不是的话需要去数组匹配好（因为我们是分页或滚动加载的，要不会value）
         else if (!this.labelInValue) {
           // 做哈判断

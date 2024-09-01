@@ -209,7 +209,8 @@ export default {
   data () {
     return {
       form: {
-        basicValueObjArr: []
+        basicValueObjArr: [],
+        basicValueArr: []
       },
       rules: {
         basicValue: { required: true, message: '请选择', trigger: 'change' },

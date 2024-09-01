@@ -67,7 +67,7 @@
 
     <div slot="dropdownRender" slot-scope="menu">
       <v-nodes :vnodes="menu" />
-      <template v-if="pag && pageType === 'pagination'">
+      <template v-if="pageType === 'pagination' || pageType === 'paginationRemote'">
         <a-divider class="xm_divider" />
         <div class="xm_pag_box" @mousedown="(e) => e.preventDefault()">
           <a-pagination

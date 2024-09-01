@@ -45,6 +45,7 @@ export default {
   },
   methods: {
     pagFilterOptions () {
+      if (this.pageType === 'paginationRemote') return this.resultOptions
       const { current, pageSize } = this.pagBind
       let start = (current - 1) * pageSize
       let end = current * pageSize
@@ -52,6 +53,7 @@ export default {
         start = 0
         if (this.loadData) end = this.total
       }
+
       return this.resultOptions.slice(start, end)
     },
     pagChange (page, pageSize) {

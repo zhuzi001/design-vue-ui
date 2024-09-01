@@ -161,6 +161,24 @@
         >
         </d-select>
       </a-form-model-item>
+      <a-form-model-item label="分页pagination-load-远程搜索" prop="loadRemot2e">
+        <d-select
+          v-model="form.loadRemot2e"
+          placeholder="请选择"
+          :options="filterOptions1"
+          showSearch
+          :fieldNames="{ label: 'name', value: 'code' }"
+          optionFilterProp="label"
+          pageType="paginationRemote"
+          :total="total1"
+          :searchLoading="searchLoading"
+          @search="search1"
+          @focus="search1('')"
+          @pagChange="loadData1"
+          :pag="pag1"
+        >
+        </d-select>
+      </a-form-model-item>
       <!-- 下滑加载 -->
       <a-form-model-item label="动态加载-load-基本" prop="loadValue">
         <d-select
@@ -199,6 +217,7 @@
         <a-button style="margin-left: 10px" @click="resetForm"> 重置 </a-button>
       </a-form-model-item>
     </a-form-model>
+    <div style="margin-top: 200px"></div>
   </div>
 </template>
 
@@ -212,6 +231,7 @@ export default {
         basicValueObjArr: [],
         basicValueArr: []
       },
+      inputValue1: '',
       rules: {
         basicValue: { required: true, message: '请选择', trigger: 'change' },
         basicValueObj: { required: true, message: '请选择', trigger: 'change' },
@@ -243,18 +263,24 @@ export default {
       },
       labelCol: { span: 12 },
       wrapperCol: { span: 12 },
-      selectedValueArr: ['130000'],
       selectedValueStr: null,
       selectedValueObj: undefined,
       selectedValueObjArr: undefined,
       options: allRegion,
       filterOptions: allRegion.slice(0, 10),
+      filterOptions1: allRegion.slice(0, 10),
       total: allRegion.length,
+      total1: allRegion.length,
       loading: false,
       searchLoading: false,
       pag: {
         current: 1,
         pageSize: 10
+      },
+      pag1: {
+        current: 1,
+        pageSize: 10,
+        showTotal: (total) => `共 ${total} 条`
       },
       groups: [
         {
@@ -272,6 +298,25 @@ export default {
     }
   },
   methods: {
+    delay (ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms))
+    },
+    // isPag 是否 pagination
+    async queryData (param, isPag) {
+      const { current, pageSize, inputValue } = param
+      // 下面相当于一个后台接口
+      await this.delay(1000)
+      const start = (current - 1) * pageSize
+      const end = current * pageSize
+      const _all = inputValue ? allRegion
+        .filter((v) => v.name.indexOf(inputValue) !== -1) : allRegion
+      const _optionArr = _all.slice(start, end)
+      return {
+        data: _optionArr,
+        current: current,
+        total: _all.length
+      }
+    },
     onSubmit () {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -293,25 +338,53 @@ export default {
       console.log(v, '================')
     },
     search (v) {
+      this.pag.current = 1
       this.searchLoading = true
       setTimeout(() => {
         this.searchLoading = false
       }, 1200)
     },
-    loadData (e) {
+    async search1 (v) {
+      this.pag1.current = 1
+      this.searchLoading = true
+      this.filterOptions1 = []
+      this.inputValue1 = v
+      const _resut = await this.queryData({
+        pageSize: this.pag1.pageSize,
+        current: this.pag1.current,
+        inputValue: v
+      })
+      this.searchLoading = false
+      this.filterOptions1 = _resut.data
+      this.pag1.current = _resut.current || 1
+      this.total1 = _resut.total || 0
+    },
+    async loadData (e) {
       if (this.loading) return
       if (this.total <= this.filterOptions.length) return
-      const { current, pageSize } = this.pag
       // 下面相当于一个后台接口
       this.loading = true // 这里相当于节流的作用，免得获取同样数据进行追加
-      setTimeout(() => {
-        this.loading = false
-        const start = current * pageSize
-        const end = (current + 1) * pageSize
-        const _optionArr = allRegion.slice(start, end)
-        this.filterOptions.push(..._optionArr)
-        this.pag.current++
-      }, 500)
+      const _resut = await this.queryData({
+        pageSize: this.pag.pageSize,
+        current: this.pag.current + 1
+      })
+      this.loading = false
+      this.filterOptions.push(...(_resut.data || []))
+      this.pag.current = _resut.current || 1
+      this.total = _resut.total || 0
+    },
+    async loadData1 (current, pageSize) {
+      if (this.searchLoading) return
+      // if (this.total1 <= this.filterOptions1.length) return
+      // 下面相当于一个后台接口
+      this.searchLoading = true// 这里相当于节流的作用，免得获取同样数据进行追加
+      const _resut = await this.queryData({
+        current, pageSize, inputValue: this.inputValue1
+      })
+      this.searchLoading = false
+      this.filterOptions1 = _resut.data || []
+      this.pag1.current = _resut.current || 1
+      this.total1 = _resut.total || 0
     }
   }
 }

@@ -9,6 +9,7 @@
     dropdownClassName="xm_select"
     @search="selectSearch"
     @focus="onFocus"
+    @popupScroll="popupScroll"
   >
     <template v-if="groups.length">
       <a-select-opt-group
@@ -43,7 +44,7 @@
 
     <div slot="dropdownRender" slot-scope="menu">
       <v-nodes :vnodes="menu" />
-      <template v-if="pag">
+      <template v-if="pag && pageType === 'pagination'">
         <a-divider class="xm_divider" />
         <div class="xm_pag_box" @mousedown="(e) => e.preventDefault()">
           <a-pagination
@@ -177,7 +178,7 @@ export default {
       })
     },
     filterOptions () {
-      if (this.pag) return this.pagFilterOptions()
+      if (this.pag || this.pageType === 'scroll') return this.pagFilterOptions()
       return this.resultOptions
     },
     selectSearch (value) {
@@ -196,6 +197,10 @@ export default {
     onFocus () {
       this.searchValue = undefined
       this.$emit('focus')
+    },
+    popupScroll (e) {
+      this.handlePagScroll && this.handlePagScroll(e)
+      this.$emit('popupScroll', e)
     }
   }
 }

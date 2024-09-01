@@ -7,12 +7,19 @@ export default {
     },
     total: {
       type: Number
+    },
+    pageType: {
+      type: String,
+      default: 'pagination'
     }
   },
   data () {
     return {
       filterTotal: 0,
-      pagBind: {}
+      pagBind: {
+        current: 1,
+        pageSize: 10
+      }
     }
   },
   computed: {
@@ -34,9 +41,9 @@ export default {
   methods: {
     pagFilterOptions () {
       const { current, pageSize } = this.pagBind
-      const start = (current - 1) * pageSize
+      let start = (current - 1) * pageSize
       const end = current * pageSize
-      console.log(this.resultOptions.slice(start, end), 'sdaf')
+      if (this.pageType === 'scroll')start = 0
       return this.resultOptions.slice(start, end)
     },
     pagSearch (value) {
@@ -54,6 +61,22 @@ export default {
         }
       )
       this.$emit('pagChange', page, pageSize)
+    },
+    handlePagScroll (e) {
+      if (this.pageType !== 'scroll') return
+      const { target } = e
+      const rmHeight = target.scrollHeight - target.scrollTop
+      const clHeight = target.clientHeight
+      const { current, pageSize } = this.pagBind
+      // 当下拉框失焦的时候，也就是不下拉的时候
+      if (rmHeight === 0 && clHeight === 0) {
+        this.pagBind.current = 1
+      } else {
+        if (rmHeight - 5 < clHeight) {
+          if (this.resultOptions.length < current * pageSize) return
+          this.pagBind.current++
+        }
+      }
     }
   }
 }

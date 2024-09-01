@@ -129,6 +129,19 @@
       </d-select>
 
       <h2>滚动加载</h2>
+       <d-select
+        placeholder="请选择"
+        :options="options"
+        showSearch
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        optionFilterProp="label"
+        pageType="scroll"
+        :pag="{
+          current: 1,
+          pageSize: 10
+        }"
+      >
+      </d-select>
     </a-space>
   </div>
 </template>

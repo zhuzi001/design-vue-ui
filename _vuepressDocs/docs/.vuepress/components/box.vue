@@ -21,7 +21,6 @@ export default {
       const column2 = this.$refs.column2;
 
       const half = Math.ceil(slotContent.length / 2);
-  console.log(slotContent)
       slotContent.slice(0, half).forEach(vnode => {
         // 注意：在 Vue 2 中，直接使用 vnode.el 可能不起作用，
         // 所以我们用 $el 来获取真实 DOM 元素

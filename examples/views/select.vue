@@ -193,7 +193,6 @@
           @search="search1"
           @focus="search1('')"
           @pagChange="loadData1"
-          :pag="pag1"
         >
         </d-select>
       </a-form-model-item>
@@ -414,6 +413,7 @@ export default {
       this.filterOptions1 = _resut.data || []
       this.pag1.current = _resut.current || 1
       this.total1 = _resut.total || 0
+      console.log(this.form.loadRemot2e, 'loadRemot2e')
     }
   }
 }

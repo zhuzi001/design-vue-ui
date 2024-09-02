@@ -21,7 +21,7 @@ module.exports = {
         {
           title: "Components", // 必要的
           sidebarDepth: 1, // 可选的, 默认值是 1
-          children: [ "input", "input-number","tooltip", "textarea", "cascader"],
+          children: [ "input", "input-number","tooltip", "textarea", "select", "cascader"],
         },
         "update"
       ],

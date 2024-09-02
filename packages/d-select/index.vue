@@ -164,37 +164,16 @@ export default {
     resultOptions () {
       const searchValue = this.searchValue
       const prop = this.$attrs.optionFilterProp || 'value'
-      const filterProp = this.fieldNames[prop]
-
-      if (!searchValue) {
-        return this.groups.length ? this.groups : this.options || []
-      }
+      const filterProp = this.fieldNames[prop] || 'label'
 
       const filterBySearch = (item, key) =>
         item[key || filterProp].toString().includes(searchValue)
 
-      if (this.groups.length) {
-        return this.groups
-          .map((group) => {
-            // 过滤 group 的 options
-            const filteredOptions = group.options
-              ? group.options.filter((option) => filterBySearch(option))
-              : []
-
-            // 仅返回有匹配 options 的 group
-            if (filteredOptions.length > 0 || filterBySearch(group, 'label')) {
-              return {
-                ...group,
-                options: filteredOptions
-              }
-            }
-
-            return null
-          })
-          .filter((group) => group !== null) // 去掉 null 值
+      if (this.isGroups) {
+        return !searchValue ? this.gGetGroups() : this.gHandleOptions(filterBySearch)
       }
 
-      return (this.options || []).filter((v) => filterBySearch(v))
+      return !searchValue ? this.oGetOptions() : this.oHandleOptions(filterBySearch)
     },
     filterOptions () {
       if (this.pageType) return this.pagFilterOptions()
@@ -202,17 +181,7 @@ export default {
     }
   },
   methods: {
-
-    arraysEqual (arr1, arr2) {
-      if (arr1.length !== arr2.length) {
-        return false
-      }
-      const set1 = new Set(arr1)
-      const set2 = new Set(arr2)
-      return (
-        set1.size === set2.size && [...set1].every((item) => set2.has(item))
-      )
-    },
+    // 给 optionsMixin 和 groupsMixin 使用的
     getValue (modelValue, callback) {
       const isArr = Array.isArray(modelValue) // 是否是数组
       const val = isArr ? modelValue : [modelValue] // // 如果不是数组，将 gVal 转换为数组

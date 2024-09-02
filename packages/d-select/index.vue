@@ -176,8 +176,7 @@ export default {
       return !searchValue ? this.oGetOptions() : this.oHandleOptions(filterBySearch)
     },
     filterOptions () {
-      if (this.pageType) return this.pagFilterOptions()
-      return this.resultOptions
+      return this.pageType ? this.pagFilterOptions() : this.resultOptions
     }
   },
   methods: {

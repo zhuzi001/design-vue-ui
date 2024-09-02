@@ -92,15 +92,13 @@
 
 <script>
 import pagMixin from './pagMixin'
-import groupsMixin from './groupsMixin'
-import optionsMixin from './optionsMixin'
 export default {
   name: 'DSelect',
   model: {
     prop: 'value',
     event: 'change'
   },
-  mixins: [pagMixin, groupsMixin, optionsMixin],
+  mixins: [pagMixin],
   components: {
     VNodes: {
       functional: true,
@@ -126,6 +124,14 @@ export default {
       type: Boolean,
       default: false
     },
+    options: {
+      type: Array,
+      default: () => []
+    },
+    groups: {
+      type: Array,
+      default: () => []
+    },
     value: {
       type: [String, Number, Array, Object]
     },
@@ -143,24 +149,32 @@ export default {
   watch: {
     value: {
       handler (v = undefined) {
-        if (!v && v !== 0) {
-          this.selectValue = undefined
-          return
-        }
-        const isArr = Array.isArray(v) // 是否是数组
-        const isArrHasValue = isArr && v.filter((value) => value !== undefined)?.length // 是否有值，这个主要是怕用户未定义，数组会自动 [undefined]
-        if (isArr && !isArrHasValue) this.selectValue = []
+        const _vIsArr =
+          Array.isArray(v) && v.filter((value) => value !== undefined)?.length
+        if (!v && v !== 0) this.selectValue = undefined
+        else if (Array.isArray(v) && !_vIsArr) this.selectValue = []
+        // 判断是 label + value 不，不是的话需要去数组匹配好（因为我们是分页或滚动加载的，要不会value）
         else if (!this.labelInValue) {
-          this.selectValue = this.isGroups ? this.gHandleValue(v) : this.oHandleValue(v)
+          // 做哈判断
+          const isArr = Array.isArray(v)
+          if (!isArr) {
+            this.selectValue = this.getValue([v]) // 不是数组，直接改变成数组
+          } else if (
+            !this.selectValue ||
+            !this.arraysEqual(
+              v,
+              this.selectValue.map((j) => j.key)
+            )
+          ) {
+            this.selectValue = this.getValue(v, true)
+          }
         } else this.selectValue = v
+        // this.selectValue = !v && v !== 0 ? undefined : v
       },
       immediate: true
     }
   },
   computed: {
-    isGroups () {
-      return this.groups?.length
-    },
     resultOptions () {
       const searchValue = this.searchValue
       const prop = this.$attrs.optionFilterProp || 'value'
@@ -202,7 +216,6 @@ export default {
     }
   },
   methods: {
-
     arraysEqual (arr1, arr2) {
       if (arr1.length !== arr2.length) {
         return false
@@ -213,25 +226,26 @@ export default {
         set1.size === set2.size && [...set1].every((item) => set2.has(item))
       )
     },
-    getValue (modelValue, callback) {
-      const isArr = Array.isArray(modelValue) // 是否是数组
-      const val = isArr ? modelValue : [modelValue] // // 如果不是数组，将 gVal 转换为数组
-      // 从 fieldNames 获取 value 和 label 的属性名
-      const { value = 'value', label = 'label' } = this.fieldNames || {}
-      // 过滤并映射数据的函数
+    getValue (data, isArr) {
+      const { value: _value = 'value', label: _label = 'label' } =
+        this.fieldNames || {}
       const filterData = (options) =>
         options
-          .filter((item) => val.includes(item[value]))
-          .map((item) => ({ label: item[label], key: item[value] }))
-      // 获取过滤后的结果
-      const filterResult = callback(filterData)
-      // 生成结果
-      const result = val.map(v => {
-        const filtered = filterResult.find(item => item.key === v)
-        const selectValueFilter = !filtered && this.selectValue?.find((j) => j.key === v)
-        return filtered || selectValueFilter || { label: v, key: v }
+          .filter((item) => data.includes(item[_value]))
+          .map((item) => ({ label: item[_label], key: item[_value] }))
+
+      const filterResult = this.groups.length
+        ? this.groups.flatMap((group) => filterData(group.options || []))
+        : filterData(this.options)
+      const result = data.map((v) => {
+        const _filterV = filterResult.filter((j) => j.label === v)
+        if (_filterV?.length) return _filterV[0]
+        return {
+          label: v,
+          key: v
+        }
       })
-      return isArr ? result : result[0] // 返回数组或单个结果
+      return isArr ? result : result[0]
     },
     selectSearch (value) {
       if (!this.loadData) this.searchValue = value

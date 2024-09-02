@@ -6,6 +6,7 @@
     style="width: 100%"
     @change="selectChange"
     labelInValue
+    :defaultActiveFirstOption="defaultActiveFirstOption"
     dropdownClassName="xm_select"
     @search="selectSearch"
     @focus="onFocus"
@@ -111,6 +112,10 @@ export default {
     }
   },
   props: {
+    defaultActiveFirstOption: {
+      type: Boolean,
+      default: false
+    },
     loadData: {
       type: Function,
       default: null
@@ -250,9 +255,7 @@ export default {
     selectChange (v) {
       this.selectValue = v
       const isArr = Array.isArray(v)
-      console.log(this.labelInValue, 'this.$attrs.labelInValue')
       const _v = this.labelInValue ? v : !isArr ? v.key : v.map((j) => j.key)
-      console.log(_v)
       this.$emit('change', _v)
     },
     onFocus () {

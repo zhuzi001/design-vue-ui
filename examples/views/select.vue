@@ -175,7 +175,6 @@
           @search="search1"
           @focus="search1('')"
           @pagChange="loadData1"
-          :pag="pag1"
         >
         </d-select>
       </a-form-model-item>
@@ -371,6 +370,9 @@ export default {
       }, 1200)
     },
     async search1 (v) {
+      console.log('search')
+      if (v === this.inputValue1) return
+      this.total1 = 0
       this.pag1.current = 1
       this.searchLoading = true
       this.filterOptions1 = []
@@ -400,6 +402,7 @@ export default {
       this.total = _resut.total || 0
     },
     async loadData1 (current, pageSize) {
+      console.log('=====')
       if (this.searchLoading) return
       // if (this.total1 <= this.filterOptions1.length) return
       // 下面相当于一个后台接口

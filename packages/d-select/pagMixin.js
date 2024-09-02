@@ -3,8 +3,7 @@ export default {
   props: {
     /** current, pageSize 等 */
     pag: {
-      type: Object,
-      default: () => ({ current: 1, pageSize: 10 })
+      type: Object
     },
     total: {
       type: Number,
@@ -39,6 +38,7 @@ export default {
     }
   },
   created () {
+    this.initPag()
   },
   methods: {
     initPag () {

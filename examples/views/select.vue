@@ -179,6 +179,25 @@
         >
         </d-select>
       </a-form-model-item>
+      <a-form-model-item label="分页pagination-load-远程搜索" prop="loadRemot2e2">
+        <d-select
+          v-model="form.loadRemot2e2"
+          placeholder="请选择"
+          :options="filterOptions1"
+          showSearch
+          mode="multiple"
+          :fieldNames="{ label: 'name', value: 'code' }"
+          optionFilterProp="label"
+          pageType="paginationRemote"
+          :total="total1"
+          :searchLoading="searchLoading"
+          @search="search1"
+          @focus="search1('')"
+          @pagChange="loadData1"
+          :pag="pag1"
+        >
+        </d-select>
+      </a-form-model-item>
       <!-- 下滑加载 -->
       <a-form-model-item label="动态加载-load-基本" prop="loadValue">
         <d-select
@@ -229,13 +248,17 @@ export default {
     return {
       form: {
         basicValueObjArr: [],
-        basicValueArr: []
+        basicValueArr: [],
+        loadRemot2e: '630000',
+        selectValue: [],
+        loadRemot2e2: ['630000']
       },
       inputValue1: '',
       rules: {
         basicValue: { required: true, message: '请选择', trigger: 'change' },
         basicValueObj: { required: true, message: '请选择', trigger: 'change' },
         basicValueArr: { required: true, message: '请选择', trigger: 'change' },
+        selectValue: { required: true, message: '请选择', trigger: 'change' },
         basicValueObjArr: {
           required: true,
           message: '请选择',
@@ -259,7 +282,10 @@ export default {
         pagination1: { required: true, message: '请选择', trigger: 'change' },
         pagination2: { required: true, message: '请选择', trigger: 'change' },
         loadValue: { required: true, message: '请选择', trigger: 'change' },
-        loadRemote: { required: true, message: '请选择', trigger: 'change' }
+        loadRemote: { required: true, message: '请选择', trigger: 'change' },
+        basicValueArr12: { required: true, message: '请选择', trigger: 'change' },
+        loadRemot2e: { required: true, message: '请选择', trigger: 'change' },
+        loadRemot2e2: { required: true, message: '请选择', trigger: 'change' }
       },
       labelCol: { span: 12 },
       wrapperCol: { span: 12 },

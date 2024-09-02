@@ -67,7 +67,9 @@
 
     <div slot="dropdownRender" slot-scope="menu">
       <v-nodes :vnodes="menu" />
-      <template v-if="pageType === 'pagination' || pageType === 'paginationRemote'">
+      <template
+        v-if="pageType === 'pagination' || pageType === 'paginationRemote'"
+      >
         <a-divider class="xm_divider" />
         <div class="xm_pag_box" @mousedown="(e) => e.preventDefault()">
           <a-pagination
@@ -142,8 +144,9 @@ export default {
   watch: {
     value: {
       handler (v = undefined) {
-        const _vIsArr = Array.isArray(v) && v.filter(value => value !== undefined)?.length
-        if ((!v && v !== 0)) this.selectValue = undefined
+        const _vIsArr =
+          Array.isArray(v) && v.filter((value) => value !== undefined)?.length
+        if (!v && v !== 0) this.selectValue = undefined
         else if (Array.isArray(v) && !_vIsArr) this.selectValue = []
         // 判断是 label + value 不，不是的话需要去数组匹配好（因为我们是分页或滚动加载的，要不会value）
         else if (!this.labelInValue) {
@@ -219,19 +222,24 @@ export default {
       )
     },
     getValue (data, isArr) {
-      const { value: _value = 'value', label: _label = 'label' } = this.fieldNames || {}
+      const { value: _value = 'value', label: _label = 'label' } =
+        this.fieldNames || {}
       const filterData = (options) =>
         options
-          .filter(item => data.includes(item[_value]))
-          .map(item => ({ label: item[_label], key: item[_value] }))
+          .filter((item) => data.includes(item[_value]))
+          .map((item) => ({ label: item[_label], key: item[_value] }))
 
-      let result = []
-
-      if (this.groups.length) {
-        result = this.groups.flatMap(group => filterData(group.options || []))
-      } else {
-        result = filterData(this.options)
-      }
+      const filterResult = this.groups.length
+        ? this.groups.flatMap((group) => filterData(group.options || []))
+        : filterData(this.options)
+      const result = data.map((v) => {
+        const _filterV = filterResult.filter((j) => j.label === v)
+        if (_filterV?.length) return _filterV[0]
+        return {
+          label: v,
+          key: v
+        }
+      })
       return isArr ? result : result[0]
     },
     selectSearch (value) {

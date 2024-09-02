@@ -33,10 +33,7 @@ export default {
   watch: {
     pag: {
       handler (v) {
-        this.pagBind = v || {
-          current: 1,
-          pageSize: 10
-        }
+        this.initPag()
       },
       immediate: true
     }
@@ -44,6 +41,16 @@ export default {
   created () {
   },
   methods: {
+    initPag () {
+      this.pagBind = this.pag || {
+        current: 1,
+        pageSize: 10
+      }
+    },
+    pagSearch () {
+      // 重置 页码
+      this.initPag()
+    },
     pagFilterOptions () {
       if (this.pageType === 'paginationRemote') return this.resultOptions
       const { current, pageSize } = this.pagBind

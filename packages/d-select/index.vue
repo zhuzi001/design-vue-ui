@@ -68,7 +68,7 @@
     <div slot="dropdownRender" slot-scope="menu">
       <v-nodes :vnodes="menu" />
       <template
-        v-if="pageType === 'pagination' || pageType === 'paginationRemote'"
+        v-if="pagTotal && (pageType === 'pagination' || pageType === 'paginationRemote')"
       >
         <a-divider class="xm_divider" />
         <div class="xm_pag_box" @mousedown="(e) => e.preventDefault()">
@@ -244,6 +244,7 @@ export default {
     },
     selectSearch (value) {
       if (!this.loadData) this.searchValue = value
+      this.pagSearch && this.pagSearch()
       this.$emit('search', value)
     },
     selectChange (v) {
@@ -269,7 +270,7 @@ export default {
 .xm_select {
   background: red;
   .xm_divider {
-    margin: 12px;
+    margin: 12px 0;
   }
   .xm_pag_box {
     padding: 0 12px;

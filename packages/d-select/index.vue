@@ -69,7 +69,10 @@
     <div slot="dropdownRender" slot-scope="menu">
       <v-nodes :vnodes="menu" />
       <template
-        v-if="pagTotal && (pageType === 'pagination' || pageType === 'paginationRemote')"
+        v-if="
+          pagTotal &&
+          (pageType === 'pagination' || pageType === 'paginationRemote')
+        "
       >
         <a-divider class="xm_divider" />
         <div class="xm_pag_box" @mousedown="(e) => e.preventDefault()">
@@ -148,10 +151,13 @@ export default {
           return
         }
         const isArr = Array.isArray(v) // 是否是数组
-        const isArrHasValue = isArr && v.filter((value) => value !== undefined)?.length // 是否有值，这个主要是怕用户未定义，数组会自动 [undefined]
+        const isArrHasValue =
+          isArr && v.filter((value) => value !== undefined)?.length // 是否有值，这个主要是怕用户未定义，数组会自动 [undefined]
         if (isArr && !isArrHasValue) this.selectValue = []
         else if (!this.labelInValue) {
-          this.selectValue = this.isGroups ? this.gHandleValue(v) : this.oHandleValue(v)
+          this.selectValue = this.isGroups
+            ? this.gHandleValue(v)
+            : this.oHandleValue(v)
         } else this.selectValue = v
       },
       immediate: true
@@ -170,10 +176,14 @@ export default {
         item[key || filterProp].toString().includes(searchValue)
 
       if (this.isGroups) {
-        return !searchValue ? this.gGetGroups() : this.gHandleOptions(filterBySearch)
+        return !searchValue
+          ? this.gGetGroups()
+          : this.gHandleOptions(filterBySearch)
       }
 
-      return !searchValue ? this.oGetOptions() : this.oHandleOptions(filterBySearch)
+      return !searchValue
+        ? this.oGetOptions()
+        : this.oHandleOptions(filterBySearch)
     },
     filterOptions () {
       return this.pageType ? this.pagFilterOptions() : this.resultOptions
@@ -182,28 +192,46 @@ export default {
   methods: {
     // 给 optionsMixin 和 groupsMixin 使用的
     getValue (modelValue, callback) {
-      const isArr = Array.isArray(modelValue) // 是否是数组
-      const val = isArr ? modelValue : [modelValue] // // 如果不是数组，将 gVal 转换为数组
+      if (!callback) {
+        throw new Error('Callback function must be defined')
+      }
+
+      const isArray = Array.isArray(modelValue) // 是否是数组
+      const selectedValues = !this.selectValue
+        ? []
+        : Array.isArray(this.selectValue)
+          ? this.selectValue
+          : [this.selectValue]
+      const valuesArray = isArray ? modelValue : [modelValue] // 如果不是数组，将 gVal 转换为数组
       // 从 fieldNames 获取 value 和 label 的属性名
       const { value = 'value', label = 'label' } = this.fieldNames || {}
       // 过滤并映射数据的函数
-      const filterData = (options) =>
-        options
-          .filter((item) => val.includes(item[value]))
-          .map((item) => ({ label: item[label], key: item[value] }))
+      const filterOptions = (options) => {
+        return options
+          .filter((option) => valuesArray.includes(option[value]))
+          .map((option) => ({ label: option[label], key: option[value] }))
+      }
       // 获取过滤后的结果
-      const filterResult = callback(filterData)
+      const filteredOptions = callback(filterOptions)
       // 生成结果
-      const result = val.map(v => {
-        const filtered = filterResult.find(item => item.key === v)
-        const selectValueFilter = !filtered && this.selectValue?.find((j) => j.key === v)
-        return filtered || selectValueFilter || { label: v, key: v }
+      const finalResult = valuesArray.map((valueItem) => {
+        const matchedOption = filteredOptions.find(
+          (option) => option.key === valueItem
+        )
+        const selectedMatch =
+          !matchedOption &&
+          selectedValues.find((option) => option.key === valueItem)
+
+        return (
+          matchedOption || selectedMatch || { label: valueItem, key: valueItem }
+        )
       })
-      return isArr ? result : result[0] // 返回数组或单个结果
+
+      return isArray ? finalResult : finalResult[0]
     },
     selectSearch (value) {
       if (!this.loadData) this.searchValue = value
-      this.pagSearch && this.pagSearch()
+      this.pagSearch && this.pagSearch() // 重置 页码
       this.$emit('search', value)
     },
     selectChange (v) {

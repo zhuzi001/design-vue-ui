@@ -10,7 +10,7 @@
       optionFilterProp="label"
       :searchLoading="searchLoading"
       @search="onSearch"
-      @focus="onSearch('')"
+      @focus="onFocus"
       @pagChange="pagChange"
     >
     </d-select>
@@ -32,36 +32,59 @@ export default {
         showTotal: (total) => `共 ${total} 条`,
       },
       form: {},
+      timer: null,
     };
   },
+  beforeDestroy() {
+    this.timer && clearTimeout(this.timer);
+  },
   methods: {
+    async onFocus() {
+      if (this.filterOptions.length) return;
+      this.onSearch("");
+    },
     async pagChange(current, pageSize) {
-        console.log('pagCHange')
-      this.queryData({
-        current,
+      console.log(current, pageSize)
+      if (this.searchLoading) return;
+      this.searchLoading = true;
+      const result = await this.queryData({
         pageSize,
+        current,
       });
+      this.handleResult(result);
     },
     async onSearch(v) {
-        console.log('onSearch')
       if (v === this.inputValue && this.filterOptions.length) return;
       // 查询的时候需要重置一些变量
       this.total = 0;
       this.filterOptions = [];
       this.inputValue = v;
-      this.queryData({
-        pageSize: this.pag.pageSize,
-        current: 1,
-      });
+      this.searchLoading = true;
+      // 节流
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(async () => {
+        const result = await this.queryData({
+          pageSize: this.pag.pageSize,
+          current: 1,
+        });
+        this.handleResult(result);
+      }, 500);
+    },
+    handleResult(result) {
+      this.filterOptions = result.data || []
+      this.pag.current = result.current || 1;
+      this.total = result.total || 0;
     },
     delay(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
+    /**
+     * 下面是模拟接口返回数据，可忽略
+     */
     async queryData(param) {
-      if (this.searchLoading) return;
       const { current, pageSize } = param;
       const inputValue = this.inputValue;
-      this.searchLoading = true;
+
       /**   模拟接口  ---------start---------- */
       // 下面相当于一个后台接口
       await this.delay(1000);
@@ -71,17 +94,13 @@ export default {
         ? this.allRegion.filter((v) => v.label.indexOf(inputValue) !== -1)
         : this.allRegion;
       const _optionArr = _all.slice(start, end);
-      const _resut = {
+      /**   模拟接口  ---------end---------- */
+      this.searchLoading = false;
+      return {
         data: _optionArr,
         current: current,
         total: _all.length,
       };
-      console.log(_resut)
-      /**   模拟接口  ---------end---------- */
-      this.searchLoading = false;
-      this.filterOptions = _resut.data || [];
-      this.pag.current = _resut.current || 1;
-      this.total = _resut.total || 0;
     },
   },
 };

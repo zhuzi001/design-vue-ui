@@ -6,7 +6,6 @@
       placeholder="请选择"
       :options="allRegion"
       showSearch
-      :fieldNames="{ label: 'name', value: 'code' }"
       optionFilterProp="label"
       pageType="scroll"
       :pag="{
@@ -23,10 +22,11 @@
       showSearch
       optionFilterProp="label"
       pageType="scroll"
-      :total="options.length"
+      :total="total"
       :loadData="loadData"
       :searchLoading="searchLoading"
       @search="search"
+      @focus="onFocus"
     >
     </d-select>
   </div>
@@ -41,39 +41,69 @@ export default {
       total: 0,
       inputValue: "", // 需要搜索的关键字
       filterOptions: [],
+      filterOptions1: [],
       pag: {
         current: 1,
         pageSize: 10,
         showTotal: (total) => `共 ${total} 条`,
       },
       form: {},
+      timer: null,
     };
   },
   created() {},
+  beforeDestroy() {
+    this.timer && clearTimeout(this.timer);
+  },
   methods: {
-    onFocus() {
+    async onFocus() {
       if (this.filterOptions.length) return;
-      this.pagChange(this.pag.current, this.pag.pageSize);
+      this.search("");
     },
-    async pagChange(current, pageSize) {
-      const result = await this.queryData({
-        current,
-        pageSize,
-      });
-
-      this.filterOptions.push(...(_resut.data || []));
+    search(v) {
+      /** 初始重置 */
+      this.total = 0;
+      this.filterOptions = [];
+      this.inputValue = v;
+      // 节流
+      this.timer && clearTimeout(this.timer);
+      this.searchLoading = true;
+      this.timer = setTimeout(async () => {
+        const result = await this.queryData({
+          pageSize: this.pag.pageSize,
+          current: 1,
+        });
+        this.searchLoading = false;
+        this.handleResult(result);
+      }, 400);
+    },
+    handleResult(result) {
+      this.filterOptions.push(...(result.data || []));
       this.pag.current = result.current || 1;
       this.total = result.total || 0;
     },
     delay(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
+    async loadData(e) {
+      if (this.loading) return;
+      if (this.total <= this.filterOptions.length) return;
+      // 下面相当于一个后台接口
+      this.loading = true; // 这里相当于节流的作用，免得获取同样数据进行追加
+      const _resut = await this.queryData({
+        pageSize: this.pag.pageSize,
+        current: this.pag.current + 1,
+      });
+      this.loading = false;
+      this.handleResult(_resut);
+    },
+    /**
+     * 下面是模拟接口返回数据，可忽略
+     */
     async queryData(param) {
-      if (this.searchLoading) return;
+      /**   模拟接口  ---------start---------- */
       const { current, pageSize } = param;
       const inputValue = this.inputValue;
-      this.searchLoading = true;
-      /**   模拟接口  ---------start---------- */
       // 下面相当于一个后台接口
       await this.delay(1000);
       const start = (current - 1) * pageSize;
@@ -83,7 +113,6 @@ export default {
         : this.allRegion;
       const _optionArr = _all.slice(start, end);
       /**   模拟接口  ---------end---------- */
-      this.searchLoading = false;
       return {
         data: _optionArr,
         current: current,

@@ -99,7 +99,7 @@
           :fieldNames="{ label: 'name', value: 'code' }"
           v-model="form.optionLabelProp1"
         >
-          <template #label="{ option }">
+          <template #children="{ option }">
             {{ option.name }}{{ option.code }}
           </template>
         </d-select>
@@ -115,7 +115,7 @@
           v-model="form.optionLabelProp2"
           optionLabelProp="value"
         >
-          <template #label="{ option }">
+          <template #children="{ option }">
             {{ option.name }}{{ option.code }}
           </template>
         </d-select>
@@ -131,7 +131,7 @@
           v-model="form.optionLabelProp3"
           optionLabelProp="label"
         >
-          <template #label="{ option }">
+          <template #children="{ option }">
             {{ option.name }}{{ option.code }}
           </template>
         </d-select>

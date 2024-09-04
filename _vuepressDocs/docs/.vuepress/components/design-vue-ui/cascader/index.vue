@@ -9,6 +9,7 @@
 </template>
 <script>
 import region from '../../../http/json/region.json'
+// 确保路径正确
 export default {
   data() {
     return {

@@ -11,6 +11,7 @@
     @search="selectSearch"
     @focus="onFocus"
     @popupScroll="popupScroll"
+    ref="selectRef"
     v-on="filteredListeners"
   >
     <template v-if="searchLoading">
@@ -267,6 +268,12 @@ export default {
     popupScroll (e) {
       this.handlePagScroll && this.handlePagScroll(e)
       this.$emit('popupScroll', e)
+    },
+    focus () {
+      this.$refs.selectRef.focus()
+    },
+    blur () {
+      this.$refs.selectRef.blur()
     }
   }
 }

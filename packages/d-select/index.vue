@@ -14,7 +14,7 @@
     v-on="filteredListeners"
   >
     <template v-if="searchLoading">
-      <a-select-option key="a-spin">
+      <a-select-option key="a-spin" disabled>
         <slot name="searchLoad">
           <a-spin />
         </slot>
@@ -37,6 +37,7 @@
         </a-select-option>
         <a-select-option
           key="a-spin"
+          disabled
           v-if="!!loadData && resultOptions.length !== total"
         >
           <slot name="optionLoad">
@@ -48,8 +49,8 @@
     <template v-else>
       <a-select-option
         v-for="option in filterOptions"
-         :key="option[fieldNames.key || fieldNames.value]"
-          v-bind="optionBinding(option)"
+        :key="option[fieldNames.key || fieldNames.value]"
+        v-bind="optionBinding(option)"
       >
         <slot name="children" :option="option">
           {{ option[fieldNames.label] }}
@@ -57,6 +58,7 @@
       </a-select-option>
       <a-select-option
         key="a-spin"
+        disabled
         v-if="!!loadData && resultOptions.length !== total"
       >
         <slot name="optionLoad">
@@ -167,7 +169,8 @@ export default {
   },
   computed: {
     filteredListeners () {
-      const { search, change, focus, popupScroll, pagChange, ...otherEvents } = this.$listeners
+      const { search, change, focus, popupScroll, pagChange, ...otherEvents } =
+        this.$listeners
       return otherEvents
     },
     isGroups () {

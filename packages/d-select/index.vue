@@ -96,6 +96,7 @@
 import pagMixin from './pagMixin'
 import groupsMixin from './groupsMixin'
 import optionsMixin from './optionsMixin'
+import { Select, Pagination, Spin, Divider } from 'ant-design-vue'
 export default {
   name: 'DSelect',
   model: {
@@ -107,7 +108,13 @@ export default {
     VNodes: {
       functional: true,
       render: (_, ctx) => ctx.props.vnodes
-    }
+    },
+    ASelect: Select,
+    ASelectOptGroup: Select.OptGroup,
+    ASelectOption: Select.Option,
+    APagination: Pagination,
+    ASpin: Spin,
+    ADivider: Divider
   },
   data () {
     return {
@@ -263,7 +270,6 @@ export default {
 </script>
 <style lang="less" scoped>
 .xm_select {
-  background: red;
   .xm_divider {
     margin: 12px 0;
   }

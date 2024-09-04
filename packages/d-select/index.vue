@@ -27,11 +27,10 @@
       >
         <a-select-option
           v-for="option in group.options"
-          :key="option[fieldNames.value]"
-          :value="option[fieldNames.value]"
-          :label="option[fieldNames.label]"
+          :key="option[fieldNames.key || fieldNames.value]"
+          v-bind="optionBinding(option)"
         >
-          <slot name="label" :option="option">
+          <slot name="children" :option="option">
             {{ option[fieldNames.label] }}
           </slot>
         </a-select-option>
@@ -48,11 +47,10 @@
     <template v-else>
       <a-select-option
         v-for="option in filterOptions"
-        :key="option[fieldNames.value]"
-        :value="option[fieldNames.value]"
-        :label="option[fieldNames.label]"
+         :key="option[fieldNames.key || fieldNames.value]"
+          v-bind="optionBinding(option)"
       >
-        <slot name="label" :option="option">
+        <slot name="children" :option="option">
           {{ option[fieldNames.label] }}
         </slot>
       </a-select-option>
@@ -135,7 +133,7 @@ export default {
     fieldNames: {
       type: Object,
       default: () => {
-        return { label: 'label', value: 'value', children: 'children' }
+        return { label: 'label', value: 'value' }
       }
     },
     labelInValue: {
@@ -190,6 +188,17 @@ export default {
     }
   },
   methods: {
+    optionBinding (option) {
+      const { label, value, disabled, title } = this.fieldNames
+      // 默认绑定 label 和 value
+      const _option = {
+        label: option[label],
+        value: option[value],
+        disabled: option[disabled] || option.disabled || false,
+        title: option[title] || option.title || ''
+      }
+      return _option
+    },
     // 给 optionsMixin 和 groupsMixin 使用的
     getValue (modelValue, callback) {
       if (!callback) {

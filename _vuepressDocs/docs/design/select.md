@@ -85,15 +85,21 @@ mode 为 tags 并 手动输入添加的 未支持
 
 ## API
 
-> 继承 `a-select` 大多数的属性 [a-select](https://1x.antdv.com/components/select-cn/#API)
+### Select props
 
-### select props
+> 继承 `a-select` 大多数的属性 [a-select](https://1x.antdv.com/components/select-cn/#API)
 
 <design-vue-ui-select-_table />
 
-### select events
+### Select events
 
 > 与 `a-select` 有细微差别, 其他事件皆继承了！详情请查看 `a-select` 文档
 
 <design-vue-ui-select-_table-event />
+
+### Select Methods
+
+> 继承 `a-select` 的方法
+
+<design-vue-ui-select-_table-methods />
 

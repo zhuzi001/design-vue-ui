@@ -67,10 +67,22 @@ export default {
           },
         },
       ],
+      columnsMethods: [
+        {
+          title: "名称",
+          dataIndex: "name",
+          disabled: true,
+        },
+        {
+          title: "说明",
+          dataIndex: "description",
+        }
+      ],
     };
   },
   created() {
     if (this.columnsType === "events") this.columns = this.columnsEvents;
+    else if (this.columnsType === "methods") this.columns = this.columnsMethods;
   },
   methods: {
     setColumns(value) {

@@ -11,6 +11,7 @@
     @search="selectSearch"
     @focus="onFocus"
     @popupScroll="popupScroll"
+    v-on="filteredListeners"
   >
     <template v-if="searchLoading">
       <a-select-option key="a-spin">
@@ -119,10 +120,6 @@ export default {
       type: Boolean,
       default: false
     },
-    loadData: {
-      type: Function,
-      default: null
-    },
     searchLoading: {
       type: Boolean,
       default: false
@@ -162,6 +159,10 @@ export default {
     }
   },
   computed: {
+    filteredListeners () {
+      const { search, change, focus, popupScroll, pagChange, ...otherEvents } = this.$listeners
+      return otherEvents
+    },
     isGroups () {
       return this.groups?.length
     },

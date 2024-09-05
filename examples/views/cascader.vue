@@ -118,10 +118,12 @@
 <script>
 import jsonData from '../json/region.json'
 import allRegion from '../json/allRegion.json'
+import allRegionArr from '../json/allRegionArr.json'
 export default {
   data () {
     return {
       options: [],
+      allRegionArr,
       allRegion,
       form: {
         selectChildValue: [],

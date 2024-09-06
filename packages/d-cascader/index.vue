@@ -29,52 +29,64 @@
           class="xm_cascader_panel"
           @click.stop="(e) => e.stopPropagation()"
         >
-          <div v-if="!listArr.length" class="xm_empty_data">
+          <div v-if="!listArr.length || allHidden" class="xm_empty_data">
             <slot name="notFoundContent">
               <a-empty :image="simpleImage" />
             </slot>
           </div>
-          <ul
-            v-for="(item, pIndex) in listArr"
-            :key="pIndex"
-            class="xm_cascader_list"
-          >
-            <li v-if="pIndex === 0 && showSelectAll">
-              <div class="title_content">
-                <a-checkbox
-                  v-model="allChecked"
-                  :indeterminate="!allChecked && !!selectValue.length"
-                  @change="allCheckedChange"
-                >
-                  全选
-                </a-checkbox>
-              </div>
-            </li>
-            <li
-              v-for="subItem in item"
-              :key="subItem.value"
-              @click.stop="itemChange(subItem, pIndex)"
-              :class="{ cascader_item_active: subItem.$active }"
+          <div class="xm_cascader_search" v-if="showSearch">
+            <a-input-search
+              placeholder="请输入关键字"
+              style="width: 100%"
+              @search="onSearch"
+            />
+          </div>
+          <div class="xm_cascader_content">
+            <ul
+              v-for="(item, pIndex) in listArr"
+              :key="pIndex"
+              class="xm_cascader_list"
             >
-              <div class="title_content">
-                <a-checkbox
-                  :checked="!!subItem.$checked"
-                  :indeterminate="!!subItem.$indeterminate"
-                  @click.stop="handleCheckClick($event, subItem, pIndex)"
+              <li v-if="pIndex === 0 && showSelectAll">
+                <div class="title_content">
+                  <a-checkbox
+                    v-model="allChecked"
+                    :indeterminate="!allChecked && !!selectValue.length"
+                    @change="allCheckedChange"
+                  >
+                    全选
+                  </a-checkbox>
+                </div>
+              </li>
+                <li
+                  v-for="subItem in item"
+                  :key="subItem.value"
+                  @click.stop="itemChange(subItem, pIndex)"
+                  :class="{ cascader_item_active: subItem.$active }"
                 >
-                </a-checkbox>
-                <span class="text_ellpisis label_title" :title="subItem.label">
-                  <slot name="optionRender" :option="subItem">
-                    {{ subItem.label }}
-                  </slot>
-                </span>
-              </div>
-              <a-icon
-                type="right"
-                v-show="subItem.children && subItem.children.length"
-              />
-            </li>
-          </ul>
+                  <div class="title_content">
+                    <a-checkbox
+                      :checked="!!subItem.$checked"
+                      :indeterminate="!!subItem.$indeterminate"
+                      @click.stop="handleCheckClick($event, subItem, pIndex)"
+                    >
+                    </a-checkbox>
+                    <span
+                      class="text_ellpisis label_title"
+                      :title="subItem.label"
+                    >
+                      <slot name="optionRender" :option="subItem">
+                        {{ subItem.label }}
+                      </slot>
+                    </span>
+                  </div>
+                  <a-icon
+                    type="right"
+                    v-show="subItem.children && subItem.children.length"
+                  />
+                </li>
+            </ul>
+          </div>
         </div>
       </template>
     </a-select>
@@ -88,10 +100,11 @@ import { deepClone } from '../_utils/index'
 import { Empty, Select, Icon, Checkbox } from 'ant-design-vue'
 import props from './props'
 import eventMixin from './eventMixin'
+import filterSearchMixin from './filter-search-mixin'
 export default {
   name: 'DCascader',
   props: props,
-  mixins: [eventMixin],
+  mixins: [eventMixin, filterSearchMixin],
   components: {
     ASelect: Select,
     AIcon: Icon,
@@ -115,6 +128,7 @@ export default {
   watch: {
     options: {
       handler (val) {
+        console.log('val Gaibian l ==============')
         this.treeDataCopy = deepClone(val, this.fieldNames)
         this.listArr = val && val.length ? [this.treeDataCopy] : []
       },

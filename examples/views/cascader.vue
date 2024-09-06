@@ -10,6 +10,7 @@
         style="width: 200px"
         v-model="form.selectValue"
         @change="cascaderChange"
+        showSearch
         allow-resize
       ></d-cascader>
      </div>

@@ -29,7 +29,7 @@
           class="xm_cascader_panel"
           @click.stop="(e) => e.stopPropagation()"
         >
-          <div v-if="!listArr.length || allHidden" class="xm_empty_data">
+          <div v-if="!listArr.length" class="xm_empty_data">
             <slot name="notFoundContent">
               <a-empty :image="simpleImage" />
             </slot>

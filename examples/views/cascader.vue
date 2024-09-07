@@ -79,7 +79,7 @@
       <h2>自定义字段名</h2>
       <d-cascader
         :options="allRegion"
-        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1' }"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1',isLeaf: 'code' }"
         v-model="form.allRegionValue"
         @itemClick="itemClick"
         :load-data="itemClick"

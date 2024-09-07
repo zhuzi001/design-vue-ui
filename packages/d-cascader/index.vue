@@ -82,10 +82,11 @@
                   </span>
                 </div>
                 <a-icon
-                  type="right"
+                  :type="subItem.$loading ? 'loading' : 'right'"
                   v-show="
-                    subItem[fieldNames.children] &&
-                    subItem[fieldNames.children].length
+                   ( subItem[fieldNames.children] &&
+                    subItem[fieldNames.children].length)
+                    || !!subItem[fieldNames.isLeaf]
                   "
                 />
               </li>
@@ -212,15 +213,16 @@ export default {
       _item && this.handleChecked(_item)
       this.$emit('deselect', val, option)
     },
-    getCurrentDelItem (arr, value) {
+    getCurrentDelItem (arr, val) {
       let _item = null
+      const { children, value } = this.fieldNames
       arr &&
         arr.some((v) => {
-          if (v.value === value) {
+          if (v[value] === val) {
             _item = v
             return true
           }
-          const _temp = v.children && this.getCurrentDelItem(v.children, value)
+          const _temp = v[children] && this.getCurrentDelItem(v[children], val)
           if (_temp) {
             _item = _temp
             return true
@@ -239,10 +241,11 @@ export default {
         this.loadData(item)
         return
       }
+      const { children } = this.fieldNames
       // 处理面板的显示列表数据 以及 显示效果
-      if (item.children?.length) {
-        this.clearActive(item.children)
-        this.listArr.push(item.children)
+      if (item[children]?.length) {
+        this.clearActive(item[children])
+        this.listArr.push(item[children])
       } else {
         // 处理 选中状态  没有孩子的列表item点击进行选中处理
         this.handleChecked(item)
@@ -255,7 +258,7 @@ export default {
       item.$checked = customChecked === -1 ? !item.$checked : customChecked
       item.$indeterminate = false // 只要当前check状态改变 indeterminate 置为 false
       // 选中或未选中状态，则处理孩子们的选中或未选中   ----- 向下
-      this.handleNextChecked(item.children, item.$checked)
+      this.handleNextChecked(item[this.fieldNames.children], item.$checked)
       // 选中或未选中状态，则处理长辈们的选中或未选中或indeterminate状态    ----- 向上
       this.handlePrevChecked()
       // 渲染 select 的值显示
@@ -278,10 +281,11 @@ export default {
      */
     handleNextChecked (childArr, checked) {
       if (!childArr?.length) return
+      const { children } = this.fieldNames
       childArr.forEach((v) => {
         v.$checked = checked
         v.$indeterminate = false
-        this.handleNextChecked(v.children, checked)
+        this.handleNextChecked(v[children], checked)
       })
     },
     /**
@@ -334,23 +338,24 @@ export default {
             key: r[value]
           })
         } else if (v.$indeterminate) {
-          _selectValue.push(...this.setSelectParentValue(v.children))
+          _selectValue.push(...this.setSelectParentValue(v[children]))
         }
       })
       return _selectValue
     },
     setSelectChildValue (arr) {
       const _selectValue = []
+      const { children, value } = this.fieldNames
       arr.forEach((v) => {
-        if (v.children?.length) {
+        if (v[children]?.length) {
           (v.$indeterminate || v.$checked) &&
-            _selectValue.push(...this.setSelectChildValue(v.children))
+            _selectValue.push(...this.setSelectChildValue(v[children]))
         } else {
           if (v.$checked) {
             const { children, ...r } = v
             _selectValue.push({
               ...r,
-              key: r.value
+              key: r[value]
             })
           }
         }
@@ -363,14 +368,15 @@ export default {
     handleCheckClick (e, subItem, pIndex) {
       this.handleChecked(subItem)
     },
-    findParent (tree, value) {
+    findParent (tree, val) {
+      const { children, value } = this.filter
       for (const node of tree) {
-        if (node.children) {
-          for (const child of node.children) {
-            if (child.value === value) {
+        if (node[children]) {
+          for (const child of node[children]) {
+            if (child[value] === val) {
               return node
             }
-            const result = this.findParent(node.children, value)
+            const result = this.findParent(node[children], val)
             if (result) return result
           }
         }
@@ -385,19 +391,20 @@ export default {
         indeterminateNum: 0
       }
       // 先全部定义的选中，再遍历
+      const { children, value } = this.fieldNames
       arr.forEach((v) => {
         v.$indeterminate = false
         v.$checked = false // 全部置为 false
-        if (_valueArr.indexOf(v.value) !== -1) {
+        if (_valueArr.indexOf(v[value]) !== -1) {
           v.$checked = true
-          this.handleNextChecked(v.children, v.$checked) // 向下全部选中
+          this.handleNextChecked(v[children], v.$checked) // 向下全部选中
           _obj.checkedNum++
-        } else if (v.children?.length) {
-          const _chidObj = this.updateCheckedStatus(v.children, valueArr)
+        } else if (v[children]?.length) {
+          const _chidObj = this.updateCheckedStatus(v[children], valueArr)
           if (!_chidObj.checkedNum && !_chidObj.indeterminateNum) return
           if (
             _chidObj.indeterminateNum ||
-            _chidObj.checkedNum !== v.children.length
+            _chidObj.checkedNum !== v[children].length
           ) {
             v.$indeterminate = true
             _obj.indeterminateNum++

@@ -1,58 +1,53 @@
 <template>
-  <div style="padding: 48px">
-    <!-- <div>
-      <br />
-      <button @click="init">点击显示加载中、、、1秒自动关闭</button>
-    </div> -->
-
-    <a-card
-      hoverable
-      v-for="(item, index) in items"
-      :key="index"
-    >
-      <a-card-meta :title="item.title">
-        <template slot="description"> <component :is="item.component" :data="item.data" /> </template>
-      </a-card-meta>
-    </a-card>
-  </div>
+  <a-cascader
+    :options="options"
+    :load-data="loadData"
+    placeholder="Please select"
+    change-on-select
+    @change="onChange"
+  />
 </template>
 <script>
-import cascader from './cascader.vue'
-import input from './input.vue'
-import textarea from './textarea.vue'
-import inputNumber from './input-number.vue'
 export default {
   data () {
     return {
-      items: [
+      options: [
         {
-          component: input,
-          title: 'input 组件',
-          description: 'input 组件'
+          value: 'zhejiang',
+          label: 'Zhejiang',
+          isLeaf: false
         },
         {
-          component: textarea,
-          title: 'textarea 组件',
-          description: 'textarea 组件'
-        },
-        {
-          component: inputNumber,
-          title: 'inputNumber',
-          description: 'inputNumber'
-        },
-        {
-          component: cascader,
-          title: 'cascader 级联',
-          description: 'cascader 级联'
+          value: 'jiangsu',
+          label: 'Jiangsu',
+          isLeaf: false
         }
-
       ]
     }
   },
   methods: {
-    init () {
-      this.$xmLoading.show()
-      this.hide()
+    onChange (value) {
+      console.log(value)
+    },
+    loadData (selectedOptions) {
+      const targetOption = selectedOptions[selectedOptions.length - 1]
+      targetOption.loading = true
+
+      // load options lazily
+      setTimeout(() => {
+        targetOption.loading = false
+        targetOption.children = [
+          {
+            label: `${targetOption.label} Dynamic 1`,
+            value: 'dynamic1'
+          },
+          {
+            label: `${targetOption.label} Dynamic 2`,
+            value: 'dynamic2'
+          }
+        ]
+        this.options = [...this.options]
+      }, 1000)
     }
   }
 }

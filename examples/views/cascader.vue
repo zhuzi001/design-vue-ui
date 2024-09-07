@@ -79,8 +79,10 @@
       <h2>自定义字段名</h2>
       <d-cascader
         :options="allRegion"
-        :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1' }"
         v-model="form.allRegionValue"
+        @itemClick="itemClick"
+        :load-data="itemClick"
       ></d-cascader>
       <h2>自定义 没有数据的 option面板 显示效果</h2>
       <d-cascader
@@ -177,6 +179,10 @@ export default {
         }
       }
       return arr
+    },
+    itemClick (item) {
+      console.log(item, 'itemClick')
+      item.areaList1 = item.areaList
     },
     deselect (val) {
       // 自己删除的处理逻辑

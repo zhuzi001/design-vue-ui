@@ -14,6 +14,7 @@
       allowClear
       v-bind="$attrs"
       showArrow
+      :showSearch="false"
       @focus="onFocus"
       @deselect="deselect"
     >
@@ -58,33 +59,36 @@
                   </a-checkbox>
                 </div>
               </li>
-                <li
-                  v-for="subItem in item"
-                  :key="subItem.value"
-                  @click.stop="itemChange(subItem, pIndex)"
-                  :class="{ cascader_item_active: subItem.$active }"
-                >
-                  <div class="title_content">
-                    <a-checkbox
-                      :checked="!!subItem.$checked"
-                      :indeterminate="!!subItem.$indeterminate"
-                      @click.stop="handleCheckClick($event, subItem, pIndex)"
-                    >
-                    </a-checkbox>
-                    <span
-                      class="text_ellpisis label_title"
-                      :title="subItem.label"
-                    >
-                      <slot name="optionRender" :option="subItem">
-                        {{ subItem.label }}
-                      </slot>
-                    </span>
-                  </div>
-                  <a-icon
-                    type="right"
-                    v-show="subItem.children && subItem.children.length"
-                  />
-                </li>
+              <li
+                v-for="subItem in item"
+                :key="subItem[fieldNames.value]"
+                @click.stop="itemChange(subItem, pIndex)"
+                :class="{ cascader_item_active: subItem.$active }"
+              >
+                <div class="title_content">
+                  <a-checkbox
+                    :checked="!!subItem.$checked"
+                    :indeterminate="!!subItem.$indeterminate"
+                    @click.stop="handleCheckClick($event, subItem, pIndex)"
+                  >
+                  </a-checkbox>
+                  <span
+                    class="text_ellpisis label_title"
+                    :title="subItem[fieldNames.label]"
+                  >
+                    <slot name="optionRender" :option="subItem">
+                      {{ subItem[fieldNames.label] }}
+                    </slot>
+                  </span>
+                </div>
+                <a-icon
+                  type="right"
+                  v-show="
+                    subItem[fieldNames.children] &&
+                    subItem[fieldNames.children].length
+                  "
+                />
+              </li>
             </ul>
           </div>
         </div>
@@ -96,7 +100,7 @@
 /**
  * 还需要实现功能 远程搜索
  */
-import { deepClone } from '../_utils/index'
+// import { deepClone } from '../_utils/index'
 import { Empty, Select, Icon, Checkbox } from 'ant-design-vue'
 import props from './props'
 import eventMixin from './eventMixin'
@@ -122,14 +126,16 @@ export default {
       simpleImage: Empty.PRESENTED_IMAGE_SIMPLE,
       selectValue: [],
       allChecked: false, // 全选状态
-      selectChildValue: [] // 显示子节点的
+      selectedChildItem: [], // 显示子节点的
+      selectedParentItem: [] // 显示父节点的
     }
   },
   watch: {
     options: {
       handler (val) {
         console.log('val Gaibian l ==============')
-        this.treeDataCopy = deepClone(val, this.fieldNames)
+        // this.treeDataCopy = deepClone(val, this.fieldNames)
+        this.treeDataCopy = val
         this.listArr = val && val.length ? [this.treeDataCopy] : []
       },
       immediate: true
@@ -139,13 +145,16 @@ export default {
         const _labelInValue = this.labelInValue
         const _val = _labelInValue ? val.map((v) => v.key) : val
         // 与 selectValue 做比较，不一致，进行更新处理
+        const { value } = this.fieldNames
         const isEqual = this.showCheckedChild
-          ? this.arraysEqual(_val, this.selectChildValue)
-          : this.arraysEqual(_val, this.selectValue)
+          ? this.arraysEqual(_val, this.selectedChildItem.map(v => v[value]))
+          : this.arraysEqual(_val, this.selectedParentItem.map(v => v[value]))
+        // console.log('isEqual', isEqual)
         if (isEqual) return
         // 当 选择框 获取焦点时，执行下 根据 selectValue 选中 等处理
         this.updateCheckedStatus(this.treeDataCopy, _val)
-        this.setSelectValue()
+        this.setSelectedItem()
+        this.allChecked = this.treeDataCopy.every((v) => v.$checked)
       },
       immediate: true
     }
@@ -156,7 +165,7 @@ export default {
       // this.$scopedSlots.displayRender ||
       const displayRender = this.displayRender || defaultDisplayRender
       const arr = displayRender(
-        this.showCheckedChild ? this.selectChildValue : this.selectValue
+        this.showCheckedChild ? this.selectedChildItem : this.selectedParentItem
       )
       if (arr.length && typeof arr[0] === 'string') {
         return arr.map((v) => {
@@ -173,6 +182,7 @@ export default {
       this.clearOrAddAll(e.target.checked)
     },
     arraysEqual (arr1, arr2) {
+      // console.log(arr1, arr2)
       if (arr1.length !== arr2.length) {
         return false
       }
@@ -219,10 +229,16 @@ export default {
         })
       return _item
     },
+    // 整个item点击的时候
     itemChange (item, pIndex) {
       this.listArr.splice(pIndex + 1) // 删除数组当前下标为index后面的元素
       this.clearActive(this.listArr.at(-1)) // 删除当前列表的选中 active
       item.$active = true
+      // 如果是动态加载
+      if (this.loadData) {
+        this.loadData(item)
+        return
+      }
       // 处理面板的显示列表数据 以及 显示效果
       if (item.children?.length) {
         this.clearActive(item.children)
@@ -243,23 +259,17 @@ export default {
       // 选中或未选中状态，则处理长辈们的选中或未选中或indeterminate状态    ----- 向上
       this.handlePrevChecked()
       // 渲染 select 的值显示
-      this.setSelectValue()
-      const _selectValue = this.showCheckedChild
-        ? [...this.selectChildValue]
-        : [...this.selectValue]
+      this.setSelectedItem()
+      this.allChecked = this.treeDataCopy.every((v) => v.$checked)
+      const _selectValue = this.selectValue
       const _needValue = this.labelInValue
-        ? _selectValue.map((v) => {
-          return {
-            label: v.label,
-            key: v.key
-          }
-        })
+        ? [..._selectValue]
         : _selectValue.map((v) => v.key)
       this.$emit(
         'change',
         _needValue,
-        [...this.selectChildValue],
-        [...this.selectValue]
+        [...this.selectedChildItem],
+        [...this.selectedParentItem]
       )
       // 渲染
     },
@@ -299,19 +309,29 @@ export default {
         })
       }
     },
-    setSelectValue () {
-      this.selectValue = this.setSelectParentValue(this.treeDataCopy)
-      this.selectChildValue = this.setSelectChildValue(this.treeDataCopy)
-      this.allChecked = this.treeDataCopy.every((v) => v.$checked)
+    setSelectedItem () {
+      const { label, value } = this.fieldNames
+      this.selectedParentItem = this.setSelectParentValue(this.treeDataCopy)
+      this.selectedChildItem = this.setSelectChildValue(this.treeDataCopy)
+      const _selectValue = this.showCheckedChild
+        ? this.selectedChildItem
+        : this.selectedParentItem
+      // 使用 map 映射值并返回新数组
+      this.selectValue = _selectValue.map(v => ({
+        label: v[label],
+        key: v[value]
+      }))
     },
     setSelectParentValue (arr) {
       const _selectValue = []
+      const { children, label, value } = this.fieldNames
       arr.forEach((v) => {
         if (v.$checked) {
-          const { children, ...r } = v
+          const { [children]: dynamicValue, ...r } = v
           _selectValue.push({
             ...r,
-            key: r.value
+            label: r[label],
+            key: r[value]
           })
         } else if (v.$indeterminate) {
           _selectValue.push(...this.setSelectParentValue(v.children))

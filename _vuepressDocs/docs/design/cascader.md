@@ -154,3 +154,8 @@ label 和 key 被包装到 value 中，便于处理和显示自定义数据。
 | -------- | ------------------------------------------------- | ------------------------------------ |
 | change   | 选中 option，或 input 的 value 变化时，调用此函数 | function(value, childArr, parentArr) |
 | deselect | 取消选中时调用（displayRender 下可能需要）        | function(item)                       |
+
+
+ isLeaf?: boolean;
+  // 标记是否为叶子节点，设置了 `loadData` 时有效
+  // 设为 `false` 时会强制标记为父节点，即使当前节点没有 children，也会显示展开图标

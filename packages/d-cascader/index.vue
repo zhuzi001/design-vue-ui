@@ -136,7 +136,7 @@ export default {
     options: {
       handler (val) {
         // this.treeDataCopy = deepClone(val, this.optionProps)
-        this.treeDataCopy = val
+        this.treeDataCopy = val // 预留，后面肯呢个会做过滤
         this.listArr = val && val.length ? [this.treeDataCopy] : []
       },
       immediate: true
@@ -158,7 +158,7 @@ export default {
   },
   computed: {
     optionProps () {
-      const defaultObj = { label: 'label', value: 'value', children: 'children', isLeaf: 'isLeaf', disabled: 'disabled', disableCheckbox: 'disableCheckbox', selectable: 'selectable' }
+      const defaultObj = { label: 'label', value: 'value', children: 'children', isLeaf: 'isLeaf', disabled: 'disabled' }
       return Object.assign({}, defaultObj, this.fieldNames || {})
     }
   },
@@ -167,7 +167,7 @@ export default {
       const defaultDisplayRender = (itemArr) => itemArr
       // this.$scopedSlots.displayRender ||
       const displayRender = this.displayRender || defaultDisplayRender
-      const arr = displayRender(this.selectValue)
+      const arr = displayRender(this.selectValue, this.selectedParentItem, this.selectedChildItem)
       if (arr.length && typeof arr[0] === 'string') {
         return arr.map((v) => {
           return {
@@ -214,6 +214,7 @@ export default {
       const _item = this.getCurrentDelItem(this.treeDataCopy, val.key)
       // 选中 或 取消
       _item && this.handleChecked(_item)
+      this.setSelectedItem()
       this.$emit('deselect', val, option)
     },
     getCurrentDelItem (arr, val) {

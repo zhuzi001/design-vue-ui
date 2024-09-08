@@ -20,11 +20,11 @@
   </div>
 </template>
 <script>
-import region from "../../../http/json/region.json";
+import baseMixin from "./baseMixin";
 export default {
+  mixins: [baseMixin],
   data() {
     return {
-      options: region.data,
       form: {
         selectValue: [],
       },
@@ -32,15 +32,16 @@ export default {
   },
   created() {},
   methods: {
-    displayRender1(itemArr) {
-      return itemArr.map((v) => {
+    displayRender1(itemArr, pItem) {
+      return pItem.map((v) => {
+        console.log(v);
         return {
-          key: v.key,
+          key: v.value,
           label: `${v.label}（${v.id}）`,
         };
       });
     },
-    displayRender(itemArr) {
+    displayRender(itemArr, pItem) {
       const _levObj = {
         1: {
           num: 0,
@@ -58,9 +59,9 @@ export default {
           next: "个",
         },
       };
-      if (!itemArr.length) return [];
+      if (!pItem.length) return [];
       const arr = [];
-      itemArr.forEach((v) => {
+      pItem.forEach((v) => {
         _levObj[v.level].num++;
       });
       for (const key in _levObj) {

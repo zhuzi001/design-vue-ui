@@ -9,13 +9,13 @@
   </div>
 </template>
 <script>
-import region from '../../../http/json/region.json'
+import baseMixin from "./baseMixin";
 export default {
+  mixins: [baseMixin],
   data() {
     return {
-      options: region.data,
       form: {
-        selectValue: ['320000'],
+        selectValue: ["320000"],
       },
     };
   },

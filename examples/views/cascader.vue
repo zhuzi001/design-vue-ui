@@ -79,11 +79,28 @@
       <h2>自定义字段名</h2>
       <d-cascader
         :options="allRegion"
-        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1',isLeaf: 'code' }"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1' }"
         v-model="form.allRegionValue"
-        @itemClick="itemClick"
         :load-data="itemClick"
       ></d-cascader>
+       <!-- <d-cascader
+        :options="allRegion"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        v-model="form.allRegionValue"
+      ></d-cascader>
+      <d-cascader
+        :options="allRegion"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1' }"
+        v-model="form.allRegionValue2"
+        labelInValue
+        :load-data="itemClick"
+      ></d-cascader>
+       <d-cascader
+        :options="allRegion"
+        labelInValue
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        v-model="form.allRegionValue2"
+      ></d-cascader> -->
       <h2>自定义 没有数据的 option面板 显示效果</h2>
       <d-cascader
         :options="[]"
@@ -132,7 +149,9 @@ export default {
         selectChildValue: [],
         selectValue: [],
         selectLabelInValue: [],
-        selectChildLabelInValue: []
+        selectChildLabelInValue: [],
+        // allRegionValue: ['110101', '110102', '110103'],
+        allRegionValue: [{ label: '东城区', key: '110101' }, { label: '西城区', key: '110102' }, { label: '崇文区', key: '110103' }]
       },
       childValue: [],
       parentValue: []
@@ -182,7 +201,12 @@ export default {
     },
     itemClick (item) {
       console.log(item, 'itemClick')
-      item.areaList1 = item.areaList
+      if (!item.areaList) return
+      item.areaList1 = item.areaList.map(v => {
+        // v.disabled = Math.random(10) < 0.1
+        v.isLeaf = v.level === 2
+        return v
+      })
     },
     deselect (val) {
       // 自己删除的处理逻辑

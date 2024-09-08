@@ -1,53 +1,61 @@
 <template>
-  <a-cascader
-    :options="options"
-    :load-data="loadData"
-    placeholder="Please select"
-    change-on-select
-    @change="onChange"
+  <a-tree-select
+    v-model="value"
+    style="width: 100%"
+    :tree-data="treeData"
+    tree-checkable
+    :show-checked-strategy="SHOW_PARENT"
+    search-placeholder="Please select"
   />
 </template>
+
 <script>
+import { TreeSelect } from 'ant-design-vue'
+const SHOW_PARENT = TreeSelect.SHOW_PARENT
+
+const treeData = [
+  {
+    title: 'Node1',
+    value: '0-0',
+    key: '0-0',
+    children: [
+      {
+        title: 'Child Node1',
+        value: '0-0-0',
+        key: '0-0-0'
+      }
+    ]
+  },
+  {
+    title: 'Node2',
+    value: '0-1',
+    key: '0-1',
+    children: [
+      {
+        title: 'Child Node3',
+        value: '0-1-0',
+        key: '0-1-0',
+        disabled: true
+      },
+      {
+        title: 'Child Node4',
+        value: '0-1-1',
+        key: '0-1-1'
+      },
+      {
+        title: 'Child Node5',
+        value: '0-1-2',
+        key: '0-1-2'
+      }
+    ]
+  }
+]
 export default {
   data () {
     return {
-      options: [
-        {
-          value: 'zhejiang',
-          label: 'Zhejiang',
-          isLeaf: false
-        },
-        {
-          value: 'jiangsu',
-          label: 'Jiangsu',
-          isLeaf: false
-        }
-      ]
-    }
-  },
-  methods: {
-    onChange (value) {
-      console.log(value)
-    },
-    loadData (selectedOptions) {
-      const targetOption = selectedOptions[selectedOptions.length - 1]
-      targetOption.loading = true
-
-      // load options lazily
-      setTimeout(() => {
-        targetOption.loading = false
-        targetOption.children = [
-          {
-            label: `${targetOption.label} Dynamic 1`,
-            value: 'dynamic1'
-          },
-          {
-            label: `${targetOption.label} Dynamic 2`,
-            value: 'dynamic2'
-          }
-        ]
-        this.options = [...this.options]
-      }, 1000)
+      value: ['0-0-99'],
+      treeData,
+      SHOW_PARENT
     }
   }
 }

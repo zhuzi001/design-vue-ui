@@ -232,14 +232,13 @@ export default {
       return _item
     },
     // 整个item点击的时候
-    itemChange (item, pIndex) {
+    async itemChange (item, pIndex) {
       this.listArr.splice(pIndex + 1) // 删除数组当前下标为index后面的元素
       this.clearActive(this.listArr.at(-1)) // 删除当前列表的选中 active
       item.$active = true
       // 如果是动态加载
       if (this.loadData) {
-        this.loadData(item)
-        return
+        await this.loadData(item)
       }
       const { children } = this.fieldNames
       // 处理面板的显示列表数据 以及 显示效果

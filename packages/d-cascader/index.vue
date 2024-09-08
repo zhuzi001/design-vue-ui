@@ -287,9 +287,9 @@ export default {
      */
     handleNextChecked (childArr, checked) {
       if (!childArr?.length) return
-      const { children } = this.optionProps
+      const { children, disabled } = this.optionProps
       childArr.forEach((v) => {
-        v.$checked = checked
+        !v[disabled] && (v.$checked = checked)
         v.$indeterminate = false
         this.handleNextChecked(v[children], checked)
       })
@@ -300,12 +300,13 @@ export default {
     handlePrevChecked () {
       const _listArr = this.listArr
       const _pIndex = _listArr.length - 1
+      const { disabled } = this.optionProps
       // let _item = item
       if (_pIndex === 0) return
       for (let index = _pIndex; index > 0; index--) {
         // 是否是全部选中状态 _isAllChecked = true 父级为选中状态
         // _isAllChecked = false 父级为 indeterminate 或 未选中 状态
-        const _isAllChecked = _listArr[index].every((v) => v.$checked)
+        const _isAllChecked = _listArr[index].every((v) => v.$checked || v[disabled])
         // 是否存在 选中 状态  _isExistChecked = true 父级为状态 选中 或 indeterminate 状态
         // 是否存在 未选中 状态  _isExistChecked = false 父级为状态  未选中 状态
         const _isExistChecked = _listArr[index].some(

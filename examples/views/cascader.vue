@@ -151,7 +151,7 @@ export default {
         selectLabelInValue: [],
         selectChildLabelInValue: [],
         // allRegionValue: ['110101', '110102', '110103'],
-        allRegionValue: [{ label: '东城区', key: '110101' }, { label: '西城区', key: '110102' }, { label: '崇文区', key: '110103' }]
+        allRegionValue: [{ label: '东城区', key: '110101' }, { label: '西城区', key: '110102' }, { label: '崇文区', key: '110103' }, { label: '阳泉市', key: '140300' }]
       },
       childValue: [],
       parentValue: []
@@ -203,7 +203,7 @@ export default {
       console.log(item, 'itemClick')
       if (!item.areaList) return
       item.areaList1 = item.areaList.map(v => {
-        // v.disabled = Math.random(10) < 0.1
+        v.disabled = Math.random(10) < 0.1
         v.isLeaf = v.level === 2
         return v
       })

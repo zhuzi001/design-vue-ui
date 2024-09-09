@@ -32,7 +32,7 @@
         >
           <div v-if="!listArr.length" class="xm_empty_data">
             <slot name="notFoundContent">
-              <a-empty :image="simpleImage" />
+              <a-empty :image="simpleImage" :description="noDataText"/>
             </slot>
           </div>
           <div class="xm_cascader_search" v-if="showSearch">
@@ -55,7 +55,7 @@
                     :indeterminate="!allChecked && !!selectValue.length"
                     @change="allCheckedChange"
                   >
-                    全选
+                    {{ allText }}
                   </a-checkbox>
                 </div>
               </li>

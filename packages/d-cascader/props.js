@@ -14,6 +14,8 @@ export default {
   placeholder: dFunc(String, '请选择'),
   labelInValue: dFunc(Boolean, false),
   maxTagCount: dFunc(Number, 4),
+  allText: dFunc(String, '全选'),
+  noDataText: dFunc(String, '暂无数据'),
   fieldNames: dFunc(Object, () => {
     return { }
   }), // 自定义 options 中 label name children 的字段

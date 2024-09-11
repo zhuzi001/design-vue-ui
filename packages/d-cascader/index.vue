@@ -13,7 +13,7 @@
       }`"
       allowClear
       v-bind="$attrs"
-      :showArrow="isOpen"
+      showArrow
       :showSearch="false"
       @focus="onFocus"
       @deselect="deselect"

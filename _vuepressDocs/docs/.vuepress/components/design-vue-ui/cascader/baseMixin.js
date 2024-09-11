@@ -9,6 +9,9 @@ export default {
     this.options = this.deepClone(region.data);
   },
   methods: {
+    delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
     deepClone(obj) {
       if (obj === null || typeof obj !== "object") {
         return obj;

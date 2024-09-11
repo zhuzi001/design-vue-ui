@@ -13,7 +13,7 @@
       }`"
       allowClear
       v-bind="$attrs"
-      showArrow
+      :showArrow="isOpen"
       :showSearch="false"
       @focus="onFocus"
       @deselect="deselect"
@@ -22,7 +22,7 @@
         type="close-circle"
         slot="clearIcon"
         theme="filled"
-        @click="clearAllClick"
+        @click.stop="clearAllClick"
       />
       <template slot="dropdownRender">
         <div

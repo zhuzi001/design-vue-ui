@@ -23,7 +23,7 @@
       v-model="form.selectValue"
       style="margin-top: 24px"
     >
-      <template #notFoundContent>
+      <template #noDataContent>
         <a-empty />
       </template>
     </d-cascader>

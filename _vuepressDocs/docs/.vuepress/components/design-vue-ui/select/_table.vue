@@ -91,6 +91,27 @@ export default {
           default: "-",
           version: "-",
         },
+        {
+          prop: "searchLoad",
+          description: "自定义搜索加载状态",
+          type: "slot",
+          default: "-",
+          version: "-",
+        },
+        {
+          prop: "optionLoad",
+          description: "自定义上滑加载",
+          type: "slot",
+          default: "-",
+          version: "-",
+        },
+        {
+          prop: "children",
+          description: "自定义选项",
+          type: "slot-scope",
+          default: "-",
+          version: "-",
+        },
       ],
     };
   },

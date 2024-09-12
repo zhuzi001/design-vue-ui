@@ -89,9 +89,9 @@ export default {
           version: "-",
         },
         {
-          prop: "noDataText",
+          prop: "noDataContent",
           description: "没有数据的提示语",
-          type: "string",
+          type: "string | slot",
           default: "暂无数据",
           version: "-",
         },
@@ -99,6 +99,13 @@ export default {
           prop: "loadData",
           description: "点击动态加载数据",
           type: "function",
+          default: "-",
+          version: "-",
+        },
+        {
+          prop: "optionRender",
+          description: "自定义面板显示数据",
+          type: "slot | slot-scope",
           default: "-",
           version: "-",
         }

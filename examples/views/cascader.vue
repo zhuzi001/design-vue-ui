@@ -117,7 +117,7 @@
         showSelectAll
         v-model="form.selectValue"
       >
-        <template #notFoundContent>
+        <template #noDataContent>
           <a-empty />
         </template>
       </d-cascader>

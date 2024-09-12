@@ -4,7 +4,7 @@
 
 `2024-9-11`
 
-- d-cascader 组件 新增动态加载模块功能、noDataText 与 allText 属性，修复 点击全取消图标的抖动问题
+- d-cascader 组件 新增动态加载模块功能、noDataContent 与 allText 属性，修复 点击全取消图标的抖动问题
 
 ## 1.0.4-alpha.2
 

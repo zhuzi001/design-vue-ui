@@ -31,8 +31,8 @@
           @click.stop="(e) => e.stopPropagation()"
         >
           <div v-if="!listArr.length" class="xm_empty_data">
-            <slot name="notFoundContent">
-              <a-empty :image="simpleImage" :description="noDataText"/>
+            <slot name="noDataContent">
+              <a-empty :image="simpleImage" :description="noDataContent"/>
             </slot>
           </div>
           <div class="xm_cascader_search" v-if="showSearch">

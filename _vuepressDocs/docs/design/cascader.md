@@ -85,6 +85,7 @@ label 和 key 被包装到 value 中，便于处理和显示自定义数据。
 返回值格式为 [{ label: **,key: ** }] ， 因为处理后的数据逻辑 key 值 会变化，
 
 采用这种方式，要么 key 使用 fieldNames 中的 value 值， 要么通过 deselect 自己进行删除处理逻辑
+
 :::
 
 ::: slot sourceCode
@@ -121,11 +122,26 @@ label 和 key 被包装到 value 中，便于处理和显示自定义数据。
 <design-vue-ui-cascader-resize />
 
 :::slot content
-遇到超出边界，为了显示options数据，而又不愿意移位置到其他地方化的，可以试试这个属性。
+遇到超出边界，为了显示 options 数据，而又不愿意移位置到其他地方化的，可以试试这个属性。
 :::
 
 ::: slot sourceCode
 <<< @/docs/.vuepress/components/design-vue-ui/cascader/resize.vue
+:::
+
+</tag>
+
+<tag text="点击options item 动态加载下一级">
+<design-vue-ui-cascader-load-data />
+
+:::slot content
+loadData 函数：加载数据并根据 isLeaf 确定是否需要加载下一级。  
+处理异步操作：确保异步操作完成后再处理后续逻辑。  
+loadData 必须处理完异步操作，组件还需要处理后面的逻辑，所以需要使用到 promise 或 async
+:::
+
+::: slot sourceCode
+<<< @/docs/.vuepress/components/design-vue-ui/cascader/load-data.vue
 :::
 
 </tag>
@@ -135,22 +151,15 @@ label 和 key 被包装到 value 中，便于处理和显示自定义数据。
 
 ### cascader props
 
-| 参数             | 说明                                                                         | 类型                  | 默认值                                                   | 版本 |
-| ---------------- | ---------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------- | ---- |
-| value(v-model)   | 指定当前选中的条目                                                           | `string[]`,`number[]` | -                                                        |
-| showSelectAll    | 显示全选按钮                                                                 | `boolean`             | false                                                    | -    |
-| options          | 可选项数据源(树结构)                                                         | `object[]`            | []                                                       | -    |
-| labelInValue     | 是否把每个选项的 label 包装到 value 中， {key: string, label: string} 的格式 | `boolean`             | false                                                    | -    |
-| placeholder      | 输入框占位文本                                                               | `string`              | 请选择                                                   | -    |
-| maxTagCount      | 最多显示多少个 tag                                                           | `number`              | 4                                                        | -    |
-| showCheckedChild | 定义选中项回填的方式                                                         | `boolean`             | false                                                    | -    |
-| displayRender    | 选择后展示的渲染函数                                                         | `function`, `null`    | null                                                     | -    |
-| fieldNames       | 自定义节点 label、value、options 的字段                                      | `object`              | { label: 'label', value: 'value', children: 'children' } | -    |
-| allowResize       | 允许监听resize事件处理面板动态显示不超出边界                                      | `boolean`              |  false | -    |
+<design-vue-ui-cascader-_table />
 
 ### 事件
 
-| 事件名称 | 说明                                              | 回调参数                             |
-| -------- | ------------------------------------------------- | ------------------------------------ |
-| change   | 选中 option，或 input 的 value 变化时，调用此函数 | function(value, childArr, parentArr) |
-| deselect | 取消选中时调用（displayRender 下可能需要）        | function(item)                       |
+<design-vue-ui-cascader-_table-event />
+
+<a-alert
+    message=" isLeaf?: boolean;"
+    description="标记是否为叶子节点，设置了 `loadData` 时有效!!!!!!!!!!设为 `false` 时会强制标记为父节点，即使当前节点没有 children，也会显示展开图标"
+    type="warning"
+    show-icon
+    />

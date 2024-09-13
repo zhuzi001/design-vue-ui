@@ -42,9 +42,11 @@ export default {
   },
   methods: {
     initPag () {
-      this.pagBind = this.pag || {
+      const _pag = this.pag || {}
+      this.pagBind = {
         current: 1,
-        pageSize: 10
+        pageSize: 10,
+        ..._pag
       }
     },
     pagSearch () {

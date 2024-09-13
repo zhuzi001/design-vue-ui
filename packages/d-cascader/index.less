@@ -5,6 +5,13 @@
 
 .xm_cascader_panel {
   display: flex;
+  flex-direction: column;
+  .xm_cascader_content{
+    display: flex;
+  }
+  .xm_cascader_search {
+    padding: 8px;
+  }
 
   ul,
   .xm_empty_data {
@@ -12,12 +19,15 @@
     margin: 0;
     padding-top: 8px;
     border-radius: 4px 0 0 4px;
-    border-right: 1px solid #e8e8e8;
     height: 200px;
+    width: 100%;
     min-width: 140px;
     max-width: 200px;
     overflow-y: auto;
     overflow-x: hidden;
+    &:not(:last-child) {
+      border-right: 1px solid #e8e8e8;
+    }
   }
 
   .xm_empty_data {
@@ -37,6 +47,7 @@
     transition: all 0.3s;
     color: rgba(0, 0, 0, 0.65);
     cursor: pointer;
+    list-style: none;
 
     .text_ellpisis {
       white-space: nowrap;
@@ -67,13 +78,20 @@
     &:active,
     &:hover,
     &.cascader_item_active {
-      font-weight: 600;
       background-color: #fafafa;
     }
 
     &:hover,
     &.cascader_item_active {
       background-color: #e6f7ff;
+    }
+    &.cascader_item_disabled{
+      cursor: not-allowed;
+      background-color: transparent;
+      *{
+        color: rgba(0,0,0,.25);
+        cursor: not-allowed;
+      }
     }
   }
 }

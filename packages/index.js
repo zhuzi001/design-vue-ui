@@ -5,6 +5,7 @@ import DCascader from './d-cascader'
 import DTextarea from './d-textarea'
 import DInput from './d-input'
 import DInputNumber from './d-input-number'
+import DSelect from './d-select'
 import PageLoading from './page-loading'
 import Loading from './page-loading/loading.js'
 
@@ -36,7 +37,11 @@ DInputNumber.install = (vue) => {
   vue.component(DInputNumber.name, DInputNumber)
 }
 
-const components = [PageLoading, DTooltip, DTable, DCascader, DTextarea, DInput, DInputNumber]
+DSelect.install = (vue) => {
+  vue.component(DSelect.name, DSelect)
+}
+
+const components = [PageLoading, DTooltip, DTable, DCascader, DTextarea, DInput, DInputNumber, DSelect]
 
 const install = function (Vue) {
   components.forEach((component) => {
@@ -56,7 +61,7 @@ const config = {
   $apiFc: function () {}
 }
 
-export { DTooltip, PageLoading, DTable, DCascader, DTextarea, DInput, DInputNumber }
+export { DTooltip, PageLoading, DTable, DCascader, DTextarea, DInput, DInputNumber, DSelect }
 
 export default {
   install,

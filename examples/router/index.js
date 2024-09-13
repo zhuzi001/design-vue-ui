@@ -29,6 +29,11 @@ const routes = [
     path: '/input-number',
     name: 'input-number',
     component: () => import('../views/input-number')
+  },
+  {
+    path: '/select',
+    name: 'select',
+    component: () => import('../views/select')
   }
 ]
 

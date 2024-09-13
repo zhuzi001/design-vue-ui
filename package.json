@@ -1,6 +1,6 @@
 {
   "name": "design-vue-ui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": false,
   "main": "lib/design-vue-ui.umd.min.js",
   "license": "MIT",
@@ -36,5 +36,10 @@
     "vue": "2.6.11",
     "vue-router": "^3.2.0",
     "vue-template-compiler": "2.6.11"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/zhu_xin/design-vue-ui.git"
+  },
+  "homepage": "http://www.xiaomei.fun/"
 }

@@ -2,7 +2,7 @@
   <div class="demo-main">
     <label for="">optionLabelProp 默认: {{ form.basicValue }}</label>
     <d-select v-model="form.basicValue" :options="options" placeholder="请选择">
-      <template #label="{ option }">
+      <template #children="{ option }">
         {{ option.label }}({{ option.value }})
       </template>
     </d-select>
@@ -12,7 +12,7 @@
       placeholder="请选择"
       optionLabelProp="label"
     >
-      <template #label="{ option }">
+      <template #children="{ option }">
         {{ option.label }}({{ option.value }})
       </template>
     </d-select>
@@ -22,7 +22,7 @@
       placeholder="请选择"
       optionLabelProp="value"
     >
-      <template #label="{ option }">
+      <template #children="{ option }">
         {{ option.label }}({{ option.value }})
       </template>
     </d-select>

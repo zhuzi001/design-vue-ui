@@ -11,9 +11,11 @@
     @search="selectSearch"
     @focus="onFocus"
     @popupScroll="popupScroll"
+    ref="selectRef"
+    v-on="filteredListeners"
   >
     <template v-if="searchLoading">
-      <a-select-option key="a-spin">
+      <a-select-option key="a-spin" disabled>
         <slot name="searchLoad">
           <a-spin />
         </slot>
@@ -27,16 +29,16 @@
       >
         <a-select-option
           v-for="option in group.options"
-          :key="option[fieldNames.value]"
-          :value="option[fieldNames.value]"
-          :label="option[fieldNames.label]"
+          :key="option[fieldNames.key || fieldNames.value]"
+          v-bind="optionBinding(option)"
         >
-          <slot name="label" :option="option">
+          <slot name="children" :option="option">
             {{ option[fieldNames.label] }}
           </slot>
         </a-select-option>
         <a-select-option
           key="a-spin"
+          disabled
           v-if="!!loadData && resultOptions.length !== total"
         >
           <slot name="optionLoad">
@@ -48,16 +50,16 @@
     <template v-else>
       <a-select-option
         v-for="option in filterOptions"
-        :key="option[fieldNames.value]"
-        :value="option[fieldNames.value]"
-        :label="option[fieldNames.label]"
+        :key="option[fieldNames.key || fieldNames.value]"
+        v-bind="optionBinding(option)"
       >
-        <slot name="label" :option="option">
+        <slot name="children" :option="option">
           {{ option[fieldNames.label] }}
         </slot>
       </a-select-option>
       <a-select-option
         key="a-spin"
+        disabled
         v-if="!!loadData && resultOptions.length !== total"
       >
         <slot name="optionLoad">
@@ -97,6 +99,7 @@
 import pagMixin from './pagMixin'
 import groupsMixin from './groupsMixin'
 import optionsMixin from './optionsMixin'
+import { Select, Pagination, Spin, Divider } from 'ant-design-vue'
 export default {
   name: 'DSelect',
   model: {
@@ -108,7 +111,13 @@ export default {
     VNodes: {
       functional: true,
       render: (_, ctx) => ctx.props.vnodes
-    }
+    },
+    ASelect: Select,
+    ASelectOptGroup: Select.OptGroup,
+    ASelectOption: Select.Option,
+    APagination: Pagination,
+    ASpin: Spin,
+    ADivider: Divider
   },
   data () {
     return {
@@ -121,10 +130,6 @@ export default {
       type: Boolean,
       default: false
     },
-    loadData: {
-      type: Function,
-      default: null
-    },
     searchLoading: {
       type: Boolean,
       default: false
@@ -135,7 +140,7 @@ export default {
     fieldNames: {
       type: Object,
       default: () => {
-        return { label: 'label', value: 'value', children: 'children' }
+        return { label: 'label', value: 'value' }
       }
     },
     labelInValue: {
@@ -164,6 +169,11 @@ export default {
     }
   },
   computed: {
+    filteredListeners () {
+      const { search, change, focus, popupScroll, pagChange, ...otherEvents } =
+        this.$listeners
+      return otherEvents
+    },
     isGroups () {
       return this.groups?.length
     },
@@ -190,6 +200,17 @@ export default {
     }
   },
   methods: {
+    optionBinding (option) {
+      const { label, value, disabled, title } = this.fieldNames
+      // 默认绑定 label 和 value
+      const _option = {
+        label: option[label],
+        value: option[value],
+        disabled: option[disabled] || option.disabled || false,
+        title: option[title] || option.title || ''
+      }
+      return _option
+    },
     // 给 optionsMixin 和 groupsMixin 使用的
     getValue (modelValue, callback) {
       if (!callback) {
@@ -247,13 +268,18 @@ export default {
     popupScroll (e) {
       this.handlePagScroll && this.handlePagScroll(e)
       this.$emit('popupScroll', e)
+    },
+    focus () {
+      this.$refs.selectRef.focus()
+    },
+    blur () {
+      this.$refs.selectRef.blur()
     }
   }
 }
 </script>
 <style lang="less" scoped>
 .xm_select {
-  background: red;
   .xm_divider {
     margin: 12px 0;
   }

@@ -1,58 +1,61 @@
 <template>
-  <div style="padding: 48px">
-    <!-- <div>
-      <br />
-      <button @click="init">点击显示加载中、、、1秒自动关闭</button>
-    </div> -->
-
-    <a-card
-      hoverable
-      v-for="(item, index) in items"
-      :key="index"
-    >
-      <a-card-meta :title="item.title">
-        <template slot="description"> <component :is="item.component" :data="item.data" /> </template>
-      </a-card-meta>
-    </a-card>
-  </div>
+  <a-tree-select
+    v-model="value"
+    style="width: 100%"
+    :tree-data="treeData"
+    tree-checkable
+    :show-checked-strategy="SHOW_PARENT"
+    search-placeholder="Please select"
+  />
 </template>
+
 <script>
-import cascader from './cascader.vue'
-import input from './input.vue'
-import textarea from './textarea.vue'
-import inputNumber from './input-number.vue'
+import { TreeSelect } from 'ant-design-vue'
+const SHOW_PARENT = TreeSelect.SHOW_PARENT
+
+const treeData = [
+  {
+    title: 'Node1',
+    value: '0-0',
+    key: '0-0',
+    children: [
+      {
+        title: 'Child Node1',
+        value: '0-0-0',
+        key: '0-0-0'
+      }
+    ]
+  },
+  {
+    title: 'Node2',
+    value: '0-1',
+    key: '0-1',
+    children: [
+      {
+        title: 'Child Node3',
+        value: '0-1-0',
+        key: '0-1-0',
+        disabled: true
+      },
+      {
+        title: 'Child Node4',
+        value: '0-1-1',
+        key: '0-1-1'
+      },
+      {
+        title: 'Child Node5',
+        value: '0-1-2',
+        key: '0-1-2'
+      }
+    ]
+  }
+]
 export default {
   data () {
     return {
-      items: [
-        {
-          component: input,
-          title: 'input 组件',
-          description: 'input 组件'
-        },
-        {
-          component: textarea,
-          title: 'textarea 组件',
-          description: 'textarea 组件'
-        },
-        {
-          component: inputNumber,
-          title: 'inputNumber',
-          description: 'inputNumber'
-        },
-        {
-          component: cascader,
-          title: 'cascader 级联',
-          description: 'cascader 级联'
-        }
-
-      ]
-    }
-  },
-  methods: {
-    init () {
-      this.$xmLoading.show()
-      this.hide()
+      value: ['0-0-99'],
+      treeData,
+      SHOW_PARENT
     }
   }
 }

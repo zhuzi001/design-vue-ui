@@ -10,6 +10,7 @@
         style="width: 200px"
         v-model="form.selectValue"
         @change="cascaderChange"
+        showSearch
         allow-resize
       ></d-cascader>
      </div>
@@ -78,9 +79,28 @@
       <h2>自定义字段名</h2>
       <d-cascader
         :options="allRegion"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1' }"
+        v-model="form.allRegionValue"
+        :load-data="itemClick"
+      ></d-cascader>
+       <!-- <d-cascader
+        :options="allRegion"
         :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
         v-model="form.allRegionValue"
       ></d-cascader>
+      <d-cascader
+        :options="allRegion"
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList1' }"
+        v-model="form.allRegionValue2"
+        labelInValue
+        :load-data="itemClick"
+      ></d-cascader>
+       <d-cascader
+        :options="allRegion"
+        labelInValue
+        :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        v-model="form.allRegionValue2"
+      ></d-cascader> -->
       <h2>自定义 没有数据的 option面板 显示效果</h2>
       <d-cascader
         :options="[]"
@@ -97,7 +117,7 @@
         showSelectAll
         v-model="form.selectValue"
       >
-        <template #notFoundContent>
+        <template #noDataContent>
           <a-empty />
         </template>
       </d-cascader>
@@ -118,16 +138,20 @@
 <script>
 import jsonData from '../json/region.json'
 import allRegion from '../json/allRegion.json'
+import allRegionArr from '../json/allRegionArr.json'
 export default {
   data () {
     return {
       options: [],
+      allRegionArr,
       allRegion,
       form: {
         selectChildValue: [],
         selectValue: [],
         selectLabelInValue: [],
-        selectChildLabelInValue: []
+        selectChildLabelInValue: [],
+        // allRegionValue: ['110101', '110102', '110103'],
+        allRegionValue: [{ label: '东城区', key: '110101' }, { label: '西城区', key: '110102' }, { label: '崇文区', key: '110103' }, { label: '阳泉市', key: '140300' }]
       },
       childValue: [],
       parentValue: []
@@ -174,6 +198,15 @@ export default {
         }
       }
       return arr
+    },
+    itemClick (item) {
+      console.log(item, 'itemClick')
+      if (!item.areaList) return
+      item.areaList1 = item.areaList.map(v => {
+        v.disabled = Math.random(10) < 0.1
+        v.isLeaf = v.level === 2
+        return v
+      })
     },
     deselect (val) {
       // 自己删除的处理逻辑

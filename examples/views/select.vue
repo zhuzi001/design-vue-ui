@@ -7,15 +7,17 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-    <a-form-model-item label="基本使用-value" prop="basicValue">
+      <a-form-model-item label="基本使用-value" prop="basicValue">
         <a-select
           v-model="form.basicValue"
-          :options="options.map(v=>{
-            return {
-              label: v.name,
-              value: v.code
-            }
-          })"
+          :options="
+            options.map((v) => {
+              return {
+                label: v.name,
+                value: v.code,
+              };
+            })
+          "
           placeholder="请选择"
         />
       </a-form-model-item>
@@ -99,7 +101,7 @@
           :fieldNames="{ label: 'name', value: 'code' }"
           v-model="form.optionLabelProp1"
         >
-          <template #label="{ option }">
+          <template #children="{ option }">
             {{ option.name }}{{ option.code }}
           </template>
         </d-select>
@@ -115,7 +117,7 @@
           v-model="form.optionLabelProp2"
           optionLabelProp="value"
         >
-          <template #label="{ option }">
+          <template #children="{ option }">
             {{ option.name }}{{ option.code }}
           </template>
         </d-select>
@@ -131,7 +133,7 @@
           v-model="form.optionLabelProp3"
           optionLabelProp="label"
         >
-          <template #label="{ option }">
+          <template #children="{ option }">
             {{ option.name }}{{ option.code }}
           </template>
         </d-select>
@@ -240,7 +242,7 @@
           :fieldNames="{ label: 'name', value: 'code' }"
           optionFilterProp="label"
           pageType="scroll"
-          :total="options.length"
+          :total="total"
           :loadData="loadData"
           :searchLoading="searchLoading"
           @search="search"
@@ -267,7 +269,7 @@ export default {
         basicValueArr: [],
         loadRemot2e: '630000',
         selectValue: [],
-        loadRemot2e2: ['630000'],
+        loadRemot2e2: [],
         loadRemote: undefined,
         // basicValue: undefined,
         // basicValue1: undefined,
@@ -399,8 +401,17 @@ export default {
     search (v) {
       this.pag.current = 1
       this.searchLoading = true
-      setTimeout(() => {
+      setTimeout(async () => {
+        const _resut = await this.queryData({
+          pageSize: this.pag.pageSize,
+          current: this.pag.current,
+          inputValue: v
+        })
         this.searchLoading = false
+        this.filterOptions = _resut.data
+        this.pag.current = _resut.current || 1
+        this.total = _resut.total || 0
+        console.log(this.loading, 'this.loading = false')
       }, 1200)
     },
     async search1 (v) {
@@ -422,8 +433,12 @@ export default {
       this.total1 = _resut.total || 0
     },
     async loadData (e) {
+      console.log('加兹安')
       if (this.loading) return
-      if (this.total <= this.filterOptions.length) return
+      if (this.total <= this.filterOptions.length) {
+        this.loading = false
+        return
+      }
       // 下面相当于一个后台接口
       this.loading = true // 这里相当于节流的作用，免得获取同样数据进行追加
       const _resut = await this.queryData({

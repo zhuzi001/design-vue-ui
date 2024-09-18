@@ -4,7 +4,7 @@
     :dataSource="dataSource"
     @setColumns="setColumns"
     :showPag="false"
-    :scroll="{x: 800}"
+    :scroll="!isMobile ? {} : { x: 800 }"
   ></d-table>
 </template>
 <script>
@@ -77,8 +77,9 @@ export default {
         {
           title: "说明",
           dataIndex: "description",
-        }
+        },
       ],
+      isMobile: /Mobi|Android/i.test(navigator.userAgent),
     };
   },
   created() {

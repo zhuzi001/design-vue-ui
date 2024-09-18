@@ -4,6 +4,7 @@
     :dataSource="dataSource"
     @setColumns="setColumns"
     :showPag="false"
+    :scroll="{x: 800}"
   ></d-table>
 </template>
 <script>

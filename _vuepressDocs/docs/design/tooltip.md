@@ -29,10 +29,6 @@
 
 ## API
 
-| 参数             | 说明       | 类型     | 默认值 | 版本    |
-| ---------------- | ---------- | -------- | ------ | ------- | --- | --- |
-| content          | 内容       | `string  | array  | number` | ''  | -   |
-| len              | 显示的长度 | `number` | 30     | -       |
-| overlayClassName | 卡片类名   | `string` | ''     | -       |
+<design-vue-ui-tooltip-_table />
 
 > 支持 标签内部 slot

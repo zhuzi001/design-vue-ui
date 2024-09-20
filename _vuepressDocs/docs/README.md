@@ -1,6 +1,5 @@
-# design-vue-ui
-
-===================
+    
+<!-- ===================
 
 Hello, 我的伙伴们 🌟🐞🔥 
 
@@ -18,4 +17,7 @@ Hello, 我的伙伴们 🌟🐞🔥
 **ME**，前端浪客,欢迎关注！
 
 <!-- <img src="./imgs/logo.jpg" style="height: 280px;"/> -->
-<img :src="$withBase('/code.png')" alt="foo" style="margin:auto;width: 750px">
+<!-- <img :src="$withBase('/code.png')" alt="foo" style="margin:auto;width: 750px"> -->
+
+
+<home />

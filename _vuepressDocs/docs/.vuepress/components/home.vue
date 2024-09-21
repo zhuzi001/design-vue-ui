@@ -13,10 +13,10 @@
       <span>Ant Design Vue</span> 的新版本功能及新增组件。
     </p>
     <router-link to="/design/">
-      <a-button type="primary" shape="round" style="background-color: #3eaf7c;">
+      <div class="btn">
         <a-icon type="thunderbolt" />
         快速上手
-      </a-button>
+      </div>
     </router-link>
   </div>
 </template>
@@ -48,5 +48,13 @@ export default {
   span {
     font-weight: bold;
   }
+}
+
+.btn {
+  display: inline-block;
+  background-color: #3eaf7c;
+  color: #fff;
+  border-radius: 20px;
+  padding: 4px 20px;
 }
 </style>

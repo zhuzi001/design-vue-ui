@@ -29,8 +29,11 @@ export default {
       type: [Array]
     },
     defaultLevel: {
-      type: Number,
-      default: 1 // 默认显示几个选择框
+      type: Number, // 默认显示几个选择框
+      default: 1
+    },
+    maxLevel: {
+      type: Number
     },
     options: {
       type: Array,
@@ -46,7 +49,6 @@ export default {
   watch: {
     options: {
       handler (val) {
-        console.log('信的options', val)
         this.optionsArr = [val]
       },
       immediate: true
@@ -54,7 +56,9 @@ export default {
   },
   computed: {
     currentLevel () {
-      return this.defaultLevel
+      const arrLen = this.optionsArr.length
+      const level = this.defaultLevel
+      return arrLen > (level || 0) ? arrLen : level
     },
     filteredListeners () {
       // 过滤掉 'change' 事件
@@ -67,8 +71,13 @@ export default {
       const { value, children } = this.$attrs.fieldNames
       // option 处理
       this.optionsArr = this.optionsArr.slice(0, index + 1)
-      const child = this.optionsArr[index].find((v) => v[value] === val)[children]
-      child && (this.optionsArr[index + 1] = child)
+      const child = this.optionsArr[index].find((v) => v[value] === val)[
+        children
+      ]
+
+      child &&
+        (!this.maxLevel || this.maxLevel > this.optionsArr.length) &&
+        (this.optionsArr[index + 1] = child)
       this.currentValueArr = this.currentValueArr.slice(0, index + 1)
       this.currentValueArr[index] = val
       this.$emit('change', this.currentValueArr)

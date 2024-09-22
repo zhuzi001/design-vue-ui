@@ -12,7 +12,8 @@
           v-model="form.basicValue"
           :options="allRegion"
           placeholder="请选择"
-          :defaultLevel="3"
+          :maxLevel="2"
+          :defaultLevel="2"
           :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
           @change="onChange"
         />

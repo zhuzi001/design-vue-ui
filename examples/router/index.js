@@ -34,6 +34,11 @@ const routes = [
     path: '/select',
     name: 'select',
     component: () => import('../views/select')
+  },
+  {
+    path: '/multiple-select',
+    name: 'select',
+    component: () => import('../views/multiple-select')
   }
 ]
 

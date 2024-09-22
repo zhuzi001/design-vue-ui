@@ -18,6 +18,18 @@
           @change="onChange"
         />
       </a-form-model-item>
+       <a-form-model-item label="基本使用-value" prop="basicValue">
+        <d-multiple-select
+          v-model="form.basicValue"
+          :options="allRegion"
+          placeholder="请选择"
+          :maxLevel="3"
+          :defaultLevel="3"
+          :fieldNames="{ label: 'name', value: 'code' }"
+          :loadData="loadData"
+          @change="onChange"
+        />
+      </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
         <a-button type="primary" @click="onSubmit"> 确定 </a-button>
         <a-button style="margin-left: 10px" @click="resetForm"> 重置 </a-button>
@@ -48,7 +60,10 @@ export default {
     delay (ms) {
       return new Promise((resolve) => setTimeout(resolve, ms))
     },
-
+    async loadData (val, option) {
+      await this.delay(1000)
+      return option.areaList
+    },
     onSubmit () {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {

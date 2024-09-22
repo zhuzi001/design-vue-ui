@@ -38,6 +38,9 @@ export default {
     options: {
       type: Array,
       default: () => []
+    },
+    loadData: {
+      type: Function
     }
   },
   data () {
@@ -56,6 +59,7 @@ export default {
   },
   computed: {
     currentLevel () {
+      console.log('this.optionsArr', this.optionsArr.length)
       const arrLen = this.optionsArr.length
       const level = this.defaultLevel
       return arrLen > (level || 0) ? arrLen : level
@@ -67,20 +71,22 @@ export default {
     }
   },
   methods: {
-    onChange (val, index) {
+    async onChange (val, index) {
       const { value, children } = this.$attrs.fieldNames
       // option 处理
       this.optionsArr = this.optionsArr.slice(0, index + 1)
-      const child = this.optionsArr[index].find((v) => v[value] === val)[
-        children
-      ]
+      const childObj = this.optionsArr[index].find((v) => v[value] === val)
 
-      child &&
-        (!this.maxLevel || this.maxLevel > this.optionsArr.length) &&
-        (this.optionsArr[index + 1] = child)
+      const child = childObj && childObj[children] ? childObj[children] : []
+
+      if ((!this.maxLevel || this.maxLevel > this.optionsArr.length)) {
+        if (this.loadData) this.optionsArr.splice(index + 1, 1, await this.loadData(val, childObj))
+        else if (child) this.optionsArr[index + 1] = child
+      }
+      console.log(this.optionsArr.length)
       this.currentValueArr = this.currentValueArr.slice(0, index + 1)
       this.currentValueArr[index] = val
-      this.$emit('change', this.currentValueArr)
+      this.$emit('change', this.currentValueArr, index)
     }
   }
 }

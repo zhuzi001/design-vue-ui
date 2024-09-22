@@ -158,6 +158,7 @@ loadData 必须处理完异步操作，组件还需要处理后面的逻辑，�
 <design-vue-ui-cascader-_table-event />
 
 <a-alert
+    style="margin-top:12px"
     message=" isLeaf?: boolean;"
     description="标记是否为叶子节点，设置了 `loadData` 时有效!!!!!!!!!!设为 `false` 时会强制标记为父节点，即使当前节点没有 children，也会显示展开图标"
     type="warning"

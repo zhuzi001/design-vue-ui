@@ -21,6 +21,5 @@
     "@vuepress/plugin-back-to-top": "^1.9.7",
     "vuepress": "^1.9.7"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

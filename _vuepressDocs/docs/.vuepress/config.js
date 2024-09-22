@@ -3,7 +3,7 @@ module.exports = {
   description: "基于ant框架",
   base: "/",
   port: "8081",
-  head: [["link", { rel: "icon", href: "/d.png" }]],
+  head: [["link", { rel: "icon", href: "/d.png" }],['meta', { name: 'keywords', content: 'designVueUi,antdesignvue,design-vue-ui' }]],
   markdown: {
     lineNumbers: true,
   },

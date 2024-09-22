@@ -4,7 +4,6 @@
       v-model.trim="txtValue"
       @input="inputBlur"
       @blur="inputBlur"
-      :placeholder="placeholder"
       :maxLength="len"
       :auto-size="autoSize"
       v-bind="$attrs"
@@ -40,10 +39,6 @@ export default {
       default: () => {
         return { minRows: 3, maxRows: 4 }
       }
-    },
-    placeholder: {
-      type: String,
-      default: ''
     },
     value: {
       type: String,

@@ -42,6 +42,9 @@ export default {
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  @media (max-width: 400px) {
+    font-size: 36px;
+  }
 }
 
 .desc {

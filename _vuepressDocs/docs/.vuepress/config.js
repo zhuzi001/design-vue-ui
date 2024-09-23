@@ -34,6 +34,7 @@ module.exports = {
             "textarea",
             "select",
             "cascader",
+            "multiple-select"
           ],
         },
         "update",

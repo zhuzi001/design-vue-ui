@@ -8,6 +8,8 @@
       v-on="filteredListeners"
       mode="default"
       :value="currentValueArr[index]"
+      @focus="selectFocus(index)"
+      :searchLoading="!optionsArr[index] && index === currentValueArr.length"
       @change="onChange($event, index)"
     >
     </d-select>
@@ -26,7 +28,7 @@ export default {
   },
   props: {
     value: {
-      type: [Array]
+      type: [Array, String]
     },
     defaultLevel: {
       type: Number, // 默认显示几个选择框
@@ -41,6 +43,14 @@ export default {
     },
     loadData: {
       type: Function
+    },
+    loadMode: {
+      type: String,
+      default: 'change' // 'change' || 'focus' || 'all'
+    },
+    isEnd: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -55,22 +65,84 @@ export default {
         this.optionsArr = [val]
       },
       immediate: true
+    },
+    value: {
+      handler (val) {
+        this.handleValue(val)
+      },
+      immediate: true
     }
   },
   computed: {
     currentLevel () {
-      console.log('this.optionsArr', this.optionsArr.length)
       const arrLen = this.optionsArr.length
       const level = this.defaultLevel
       return arrLen > (level || 0) ? arrLen : level
     },
     filteredListeners () {
       // 过滤掉 'change' 事件
-      const { change, ...rest } = this.$listeners
+      const { change, focus, ...rest } = this.$listeners
       return rest
     }
   },
   methods: {
+    handleValue (val) {
+      let _options = this.options
+
+      // 清空值时重置状态
+      if (!val || !val.length) {
+        this.currentValueArr = []
+        this.optionsArr = [_options]
+        return
+      }
+
+      // 如果当前值与新值相同，则不进行处理
+      const newValueJoined = val.join('')
+      const currentValueJoined = this.currentValueArr.join('')
+      if (newValueJoined === currentValueJoined) return
+
+      // 更新当前值
+      this.currentValueArr = val
+
+      // 当只有一个值时，重置 optionsArr
+      if (val.length === 1) {
+        this.optionsArr = [_options]
+        return
+      }
+
+      // 根据当前值更新 optionsArr
+      this.optionsArr = val.map((item, index) => {
+        if (index === 0) return _options
+
+        const previousValue = val[index - 1]
+        const option =
+          _options.find(
+            (v) => v[this.$attrs.fieldNames.value] === previousValue
+          ) || []
+
+        _options = option[this.$attrs.fieldNames.children] || []
+        return _options
+      })
+    },
+
+    async selectFocus (index) {
+      if (this.loadMode === 'change') return
+      if (this.optionsArr[index]) return
+      if (this.currentValueArr.length < index) return []
+      this.optionsArr.splice(
+        index,
+        1,
+        await this.loadData({
+          option: null,
+          index,
+          val: this.currentValueArr,
+          loadMode: 'focus'
+        })
+      )
+    },
+    isLevelFull () {
+      return !this.maxLevel || this.maxLevel > this.optionsArr.length
+    },
     async onChange (val, index) {
       const { value, children } = this.$attrs.fieldNames
       // option 处理
@@ -78,15 +150,25 @@ export default {
       const childObj = this.optionsArr[index].find((v) => v[value] === val)
 
       const child = childObj && childObj[children] ? childObj[children] : []
-
-      if ((!this.maxLevel || this.maxLevel > this.optionsArr.length)) {
-        if (this.loadData) this.optionsArr.splice(index + 1, 1, await this.loadData(val, childObj))
-        else if (child) this.optionsArr[index + 1] = child
-      }
-      console.log(this.optionsArr.length)
       this.currentValueArr = this.currentValueArr.slice(0, index + 1)
       this.currentValueArr[index] = val
-      this.$emit('change', this.currentValueArr, index)
+      if (!this.isEnd || (this.isEnd && !this.isLevelFull())) { this.$emit('change', this.currentValueArr, index) }
+
+      if (this.isLevelFull()) {
+        if (this.loadData) {
+          this.loadMode !== 'focus' &&
+            this.optionsArr.splice(
+              index + 1,
+              1,
+              await this.loadData({
+                option: childObj,
+                index,
+                val: this.currentValueArr,
+                loadMode: 'change'
+              })
+            )
+        } else if (child) this.optionsArr[index + 1] = child
+      }
     }
   }
 }

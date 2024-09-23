@@ -18,9 +18,9 @@
           @change="onChange"
         />
       </a-form-model-item>
-       <a-form-model-item label="基本使用-value" prop="basicValue">
+       <a-form-model-item label="基本使用-value" prop="basicValue1">
         <d-multiple-select
-          v-model="form.basicValue"
+          v-model="form.basicValue1"
           :options="allRegion"
           placeholder="请选择"
           :maxLevel="3"
@@ -28,6 +28,20 @@
           :fieldNames="{ label: 'name', value: 'code' }"
           :loadData="loadData"
           @change="onChange"
+        />
+      </a-form-model-item>
+      <a-form-model-item label="基本使用-value" prop="basicValue2">
+        <d-multiple-select
+          v-model="form.basicValue2"
+          :options="allRegion"
+          placeholder="请选择"
+          :maxLevel="3"
+          :defaultLevel="3"
+          :fieldNames="{ label: 'name', value: 'code' }"
+          @change="onChange"
+          :loadData="loadData"
+          isEnd
+          loadMode="focus"
         />
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
@@ -46,11 +60,15 @@ export default {
     return {
       allRegion,
       form: {
-        basicValue: []
+        basicValue: [],
+        basicValue1: [],
+        basicValue2: []
       },
       inputValue1: '',
       rules: {
-        basicValue: { required: true, message: '请选择', trigger: 'change' }
+        basicValue: { required: true, message: '请选择', trigger: 'change' },
+        basicValue1: { required: true, message: '请选择', trigger: 'change' },
+        basicValue2: { required: true, message: '请选择', trigger: 'change' }
       },
       labelCol: { span: 12 },
       wrapperCol: { span: 12 }
@@ -60,9 +78,27 @@ export default {
     delay (ms) {
       return new Promise((resolve) => setTimeout(resolve, ms))
     },
-    async loadData (val, option) {
+    /**
+     *
+     * @param valArr 值数组
+     * @param index 当前下拉框的下标
+     */
+    async loadData ({ val, index, option, loadMode }) {
+      console.log('================')
       await this.delay(1000)
-      return option.areaList
+      // 下面是模拟接口数据----忽略
+      if (loadMode !== 'focus') return option.areaList
+      let _options = allRegion
+      for (let i = 0; i < index; i++) {
+        const _val = val[i]
+        const _option = _options.find((v) => v.code === _val)
+        console.log('_option', _option)
+        console.log(i, index)
+        if (!_option) return []
+        _options = _option.areaList
+      }
+      console.log(_options)
+      return _options
     },
     onSubmit () {
       this.$refs.ruleForm.validate((valid) => {

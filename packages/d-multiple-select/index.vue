@@ -9,6 +9,7 @@
       mode="default"
       :value="currentValueArr[index]"
       @focus="selectFocus(index)"
+      :fieldNames="fieldNames"
       :searchLoading="!optionsArr[index] && index === currentValueArr.length"
       @change="onChange($event, index)"
     >
@@ -27,6 +28,12 @@ export default {
     event: 'change'
   },
   props: {
+    fieldNames: {
+      type: Object,
+      default: () => {
+        return { label: 'label', value: 'value', children: 'children' }
+      }
+    },
     value: {
       type: [Array, String]
     },
@@ -117,10 +124,10 @@ export default {
         const previousValue = this.$attrs.labelInValue ? val[index - 1].key : val[index - 1]
         const option =
           _options.find(
-            (v) => v[this.$attrs.fieldNames.value] === previousValue
+            (v) => v[this.fieldNames.value] === previousValue
           ) || []
 
-        _options = option[this.$attrs.fieldNames.children] || []
+        _options = option[this.fieldNames.children] || []
         return _options
       })
     },
@@ -144,7 +151,7 @@ export default {
       return !this.maxLevel || this.maxLevel > this.optionsArr.length
     },
     async onChange (val, index) {
-      const { value, children } = this.$attrs.fieldNames
+      const { value, children } = this.fieldNames
       // option 处理
       this.optionsArr = this.optionsArr.slice(0, index + 1)
       const childObj = this.optionsArr[index].find((v) => v[value] === val)

@@ -114,7 +114,7 @@ export default {
       this.optionsArr = val.map((item, index) => {
         if (index === 0) return _options
 
-        const previousValue = val[index - 1]
+        const previousValue = this.$attrs.labelInValue ? val[index - 1].key : val[index - 1]
         const option =
           _options.find(
             (v) => v[this.$attrs.fieldNames.value] === previousValue

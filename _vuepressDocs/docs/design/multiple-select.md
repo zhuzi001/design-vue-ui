@@ -13,7 +13,9 @@
 <design-vue-ui-multiple-select-index />
 
 :::slot content
-支持大多数 `d-select` 的 `API` 属性，
+支持大多数 `d-select` 的 `API` 属性
+
+详细看下面 API
 :::
 
 ::: slot sourceCode
@@ -21,3 +23,5 @@
 :::
 
 </tag>
+
+</box>

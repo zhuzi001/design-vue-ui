@@ -174,7 +174,7 @@ export default {
                 loadMode: 'change'
               })
             )
-        } else if (child) this.optionsArr[index + 1] = child
+        } else if (child.length) this.optionsArr[index + 1] = child
       }
     }
   }

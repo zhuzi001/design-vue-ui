@@ -55,9 +55,8 @@ export default {
       type: String,
       default: 'change' // 'change' || 'focus' || 'all'
     },
-    isEnd: {
-      type: Boolean,
-      default: false
+    renderValue: {
+      type: [Array]
     }
   },
   data () {
@@ -89,13 +88,16 @@ export default {
      * @return {Number}
      */
     currentLevel () {
-      const { loadMode, maxLevel, optionsArr, defaultLevel, currentValueArr } = this
+      const { loadMode, maxLevel, optionsArr, defaultLevel, currentValueArr } =
+        this
 
       // 允许聚焦则计算当前值数组长度加1，否则使用选项数组长度
-      const arrLen = (loadMode !== 'change' ? currentValueArr.length + 1 : optionsArr.length)
+      const arrLen =
+        loadMode !== 'change' ? currentValueArr.length + 1 : optionsArr.length
 
       // 返回当前级别
-      if (arrLen > maxLevel) return maxLevel
+      console.log(arrLen, optionsArr)
+      if (maxLevel && arrLen > maxLevel) return maxLevel
       return arrLen > (defaultLevel || 0) ? arrLen : defaultLevel
     },
     filteredListeners () {
@@ -114,7 +116,9 @@ export default {
   methods: {
     handleValue (val) {
       let _options = this.options
-
+      const { renderValue } = this
+      if (renderValue && renderValue.join('') !== val.join('')) return
+      console.log('国考')
       // 清空值时重置状态
       if (!val || !val.length) {
         this.currentValueArr = []
@@ -140,11 +144,12 @@ export default {
       this.optionsArr = val.map((item, index) => {
         if (index === 0) return _options
 
-        const previousValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue) ? val[index - 1].key : val[index - 1]
+        const previousValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue)
+          ? val[index - 1].key
+          : val[index - 1]
         const option =
-          _options.find(
-            (v) => v[this.fieldNames.value] === previousValue
-          ) || []
+          _options.find((v) => v[this.fieldNames.value] === previousValue) ||
+          []
 
         _options = option[this.fieldNames.children] || []
         return _options
@@ -186,28 +191,45 @@ export default {
       this.optionsArr = this.optionsArr.slice(0, index + 1)
       const labelInValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue)
 
-      const childObj = this.optionsArr[index].find((v) => labelInValue ? v[value] === val.key : v[value] === val)
+      const childObj = this.optionsArr[index].find((v) =>
+        labelInValue ? v[value] === val.key : v[value] === val
+      )
       const child = childObj && childObj[children] ? childObj[children] : []
+      console.log(child, 'child')
       this.currentValueArr = this.currentValueArr.slice(0, index + 1)
       this.currentValueArr[index] = val
-      if (!this.isEnd || (this.isEnd && !this.isLevelFull())) { this.$emit('change', this.currentValueArr, index) }
+      if (this.renderValue) {
+        this.$emit('update:renderValue', this.currentValueArr)
+      }
 
-      if (this.isLevelFull()) {
-        if (this.loadData) {
-          this.loadMode !== 'focus' &&
+      this.$nextTick(async () => {
+        this.$emit(
+          'change',
+          !this.renderValue || (this.renderValue && ((this.maxLevel || 0) === this.optionsArr.length || !child.length))
+            ? this.currentValueArr
+            : [],
+          index
+        )
+        if (this.isLevelFull()) {
+          if (this.loadData) {
+            this.loadMode !== 'focus' &&
+              this.optionsArr.splice(
+                index + 1,
+                1,
+                await this.loadData({
+                  option: childObj,
+                  index,
+                  val: this.currentValueArr,
+                  loadMode: 'change'
+                })
+              )
+          } else if (child.length) {
             this.optionsArr.splice(
               index + 1,
-              1,
-              await this.loadData({
-                option: childObj,
-                index,
-                val: this.currentValueArr,
-                loadMode: 'change'
-              })
-            )
-        } else if (child.length) this.optionsArr[index + 1] = child
-        console.log(child)
-      }
+              1, child)
+          }
+        }
+      })
     }
   }
 }

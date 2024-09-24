@@ -30,18 +30,14 @@
           @change="onChange"
         />
       </a-form-model-item>
-      <a-form-model-item label="基本使用-value" prop="basicValue2">
-        <d-multiple-select
-          v-model="form.basicValue2"
+      <a-form-model-item label="基本使用-value" prop="basicValue21">
+         <d-multiple-select
+          v-model="form.basicValue21"
+          :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
           :options="allRegion"
           placeholder="请选择"
-          :maxLevel="3"
-          :defaultLevel="3"
-          :fieldNames="{ label: 'name', value: 'code' }"
+          :renderValue.sync="form.renderValue"
           @change="onChange"
-          :loadData="loadData"
-          isEnd
-          loadMode="focus"
         />
       </a-form-model-item>
       <a-form-model-item label="基本使用-value" prop="basicValue3">
@@ -88,13 +84,16 @@ export default {
         basicValue: [],
         basicValue1: [],
         basicValue2: [],
+        renderValue: ['430000', '430300', '430341'],
         basicValue3: [],
+        basicValue21: ['430000', '430300', '430341'],
         basicValue4: [{ key: '430000', label: ' 湖南省 ' }, { key: '430300', label: ' 湘潭市 ' }, { key: '430341', label: ' 湘潭经济技术开发区 ' }]
       },
       inputValue1: '',
       rules: {
         basicValue: { required: true, message: '请选择', trigger: 'change' },
         basicValue1: { required: true, message: '请选择', trigger: 'change' },
+        basicValue21: { required: true, message: '请选择', trigger: 'change' },
         basicValue2: { required: true, message: '请选择', trigger: 'change' }
       },
       labelCol: { span: 12 },
@@ -140,8 +139,8 @@ export default {
     resetForm () {
       this.$refs.ruleForm.resetFields()
     },
-    onChange () {
-      console.log('sdhjfudish')
+    onChange (value) {
+      console.log(value)
     },
     pagChange (current, pageSize, index) {
       console.log(current, pageSize, index)

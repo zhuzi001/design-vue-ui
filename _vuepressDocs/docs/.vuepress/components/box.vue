@@ -9,6 +9,12 @@
 <script>
 export default {
   name: "TwoColumnLayout",
+  props: {
+    single: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       isMiniScreen: false,
@@ -36,7 +42,7 @@ export default {
           column1.appendChild(vnode.elm);
         }
       });
-      this.isMiniScreen = this.isMobile() || window.innerWidth < 800;
+      this.isMiniScreen = this.single || this.isMobile() || window.innerWidth < 800;
       slotContent.slice(half).forEach((vnode) => {
         if (vnode.elm) {
           this.isMiniScreen

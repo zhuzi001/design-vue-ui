@@ -86,7 +86,7 @@ export default {
         },
         {
           prop: "pageType",
-          description: "分页类型",
+          description: "分页类型(pagination | scroll | paginationRemote)",
           type: "string",
           default: "-",
           version: "-",

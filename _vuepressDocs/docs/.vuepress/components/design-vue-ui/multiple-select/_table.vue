@@ -19,14 +19,14 @@ export default {
         },
         {
           prop: "defaultLevel",
-          description: "默认显示选择框数量",
+          description: "默认显示选择框数量，默认显示级联的层级",
           type: "number",
           default: "1",
           version: "-",
         },
         {
           prop: "maxLevel",
-          description: "最大显示的选择框数量",
+          description: "最大显示的选择框数量，设置级联的层级",
           type: "number",
           default: "-",
           version: "-",
@@ -106,7 +106,7 @@ export default {
         },
         {
           prop: "pageType",
-          description: "分页类型",
+          description: "分页类型（‘pagination’, ‘scroll’）",
           type: "string",
           default: "-",
           version: "-",

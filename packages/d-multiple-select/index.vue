@@ -152,20 +152,26 @@ export default {
     },
 
     async selectFocus (index) {
-      if (this.loadMode === 'change') return
-      if (this.optionsArr[index]?.length) return
-      if (this.currentValueArr.length < index) return
-      if (this.optionsArr[index]) this.optionsArr.splice(index, 1)
-      this.optionsArr.splice(
+      // 提前返回，如果 loadMode 为 'change' 或选项已存在
+      if (this.loadMode === 'change' || this.optionsArr[index]?.length) return
+
+      // 确保 currentValueArr 的长度足够
+      if (this.currentValueArr.length <= index) return
+
+      // 删除现有选项
+      if (this.optionsArr[index]) {
+        this.optionsArr.splice(index, 1)
+      }
+
+      // 加载新数据并替换
+      const newData = await this.loadData({
+        option: null,
         index,
-        1,
-        await this.loadData({
-          option: null,
-          index,
-          val: this.currentValueArr,
-          loadMode: 'focus'
-        })
-      )
+        val: this.currentValueArr,
+        loadMode: 'focus'
+      })
+
+      this.optionsArr.splice(index, 0, newData)
       this.$emit('focus', this.currentValueArr, index)
     },
     isLevelFull () {

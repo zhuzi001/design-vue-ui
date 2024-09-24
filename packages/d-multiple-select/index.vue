@@ -5,7 +5,7 @@
       :key="item"
       v-bind="$attrs"
       :options="optionsArr[index]"
-      v-on="filteredListeners"
+      v-on="filteredListeners(index)"
       mode="default"
       :value="currentValueArr[index]"
       @focus="selectFocus(index)"
@@ -87,9 +87,16 @@ export default {
       return arrLen > (level || 0) ? arrLen : level
     },
     filteredListeners () {
-      // 过滤掉 'change' 事件
+      // 过滤掉 'change' 'focus' 事件
       const { change, focus, ...rest } = this.$listeners
-      return rest
+      return (index) => {
+        return Object.keys(rest).reduce((acc, key) => {
+          acc[key] = (...event) => {
+            rest[key](...event, index) // 将 event 和 index 传递给原始处理函数
+          }
+          return acc
+        }, {})
+      }
     }
   },
   methods: {
@@ -121,7 +128,7 @@ export default {
       this.optionsArr = val.map((item, index) => {
         if (index === 0) return _options
 
-        const previousValue = this.$attrs.labelInValue ? val[index - 1].key : val[index - 1]
+        const previousValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue) ? val[index - 1].key : val[index - 1]
         const option =
           _options.find(
             (v) => v[this.fieldNames.value] === previousValue
@@ -150,12 +157,16 @@ export default {
     isLevelFull () {
       return !this.maxLevel || this.maxLevel > this.optionsArr.length
     },
+    attrsBooleanIsTrue (attr) {
+      return attr !== undefined && attr !== false && attr !== 0
+    },
     async onChange (val, index) {
       const { value, children } = this.fieldNames
       // option 处理
       this.optionsArr = this.optionsArr.slice(0, index + 1)
-      const childObj = this.optionsArr[index].find((v) => v[value] === val)
+      const labelInValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue)
 
+      const childObj = this.optionsArr[index].find((v) => labelInValue ? v[value] === val.key : v[value] === val)
       const child = childObj && childObj[children] ? childObj[children] : []
       this.currentValueArr = this.currentValueArr.slice(0, index + 1)
       this.currentValueArr[index] = val
@@ -175,6 +186,7 @@ export default {
               })
             )
         } else if (child.length) this.optionsArr[index + 1] = child
+        console.log(child)
       }
     }
   }

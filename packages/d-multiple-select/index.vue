@@ -35,7 +35,7 @@ export default {
       }
     },
     value: {
-      type: [Array, String]
+      type: [Array]
     },
     defaultLevel: {
       type: Number, // 默认显示几个选择框
@@ -153,6 +153,7 @@ export default {
           loadMode: 'focus'
         })
       )
+      this.$emit('focus', this.currentValueArr, index)
     },
     isLevelFull () {
       return !this.maxLevel || this.maxLevel > this.optionsArr.length

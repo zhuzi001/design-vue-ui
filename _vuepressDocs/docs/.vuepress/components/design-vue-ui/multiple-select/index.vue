@@ -6,6 +6,14 @@
       :options="options"
       placeholder="请选择"
     />
+    
+    <label for="">labelInValue: {{ form.basicValue2 }}</label>
+    <d-multiple-select
+      v-model="form.basicValue2"
+      :options="options"
+      labelInValue
+      placeholder="请选择"
+    />
   </div>
 </template>
 <script>
@@ -16,6 +24,7 @@ export default {
       options: region.data, // 假数据格式，忽略写法
       form: {
         basicValue: [],
+        basicValue2: []
       },
     };
   },

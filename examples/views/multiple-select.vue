@@ -18,7 +18,7 @@
           @change="onChange"
         />
       </a-form-model-item>
-       <a-form-model-item label="基本使用-value" prop="basicValue1">
+      <a-form-model-item label="基本使用-value" prop="basicValue1">
         <d-multiple-select
           v-model="form.basicValue1"
           :options="allRegion"
@@ -44,6 +44,31 @@
           loadMode="focus"
         />
       </a-form-model-item>
+      <a-form-model-item label="基本使用-value" prop="basicValue3">
+        <d-multiple-select
+          v-model="form.basicValue3"
+          :options="allRegion"
+          labelInValue
+          placeholder="请选择"
+          :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+        />
+      </a-form-model-item>
+      <a-form-model-item label="基本使用-value" prop="basicValue4">
+        <d-multiple-select
+          v-model="form.basicValue4"
+          :options="allRegion"
+          labelInValue
+          placeholder="请选择"
+          :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+          pageType="pagination"
+          :pag="{
+            current: 1,
+            pageSize: 10,
+            showTotal: (total) => `共 ${total} 条`,
+          }"
+          @pagChange="pagChange"
+        />
+      </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
         <a-button type="primary" @click="onSubmit"> 确定 </a-button>
         <a-button style="margin-left: 10px" @click="resetForm"> 重置 </a-button>
@@ -62,7 +87,9 @@ export default {
       form: {
         basicValue: [],
         basicValue1: [],
-        basicValue2: []
+        basicValue2: [],
+        basicValue3: [],
+        basicValue4: [{ key: '430000', label: ' 湖南省 ' }, { key: '430300', label: ' 湘潭市 ' }, { key: '430341', label: ' 湘潭经济技术开发区 ' }]
       },
       inputValue1: '',
       rules: {
@@ -115,6 +142,9 @@ export default {
     },
     onChange () {
       console.log('sdhjfudish')
+    },
+    pagChange (current, pageSize, index) {
+      console.log(current, pageSize, index)
     }
   }
 }

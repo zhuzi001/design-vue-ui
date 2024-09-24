@@ -81,10 +81,22 @@ export default {
     }
   },
   computed: {
+    /**
+     * 当前需要显示的级数
+     * 1. 默认显示 level 个选择框，如果 level 为 0，则显示所有选择框
+     * 2. 如果 focus 下加载数据，需要 + 1 ， 但不得超过 最大级联数
+     * 3. 常规取 默认显示数 和 实际长度的最大值
+     * @return {Number}
+     */
     currentLevel () {
-      const arrLen = this.optionsArr.length
-      const level = this.defaultLevel
-      return arrLen > (level || 0) ? arrLen : level
+      const { loadMode, maxLevel, optionsArr, defaultLevel, currentValueArr } = this
+
+      // 允许聚焦则计算当前值数组长度加1，否则使用选项数组长度
+      const arrLen = (loadMode !== 'change' ? currentValueArr.length + 1 : optionsArr.length)
+
+      // 返回当前级别
+      if (arrLen > maxLevel) return maxLevel
+      return arrLen > (defaultLevel || 0) ? arrLen : defaultLevel
     },
     filteredListeners () {
       // 过滤掉 'change' 'focus' 事件
@@ -141,8 +153,9 @@ export default {
 
     async selectFocus (index) {
       if (this.loadMode === 'change') return
-      if (this.optionsArr[index]) return
-      if (this.currentValueArr.length < index) return []
+      if (this.optionsArr[index]?.length) return
+      if (this.currentValueArr.length < index) return
+      if (this.optionsArr[index]) this.optionsArr.splice(index, 1)
       this.optionsArr.splice(
         index,
         1,

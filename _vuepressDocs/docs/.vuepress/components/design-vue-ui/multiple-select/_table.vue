@@ -39,10 +39,17 @@ export default {
           version: "-",
         },
         {
-          prop: "isEnd",
-          description: "是否选择完毕再赋值（对表单校验比较实用）",
+          prop: "endValid",
+          description: "是否选择完毕再赋值校验（对表单校验比较实用）",
           type: "boolean",
           default: "false",
+          version: "-",
+        },
+        {
+          prop: "renderValue",
+          description: "选择完毕再赋值校验（对表单校验比较实用）另一种方式，与 endValid 二选一",
+          type: "array",
+          default: "-",
           version: "-",
         },
         {

@@ -27,18 +27,32 @@
           :defaultLevel="3"
           :fieldNames="{ label: 'name', value: 'code' }"
           :loadData="loadData"
-          @change="onChange"
+          @change="onChange1"
         />
       </a-form-model-item>
-      <a-form-model-item label="基本使用-value" prop="basicValue21">
+      <a-form-model-item label="基本使用-endValid" prop="basicValue21">
          <d-multiple-select
           v-model="form.basicValue21"
           :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
           :options="allRegion"
           placeholder="请选择"
-          :renderValue.sync="form.renderValue"
           @change="onChange"
+          :defaultLevel="3"
+          endValid
         />
+        <!-- :renderValue.sync="form.renderValue" -->
+      </a-form-model-item>
+      <a-form-model-item label="renderValue" prop="basicValue22">
+         <d-multiple-select
+          v-model="form.basicValue22"
+          :fieldNames="{ label: 'name', value: 'code', children: 'areaList' }"
+          :options="allRegion"
+          placeholder="请选择"
+          @change="onChange"
+          :defaultLevel="3"
+          :renderValue.sync="form.renderValue"
+        />
+        <!-- :renderValue.sync="form.renderValue" -->
       </a-form-model-item>
       <a-form-model-item label="基本使用-value" prop="basicValue3">
         <d-multiple-select
@@ -86,6 +100,7 @@ export default {
         basicValue2: [],
         renderValue: ['430000', '430300', '430341'],
         basicValue3: [],
+        basicValue22: [],
         basicValue21: ['430000', '430300', '430341'],
         basicValue4: [{ key: '430000', label: ' 湖南省 ' }, { key: '430300', label: ' 湘潭市 ' }, { key: '430341', label: ' 湘潭经济技术开发区 ' }]
       },
@@ -94,7 +109,8 @@ export default {
         basicValue: { required: true, message: '请选择', trigger: 'change' },
         basicValue1: { required: true, message: '请选择', trigger: 'change' },
         basicValue21: { required: true, message: '请选择', trigger: 'change' },
-        basicValue2: { required: true, message: '请选择', trigger: 'change' }
+        basicValue2: { required: true, message: '请选择', trigger: 'change' },
+        basicValue22: { required: true, message: '请选择', trigger: 'change' }
       },
       labelCol: { span: 12 },
       wrapperCol: { span: 12 }
@@ -138,9 +154,15 @@ export default {
     },
     resetForm () {
       this.$refs.ruleForm.resetFields()
+      this.form.renderValue = []
     },
     onChange (value) {
       console.log(value)
+    },
+    onChange1 (val) {
+      console.log('修改basicValue21')
+      this.form.basicValue21 = []
+      this.form.basicValue22 = []
     },
     pagChange (current, pageSize, index) {
       console.log(current, pageSize, index)

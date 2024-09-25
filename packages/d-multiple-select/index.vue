@@ -57,12 +57,17 @@ export default {
     },
     renderValue: {
       type: [Array]
+    },
+    endValid: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
       optionsArr: [],
-      currentValueArr: []
+      currentValueArr: [],
+      isChangeUpdate: false
     }
   },
   watch: {
@@ -96,7 +101,6 @@ export default {
         loadMode !== 'change' ? currentValueArr.length + 1 : optionsArr.length
 
       // 返回当前级别
-      // console.log(arrLen, optionsArr)
       if (maxLevel && arrLen > maxLevel) return maxLevel
       return arrLen > (defaultLevel || 0) ? arrLen : defaultLevel
     },
@@ -116,8 +120,12 @@ export default {
   methods: {
     updateOptionsArray (val) {
       let _options = this.options
-      const { renderValue } = this
+      const { renderValue, isChangeUpdate, endValid } = this
       if (renderValue && renderValue.join('') !== val.join('')) return
+      if (endValid && isChangeUpdate) {
+        this.isChangeUpdate = false
+        if (!val.length) return
+      }
       // 清空值时重置状态
       if (!val || !val.length) {
         this.currentValueArr = []
@@ -158,13 +166,12 @@ export default {
     async handleSelectFocus (index) {
       // 提前返回，如果 loadMode 为 'change' 或选项已存在
       if (this.loadMode === 'change' || this.optionsArr[index]?.length) return
-
       // 确保 currentValueArr 的长度足够
       if (this.currentValueArr.length <= index) return
 
       // 删除现有选项
       if (this.optionsArr[index]) {
-        this.optionsArr.splice(index, 1)
+        this.optionsArr.splice(index, this.optionsArr.length)
       }
 
       // 加载新数据并替换
@@ -178,23 +185,24 @@ export default {
       this.optionsArr.splice(index, 0, newData)
       this.$emit('focus', this.currentValueArr, index)
     },
-    isLevelFull () {
-      return !this.maxLevel || this.maxLevel > this.optionsArr.length
-    },
     attrsBooleanIsTrue (attr) {
       return attr !== undefined && attr !== false && attr !== 0
+    },
+    isMaxLevel (index, child) {
+      return (this.maxLevel || 0) === this.optionsArr.length || !child?.length
     },
     async onChange (val, index) {
       const { value, children } = this.fieldNames
       const labelInValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue)
-
+      // 点击后 当前列表截断后面的
+      this.optionsArr.splice(index + 1, this.optionsArr.length)
       // 切片并更新当前值
       this.currentValueArr = [...this.currentValueArr.slice(0, index), val]
 
       // 查找子选项
-      const option = this.optionsArr[index].find(v => (
+      const option = this.optionsArr[index].find((v) =>
         labelInValue ? v[value] === val.key : v[value] === val
-      ))
+      )
       const child = option ? option[children] : []
 
       // 发送更新事件
@@ -204,11 +212,28 @@ export default {
 
       // 发送变化事件
       await this.$nextTick()
-      const shouldEmitCurrent = !this.renderValue || (this.renderValue && ((this.maxLevel || 0) === this.optionsArr.length || !child?.length))
-      this.$emit('change', shouldEmitCurrent ? this.currentValueArr : [], index)
 
+      // renderValue （校验场景下的某种实现方式），未启用 renderValue 时，直接发送当前值
+      // 启用 renderValue 时，如果当前级别已经到了最大级别，则发送当前值
+      const shouldEmitCurrent =
+        !this.renderValue ||
+        (this.renderValue && this.isMaxLevel(index, child))
+      // endValid（校验场景下的某种实现方式），未启用 renderValue 时，直接发送当前值
+      // endValid（校验场景下的某种实现方式），启用 endValid 时，如果当前级别已经到了最大级别，则发送当前值
+      const _endValid =
+        !this.endValid || (this.endValid && this.isMaxLevel(index, child))
+      // 与 endValid 共同使用检验是否结束
+      this.isChangeUpdate = true
+      this.$emit(
+        'change',
+        shouldEmitCurrent && _endValid ? this.currentValueArr : [],
+        index
+      )
+      // 是否级别已经是最大的了（ maxLevel 未设置默认无限增加，全量数据根据 children 判断最后的级别长度）
+      const isLevelFull =
+        !this.maxLevel || this.maxLevel > this.optionsArr.length
       // 处理加载或添加子选项
-      if (this.isLevelFull()) {
+      if (isLevelFull) {
         if (this.loadData) {
           if (this.loadMode !== 'focus') {
             this.optionsArr.splice(

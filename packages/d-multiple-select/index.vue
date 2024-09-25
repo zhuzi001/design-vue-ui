@@ -8,7 +8,7 @@
       v-on="filteredListeners(index)"
       mode="default"
       :value="currentValueArr[index]"
-      @focus="selectFocus(index)"
+      @focus="handleSelectFocus(index)"
       :fieldNames="fieldNames"
       :searchLoading="!optionsArr[index] && index === currentValueArr.length"
       @change="onChange($event, index)"
@@ -74,7 +74,7 @@ export default {
     },
     value: {
       handler (val) {
-        this.handleValue(val)
+        this.updateOptionsArray(val)
       },
       immediate: true
     }
@@ -96,7 +96,7 @@ export default {
         loadMode !== 'change' ? currentValueArr.length + 1 : optionsArr.length
 
       // 返回当前级别
-      console.log(arrLen, optionsArr)
+      // console.log(arrLen, optionsArr)
       if (maxLevel && arrLen > maxLevel) return maxLevel
       return arrLen > (defaultLevel || 0) ? arrLen : defaultLevel
     },
@@ -114,11 +114,10 @@ export default {
     }
   },
   methods: {
-    handleValue (val) {
+    updateOptionsArray (val) {
       let _options = this.options
       const { renderValue } = this
       if (renderValue && renderValue.join('') !== val.join('')) return
-      console.log('国考')
       // 清空值时重置状态
       if (!val || !val.length) {
         this.currentValueArr = []
@@ -156,7 +155,7 @@ export default {
       })
     },
 
-    async selectFocus (index) {
+    async handleSelectFocus (index) {
       // 提前返回，如果 loadMode 为 'change' 或选项已存在
       if (this.loadMode === 'change' || this.optionsArr[index]?.length) return
 
@@ -187,49 +186,46 @@ export default {
     },
     async onChange (val, index) {
       const { value, children } = this.fieldNames
-      // option 处理
-      this.optionsArr = this.optionsArr.slice(0, index + 1)
       const labelInValue = this.attrsBooleanIsTrue(this.$attrs.labelInValue)
 
-      const childObj = this.optionsArr[index].find((v) =>
+      // 切片并更新当前值
+      this.currentValueArr = [...this.currentValueArr.slice(0, index), val]
+
+      // 查找子选项
+      const option = this.optionsArr[index].find(v => (
         labelInValue ? v[value] === val.key : v[value] === val
-      )
-      const child = childObj && childObj[children] ? childObj[children] : []
-      console.log(child, 'child')
-      this.currentValueArr = this.currentValueArr.slice(0, index + 1)
-      this.currentValueArr[index] = val
+      ))
+      const child = option ? option[children] : []
+
+      // 发送更新事件
       if (this.renderValue) {
         this.$emit('update:renderValue', this.currentValueArr)
       }
 
-      this.$nextTick(async () => {
-        this.$emit(
-          'change',
-          !this.renderValue || (this.renderValue && ((this.maxLevel || 0) === this.optionsArr.length || !child.length))
-            ? this.currentValueArr
-            : [],
-          index
-        )
-        if (this.isLevelFull()) {
-          if (this.loadData) {
-            this.loadMode !== 'focus' &&
-              this.optionsArr.splice(
-                index + 1,
-                1,
-                await this.loadData({
-                  option: childObj,
-                  index,
-                  val: this.currentValueArr,
-                  loadMode: 'change'
-                })
-              )
-          } else if (child.length) {
+      // 发送变化事件
+      await this.$nextTick()
+      const shouldEmitCurrent = !this.renderValue || (this.renderValue && ((this.maxLevel || 0) === this.optionsArr.length || !child?.length))
+      this.$emit('change', shouldEmitCurrent ? this.currentValueArr : [], index)
+
+      // 处理加载或添加子选项
+      if (this.isLevelFull()) {
+        if (this.loadData) {
+          if (this.loadMode !== 'focus') {
             this.optionsArr.splice(
               index + 1,
-              1, child)
+              1,
+              await this.loadData({
+                option,
+                index,
+                val: this.currentValueArr,
+                loadMode: 'change'
+              })
+            )
           }
+        } else if (child?.length) {
+          this.optionsArr.splice(index + 1, 1, child)
         }
-      })
+      }
     }
   }
 }

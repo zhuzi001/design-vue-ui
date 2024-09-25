@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     isMobile() {
-      return /Mobi|Android/i.test(navigator.userAgent);
+      return navigator && /Mobi|Android/i.test(navigator.userAgent);
     },
     distributeSlots() {
       const slotContent = this.$slots.default || [];

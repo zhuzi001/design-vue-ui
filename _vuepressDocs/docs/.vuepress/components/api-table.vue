@@ -79,7 +79,7 @@ export default {
           dataIndex: "description",
         },
       ],
-      isMobile: /Mobi|Android/i.test(navigator.userAgent),
+      isMobile: navigator && /Mobi|Android/i.test(navigator.userAgent),
     };
   },
   created() {

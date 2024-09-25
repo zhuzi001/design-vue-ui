@@ -27,7 +27,10 @@ export default {
   },
   methods: {
     isMobile() {
-      return navigator && /Mobi|Android/i.test(navigator.userAgent);
+      if (process.client) {
+        return /Mobi|Android/i.test(navigator.userAgent);
+      }
+      return false;
     },
     distributeSlots() {
       const slotContent = this.$slots.default || [];
@@ -42,7 +45,8 @@ export default {
           column1.appendChild(vnode.elm);
         }
       });
-      this.isMiniScreen = this.single || this.isMobile() || window.innerWidth < 800;
+      this.isMiniScreen =
+        this.single || this.isMobile() || window.innerWidth < 800;
       slotContent.slice(half).forEach((vnode) => {
         if (vnode.elm) {
           this.isMiniScreen

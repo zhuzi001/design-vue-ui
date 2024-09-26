@@ -6,6 +6,7 @@ import DTextarea from './d-textarea'
 import DInput from './d-input'
 import DInputNumber from './d-input-number'
 import DSelect from './d-select'
+import DMultipleSelect from './d-multiple-select'
 import PageLoading from './page-loading'
 import Loading from './page-loading/loading.js'
 
@@ -41,7 +42,21 @@ DSelect.install = (vue) => {
   vue.component(DSelect.name, DSelect)
 }
 
-const components = [PageLoading, DTooltip, DTable, DCascader, DTextarea, DInput, DInputNumber, DSelect]
+DMultipleSelect.install = (vue) => {
+  vue.component(DMultipleSelect.name, DMultipleSelect)
+}
+
+const components = [
+  PageLoading,
+  DTooltip,
+  DTable,
+  DCascader,
+  DTextarea,
+  DInput,
+  DInputNumber,
+  DSelect,
+  DMultipleSelect
+]
 
 const install = function (Vue) {
   components.forEach((component) => {
@@ -61,7 +76,17 @@ const config = {
   $apiFc: function () {}
 }
 
-export { DTooltip, PageLoading, DTable, DCascader, DTextarea, DInput, DInputNumber, DSelect }
+export {
+  DTooltip,
+  PageLoading,
+  DTable,
+  DCascader,
+  DTextarea,
+  DInput,
+  DInputNumber,
+  DSelect,
+  DMultipleSelect
+}
 
 export default {
   install,

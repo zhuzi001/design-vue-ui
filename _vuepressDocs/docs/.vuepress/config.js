@@ -3,7 +3,13 @@ module.exports = {
   description: "基于ant框架",
   base: "/",
   port: "8081",
-  head: [["link", { rel: "icon", href: "/d.png" }]],
+  head: [
+    ["link", { rel: "icon", href: "/d.png" }],
+    [
+      "meta",
+      { name: "keywords", content: "designVueUi,antdesignvue,design-vue-ui" },
+    ],
+  ],
   markdown: {
     lineNumbers: true,
   },
@@ -20,6 +26,18 @@ module.exports = {
         text: "文档",
         link: "/design/",
       },
+      {
+        text: "关于我",
+        link: "/aboutMe.html",
+      },
+      {
+        text: "Github",
+        link: "https://github.com/zhuzi001/design-vue-ui.git",
+      },
+      {
+        text: "Gitee",
+        link: "https://gitee.com/zhu_xin/design-vue-ui.git",
+      },
     ],
     sidebar: {
       "/design/": [
@@ -34,6 +52,7 @@ module.exports = {
             "textarea",
             "select",
             "cascader",
+            "multiple-select",
           ],
         },
         "update",

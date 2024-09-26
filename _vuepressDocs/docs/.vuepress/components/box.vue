@@ -9,6 +9,12 @@
 <script>
 export default {
   name: "TwoColumnLayout",
+  props: {
+    single: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       isMiniScreen: false,
@@ -21,7 +27,10 @@ export default {
   },
   methods: {
     isMobile() {
-      return /Mobi|Android/i.test(navigator.userAgent);
+      if (typeof process !== 'undefined' && process.client) {
+        return /Mobi|Android/i.test(navigator.userAgent);
+      }
+      return false;
     },
     distributeSlots() {
       const slotContent = this.$slots.default || [];
@@ -36,7 +45,8 @@ export default {
           column1.appendChild(vnode.elm);
         }
       });
-      this.isMiniScreen = this.isMobile() || window.innerWidth < 800;
+      this.isMiniScreen =
+        this.single || this.isMobile() || window.innerWidth < 800;
       slotContent.slice(half).forEach((vnode) => {
         if (vnode.elm) {
           this.isMiniScreen

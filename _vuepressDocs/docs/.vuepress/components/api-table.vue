@@ -79,12 +79,16 @@ export default {
           dataIndex: "description",
         },
       ],
-      isMobile: /Mobi|Android/i.test(navigator.userAgent),
+      isMobile: false,
     };
   },
   created() {
     if (this.columnsType === "events") this.columns = this.columnsEvents;
     else if (this.columnsType === "methods") this.columns = this.columnsMethods;
+
+    if (typeof process !== 'undefined' && process.client) {
+      this.isMobile = /Mobi|Android/i.test(navigator.userAgent)
+    }
   },
   methods: {
     setColumns(value) {

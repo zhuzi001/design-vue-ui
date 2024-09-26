@@ -1,5 +1,5 @@
 <template>
-  <a-tooltip placement="top" :overlayClassName="overlayClassName" v-bind="$attrs">
+  <a-tooltip :placement="placement" :overlayClassName="overlayClassName" v-bind="$attrs">
     <template
       slot="title"
       v-if="contentValue.length && (contentValue.length > len || len === 0)"
@@ -25,6 +25,10 @@ export default {
     ATooltip: Tooltip
   },
   props: {
+    placement: {
+      type: String,
+      default: 'top'
+    },
     content: {
       type: [String, Array],
       default: ''

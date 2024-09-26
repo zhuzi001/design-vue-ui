@@ -86,7 +86,7 @@ export default {
     if (this.columnsType === "events") this.columns = this.columnsEvents;
     else if (this.columnsType === "methods") this.columns = this.columnsMethods;
 
-    if (process.client) {
+    if (typeof process !== 'undefined' && process.client) {
       this.isMobile = /Mobi|Android/i.test(navigator.userAgent)
     }
   },

@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     isMobile() {
-      if (process.client) {
+      if (typeof process !== 'undefined' && process.client) {
         return /Mobi|Android/i.test(navigator.userAgent);
       }
       return false;

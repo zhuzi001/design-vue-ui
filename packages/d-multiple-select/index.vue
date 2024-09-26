@@ -167,7 +167,7 @@ export default {
       // 提前返回，如果 loadMode 为 'change' 或选项已存在
       if (this.loadMode === 'change' || this.optionsArr[index]?.length) return
       // 确保 currentValueArr 的长度足够
-      if (this.currentValueArr.length <= index) return
+      if (this.currentValueArr.length < index) return
 
       // 删除现有选项
       if (this.optionsArr[index]) {

@@ -18,6 +18,15 @@
       :loadData="loadData"
       :maxLevel="3"
     />
+    <d-multiple-select
+      v-model="form.basicValue1"
+      :options="options"
+      placeholder="请选择"
+      :load-mode="currentLoadMode"
+      :loadData="loadData"
+      :maxLevel="3"
+      :defaultLevel="3"
+    />
   </div>
 </template>
 <script>
@@ -28,6 +37,7 @@ export default {
     return {
       form: {
         basicValue: [],
+        basicValue1: []
       },
       currentLoadMode: "change",
       btnArr: ["change", "focus", "all"],
@@ -35,6 +45,7 @@ export default {
   },
   methods: {
     async loadData({ val, index, option, loadMode }) {
+      console.log('=========')
       await this.delay(1000);
       // 下面是模拟接口数据-------忽略
       if (loadMode !== "focus") return option.children;
@@ -45,12 +56,14 @@ export default {
         if (!_option) return [];
         _options = _option.children;
       }
+      console.log(_options)
       return _options;
     },
     btnClick(item) {
       this.currentLoadMode = item;
       // 初始化，，还原
       this.form.basicValue = [];
+      this.form.basicValue1 = [];
     },
   },
 };

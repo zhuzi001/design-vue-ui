@@ -145,6 +145,21 @@ loadData 必须处理完异步操作，组件还需要处理后面的逻辑，�
 :::
 
 </tag>
+
+<tag text="搜索功能">
+<design-vue-ui-cascader-search />
+
+:::slot content
+optionFilterProp 搜索查询某字段 （默认 label （fieldNames 中的label属性））
+
+目前只能过滤当前已经存在的数据，远程的，无法过滤
+:::
+
+::: slot sourceCode
+<<< @/docs/.vuepress/components/design-vue-ui/cascader/search.vue
+:::
+
+</tag>
 </box>
 
 ## API

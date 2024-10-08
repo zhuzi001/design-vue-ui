@@ -21,22 +21,29 @@ export default {
       this.$forceUpdate()
     },
     fsFilterDeep (data, value, parentExist) {
-      const { children } = this.fieldNames
-      const searchProp = this.fieldNames[this.optionFilterProp]
+      const { children } = this.optionProps
+      const searchProp = this.optionProps[this.optionFilterProp]
 
       // 遍历数据并更新 $valueHidden
       data.forEach((element) => {
-        const currentExist = parentExist || (element[searchProp] && element[searchProp].includes(value))
+        const currentExist = value
+          ? parentExist ||
+            (element[searchProp] && element[searchProp].includes(value))
+          : true
         if (element[children] && element[children].length > 0) {
-          const childExist = this.fsFilterDeep(element[children], value, currentExist)
-          element.$valueHidden = !(currentExist || childExist)
+          const childExist = this.fsFilterDeep(
+            element[children],
+            value,
+            currentExist
+          )
+          element.$valueHidden = !(currentExist || childExist) // 下级存在则false
         } else {
-          element.$valueHidden = !currentExist
+          element.$valueHidden = !currentExist // 存在 则为 false
         }
       })
 
       // 返回是否有可见的元素
-      return data.some(element => !element.$valueHidden)
+      return data.some((element) => !element.$valueHidden)
     }
   }
 }

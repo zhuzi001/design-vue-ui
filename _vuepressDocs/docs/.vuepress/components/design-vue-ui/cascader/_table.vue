@@ -108,6 +108,20 @@ export default {
           type: "slot | slot-scope",
           default: "-",
           version: "-",
+        },
+        {
+          prop: "showSearch",
+          description: "是否显示搜索框并搜索",
+          type: "boolean",
+          default: "false",
+          version: "-",
+        },
+        {
+          prop: "optionFilterProp",
+          description: "过滤options中的某参数（默认fieldNames中的label）",
+          type: "string",
+          default: "label",
+          version: "-",
         }
       ],
     };

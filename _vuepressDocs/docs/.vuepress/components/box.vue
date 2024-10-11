@@ -27,10 +27,7 @@ export default {
   },
   methods: {
     isMobile() {
-      if (typeof process !== 'undefined' && process.client) {
-        return /Mobi|Android/i.test(navigator.userAgent);
-      }
-      return false;
+      return /Mobi|Android/i.test(navigator?.userAgent)
     },
     distributeSlots() {
       const slotContent = this.$slots.default || [];

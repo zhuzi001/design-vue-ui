@@ -30,9 +30,9 @@
           class="xm_cascader_panel"
           @click.stop="(e) => e.stopPropagation()"
         >
-          <div v-if="!listArr.length" class="xm_empty_data">
+          <div v-if="!listArr.length && !showSearch" class="xm_empty_data">
             <slot name="noDataContent">
-              <a-empty :image="simpleImage" :description="noDataContent"/>
+              <a-empty :image="simpleImage" :description="noDataContent" />
             </slot>
           </div>
           <div class="xm_cascader_search" v-if="showSearch">
@@ -60,10 +60,13 @@
                 </div>
               </li>
               <li
-                v-for="subItem in item"
+                v-for="subItem in item.filter((v) => !v.$valueHidden)"
                 :key="subItem[optionProps.value]"
                 @click.stop="itemChange(subItem, pIndex)"
-                :class="{ cascader_item_active: subItem.$active,  cascader_item_disabled: !!subItem[optionProps.disabled]}"
+                :class="{
+                  cascader_item_active: subItem.$active,
+                  cascader_item_disabled: !!subItem[optionProps.disabled],
+                }"
               >
                 <div class="title_content">
                   <a-checkbox
@@ -85,11 +88,21 @@
                 <a-icon
                   :type="subItem.$loading ? 'loading' : 'right'"
                   v-show="
-                   ( subItem[optionProps.children] &&
-                    subItem[optionProps.children].length)
-                    || (!subItem[optionProps.isLeaf] && !!loadData)
+                    (subItem[optionProps.children] &&
+                      subItem[optionProps.children].length) ||
+                    (!subItem[optionProps.isLeaf] && !!loadData)
                   "
                 />
+              </li>
+              <li>
+                <div v-if="allHidden" class="xm_empty_data xm_empty_data_li">
+                  <slot name="noDataContent">
+                    <a-empty
+                      :image="simpleImage"
+                      :description="noDataContent"
+                    />
+                  </slot>
+                </div>
               </li>
             </ul>
           </div>
@@ -146,7 +159,10 @@ export default {
         const _labelInValue = this.labelInValue
         const _val = _labelInValue ? val.map((v) => v.key) : val
         // 与 selectValue 做比较，不一致，进行更新处理
-        const isEqual = this.arraysEqual(_val, this.selectValue.map(v => v.key))
+        const isEqual = this.arraysEqual(
+          _val,
+          this.selectValue.map((v) => v.key)
+        )
         if (isEqual) return
         // 当 选择框 获取焦点时，执行下 根据 selectValue 选中 等处理
         this.updateCheckedStatus(this.treeDataCopy, _val)
@@ -158,7 +174,13 @@ export default {
   },
   computed: {
     optionProps () {
-      const defaultObj = { label: 'label', value: 'value', children: 'children', isLeaf: 'isLeaf', disabled: 'disabled' }
+      const defaultObj = {
+        label: 'label',
+        value: 'value',
+        children: 'children',
+        isLeaf: 'isLeaf',
+        disabled: 'disabled'
+      }
       return Object.assign({}, defaultObj, this.fieldNames || {})
     }
   },
@@ -167,7 +189,11 @@ export default {
       const defaultDisplayRender = (itemArr) => itemArr
       // this.$scopedSlots.displayRender ||
       const displayRender = this.displayRender || defaultDisplayRender
-      const arr = displayRender(this.selectValue, this.selectedParentItem, this.selectedChildItem)
+      const arr = displayRender(
+        this.selectValue,
+        this.selectedParentItem,
+        this.selectedChildItem
+      )
       if (arr.length && typeof arr[0] === 'string') {
         return arr.map((v) => {
           return {
@@ -208,7 +234,7 @@ export default {
     },
     // val : label   key   这个是点击选择器里面的那个美格选项的删除
     deselect (val, option) {
-      this.selectValue = this.selectValue.filter(v => v.key !== val.key)
+      this.selectValue = this.selectValue.filter((v) => v.key !== val.key)
       this.handleEmitChange()
       // 获取到 要删除 的那个 item
       const _item = this.getCurrentDelItem(this.treeDataCopy, val.key)
@@ -307,7 +333,9 @@ export default {
       for (let index = _pIndex; index > 0; index--) {
         // 是否是全部选中状态 _isAllChecked = true 父级为选中状态
         // _isAllChecked = false 父级为 indeterminate 或 未选中 状态
-        const _isAllChecked = _listArr[index].every((v) => v.$checked || v[disabled])
+        const _isAllChecked = _listArr[index].every(
+          (v) => v.$checked || v[disabled]
+        )
         // 是否存在 选中 状态  _isExistChecked = true 父级为状态 选中 或 indeterminate 状态
         // 是否存在 未选中 状态  _isExistChecked = false 父级为状态  未选中 状态
         const _isExistChecked = _listArr[index].some(
@@ -322,7 +350,7 @@ export default {
       }
     },
     setLoadSelectValue (modeVal) {
-      this.selectValue = modeVal.map(v => ({
+      this.selectValue = modeVal.map((v) => ({
         label: v?.label || v,
         key: v?.key || v
       }))
@@ -335,12 +363,18 @@ export default {
       const _selectedChildItem = this.setSelectChildValue(this.treeDataCopy)
 
       // 根据是否展示被选中的子节点来选择数据源
-      const _selectValue = this.showCheckedChild ? _selectedChildItem : _selectedParentItem
-      const prevSelectItem = this.showCheckedChild ? this.selectedChildItem : this.selectedParentItem
+      const _selectValue = this.showCheckedChild
+        ? _selectedChildItem
+        : _selectedParentItem
+      const prevSelectItem = this.showCheckedChild
+        ? this.selectedChildItem
+        : this.selectedParentItem
 
       // 获取 array1 中不在 array2 中的对象
       const uniqueInArray1 = (array1, array2) =>
-        array1.filter(item1 => !array2.some(item2 => item1[value] === item2[value]))
+        array1.filter(
+          (item1) => !array2.some((item2) => item1[value] === item2[value])
+        )
 
       // 更新选中的父子节点
       this.selectedParentItem = _selectedParentItem
@@ -348,35 +382,39 @@ export default {
 
       if (val) {
         // 处理传入的值
-        this.selectValue = val.map(v => this.processValue(v, _selectValue, { label, value }))
+        this.selectValue = val.map((v) =>
+          this.processValue(v, _selectValue, { label, value })
+        )
       } else {
         // 计算不在选中值中的选项
         const _noOptionsValue = uniqueInArray1(prevSelectItem, _selectValue)
-        const _mergeOptionValue = this.selectValue.filter(item =>
-          !_noOptionsValue.some(v => v[value] === item.key)
+        const _mergeOptionValue = this.selectValue.filter(
+          (item) => !_noOptionsValue.some((v) => v[value] === item.key)
         )
 
-        const _arr2 = _selectValue.map(item => ({
+        const _arr2 = _selectValue.map((item) => ({
           label: item[label],
           key: item[value]
         }))
 
         // 使用 Map 对象进行合并
         const map = new Map()
-        _mergeOptionValue.concat(_arr2).forEach(item =>
-          map.set(item.key, { ...map.get(item.key), ...item })
-        )
+        _mergeOptionValue
+          .concat(_arr2)
+          .forEach((item) =>
+            map.set(item.key, { ...map.get(item.key), ...item })
+          )
 
         this.selectValue = Array.from(map.values())
       }
     },
     processValue (v, selectValue, { label, value }) {
       if (typeof v === 'string') {
-        const foundItem = selectValue.find(item => item[value] === v)
+        const foundItem = selectValue.find((item) => item[value] === v)
         return foundItem || { label: v, key: v }
       }
 
-      const foundItem = selectValue.find(item => item[value] === v.key)
+      const foundItem = selectValue.find((item) => item[value] === v.key)
       return foundItem || { label: v.label, key: v.key }
     },
     setSelectParentValue (arr) {
@@ -391,7 +429,8 @@ export default {
             key: r[value]
           })
         } else if (v.$indeterminate) {
-          v[children] && _selectValue.push(...this.setSelectParentValue(v[children]))
+          v[children] &&
+            _selectValue.push(...this.setSelectParentValue(v[children]))
         }
       })
       return _selectValue
@@ -439,9 +478,13 @@ export default {
     // 去当前选中的选项并进行选中处理
     updateCheckedStatus (arr, valueArr) {
       const isArrayOfStrings = (ww) => {
-        return Array.isArray(ww) && ww.every(item => typeof item === 'string')
+        return (
+          Array.isArray(ww) && ww.every((item) => typeof item === 'string')
+        )
       }
-      const _valueArr = isArrayOfStrings(valueArr) ? [...valueArr] : valueArr.map(v => v.key)
+      const _valueArr = isArrayOfStrings(valueArr)
+        ? [...valueArr]
+        : valueArr.map((v) => v.key)
       const _obj = {
         checkedNum: 0,
         indeterminateNum: 0

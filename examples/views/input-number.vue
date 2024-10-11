@@ -65,6 +65,7 @@
           <a-input-number
             placeholder="请输入"
             :defaultValue="4"
+            allowClear
             @change="onChange"
           />
           <a-input-number

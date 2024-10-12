@@ -55,7 +55,7 @@ export default {
         },
         {
           prop: "showCheckedChild",
-          description: "定义选中项回填的方式",
+          description: "定义选中项回填的方式( true: 只显示选中的子节点 false: 只显示父节点-当父节点下所有子节点都选中时)",
           type: "boolean",
           default: "false",
           version: "-",

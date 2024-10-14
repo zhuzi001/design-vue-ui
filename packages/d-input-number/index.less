@@ -1,7 +1,11 @@
 @import "~ant-design-vue/lib/style/themes/index.less";
+
 .xm_input_number {
   width: 90px;
   position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+
   .xm_hander_wrap {
     position: absolute;
     display: flex;
@@ -10,10 +14,11 @@
     left: -24px;
     top: 0;
     width: 22px;
-    height: 2em;
+    height: 2.1em;
     color: rgba(0, 0, 0, 0.25);
     background-color: #fff;
     z-index: 99;
+
     .up,
     .down {
       display: flex;
@@ -31,9 +36,11 @@
       border-left: 1px solid #d9d9d9;
       opacity: 0;
       user-select: none;
-      &.xm_input_number_handle_disabled{
+
+      &.xm_input_number_handle_disabled {
         cursor: not-allowed;
       }
+
       &:hover {
         flex: 5;
         color: @primary-color;
@@ -43,13 +50,17 @@
         background: #f4f4f4;
       }
     }
+
     .up {
       border-bottom: 1px solid #d9d9d9;
     }
+
     .down {
       border-bottom-right-radius: 4px;
     }
+
     &:hover {
+
       .up,
       .down {
         opacity: 1;
@@ -61,34 +72,42 @@
     padding: 0 11px;
     border-right: 01px solid #d9d9d9;
   }
+
   .ant-input-wrapper {
     .ant-input-affix-wrapper {
       .ant-input[type="number"] {
         // padding-right: 58px !important;
       }
     }
-    .ant-input-affix-wrapper:hover ~ .ant-input-group-addon,
-    .ant-input:hover ~ .ant-input-group-addon {
+
+    .ant-input-affix-wrapper:hover~.ant-input-group-addon,
+    .ant-input:hover~.ant-input-group-addon {
       .xm_hander_wrap {
+
         .up,
         .down {
           opacity: 1;
         }
       }
     }
+
     .ant-input-group-addon:last-child {
       padding: 0;
       border-right: 0;
     }
   }
+
   .ant-input[type="number"] {
     padding-right: 30px;
   }
+
   &.xm_no_controls_input_number .ant-input[type="number"] {
     padding-right: 12px;
   }
+
   .ant-input-suffix {
     right: 40px;
+
     .xm_suffix {
       display: block;
       border: 1px solid #d9d9d9;
@@ -109,4 +128,10 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  .ant-input + .ant-input-group-addon:first-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  
 }

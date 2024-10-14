@@ -94,8 +94,8 @@
                   "
                 />
               </li>
-              <li>
-                <div v-if="allHidden" class="xm_empty_data xm_empty_data_li">
+              <li v-if="allHidden">
+                <div class="xm_empty_data xm_empty_data_li">
                   <slot name="noDataContent">
                     <a-empty
                       :image="simpleImage"

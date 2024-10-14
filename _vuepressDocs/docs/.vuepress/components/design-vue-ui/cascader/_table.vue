@@ -55,7 +55,7 @@ export default {
         },
         {
           prop: "showCheckedChild",
-          description: "定义选中项回填的方式",
+          description: "定义选中项回填的方式( true: 只显示选中的子节点 false: 只显示父节点-当父节点下所有子节点都选中时)",
           type: "boolean",
           default: "false",
           version: "-",
@@ -107,6 +107,20 @@ export default {
           description: "自定义面板显示数据",
           type: "slot | slot-scope",
           default: "-",
+          version: "-",
+        },
+        {
+          prop: "showSearch",
+          description: "是否显示搜索框并搜索",
+          type: "boolean",
+          default: "false",
+          version: "-",
+        },
+        {
+          prop: "optionFilterProp",
+          description: "过滤options中的某参数（默认fieldNames中的label）",
+          type: "string",
+          default: "label",
           version: "-",
         }
       ],

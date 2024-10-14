@@ -7,6 +7,7 @@
       :value="formattedValue"
       @input="inputChange"
       @blur="inputBlur"
+      :allowClear="false"
       v-bind="$attrs"
     >
       <!-- 使用 v-for 循环渲染插槽内容 -->
@@ -101,6 +102,10 @@ export default {
       if (!_value) return null
       return _value
     },
+    valueToNumber (value) {
+      if (!value && value !== 0) return 0
+      return Number(value)
+    },
     formatNumber (value) {
       if (!value && value !== 0) return null
       // eslint-disable-next-line no-useless-escape
@@ -119,12 +124,12 @@ export default {
       })
     },
     add () {
-      const _value = this.unformatValue(this.formattedValue || 0)
+      const _value = this.valueToNumber(this.unformatValue(this.formattedValue || 0))
       if (_value === this.max) return
       this.emitValueByMaxOrMin(_value + this.step)
     },
     subtract () {
-      const _value = this.unformatValue(this.formattedValue || 0)
+      const _value = this.valueToNumber(this.unformatValue(this.formattedValue || 0))
       if (_value === this.min) return
       this.emitValueByMaxOrMin(_value - this.step)
     },

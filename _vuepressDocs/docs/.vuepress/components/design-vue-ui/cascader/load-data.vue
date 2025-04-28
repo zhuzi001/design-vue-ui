@@ -31,6 +31,7 @@ export default {
         v.isLeaf = v.level === 3;
         return v;
       });
+      // item.$noMore = true; // 无更多数据隐藏箭头
       item.$loading = false;
     },
   },

@@ -85,14 +85,16 @@
                     </slot>
                   </span>
                 </div>
-                <a-icon
+                <template v-if="!subItem.$noMore">
+                  <a-icon
                   :type="subItem.$loading ? 'loading' : 'right'"
                   v-show="
                     (subItem[optionProps.children] &&
-                      subItem[optionProps.children].length) ||
+                    subItem[optionProps.children].length) ||
                     (!subItem[optionProps.isLeaf] && !!loadData)
-                  "
+                    "
                 />
+              </template>
               </li>
               <li v-if="allHidden">
                 <div class="xm_empty_data xm_empty_data_li">
